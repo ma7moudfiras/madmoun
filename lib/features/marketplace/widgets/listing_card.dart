@@ -17,7 +17,10 @@ class DevicePhotoImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (path == null) return const _PhotoFallback();
-    final url = ref.watch(photoUrlProvider)(path!);
+    // Seed data may store absolute image URLs; stored uploads are bucket paths.
+    final url = path!.startsWith('http')
+        ? path!
+        : ref.watch(photoUrlProvider)(path!);
     return Image.network(
       url,
       fit: fit,
