@@ -1,0 +1,18 @@
+base_locale: ar
+fallback_strategy: base_locale
+input_directory: lib/i18n
+input_file_pattern: .i18n.json
+output_directory: lib/i18n
+output_file_name: strings.g.dart
+string_interpolation: braces
+timestamp: false
+maps:
+  - enums.deviceStatus
+  - enums.reservationStatus
+  - enums.shopStatus
+  - enums.claimStatus
+  - enums.grade
+  - enums.category
+  - enums.checklistResult
+  - enums.currency
+  - errors
