@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description"
+        content="مضمون — سوق الأجهزة الإلكترونية المجدّدة بضمان من ورشات معتمدة، الدفع عند الاستلام.">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="مضمون">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>مضمون</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    body { background-color: #FBFAF6; }
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      color: #42552F;
+      gap: 16px;
+    }
+    #loading .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #F5E9CF;
+      border-top-color: #42552F;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div>مضمون</div>
+  </div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      const loader = document.getElementById('loading');
+      if (loader) loader.remove();
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
