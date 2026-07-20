@@ -43,9 +43,19 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       );
       if (!mounted) return;
       if (response.session == null) {
-        // Email confirmation is enabled upstream: tell the user to check mail.
-        showAppSnackBar(context, t.auth.confirmEmailSent);
-        context.go('/login');
+        // Confirmation may be required upstream; the DB pre-confirms emails
+        // for the MVP, so an immediate sign-in normally succeeds.
+        try {
+          await ref.read(supabaseClientProvider).auth.signInWithPassword(
+                email: _email.text.trim(),
+                password: _password.text,
+              );
+        } catch (_) {
+          if (mounted) {
+            showAppSnackBar(context, t.auth.confirmEmailSent);
+            context.go('/login');
+          }
+        }
       }
       // Otherwise the router redirect takes over.
     } catch (e) {
