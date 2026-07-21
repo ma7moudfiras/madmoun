@@ -133,13 +133,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ? 2
                 : 1;
 
+    // Derive the card height from its real width so the image never squeezes
+    // the content: card width = viewport - horizontal padding - inter-column
+    // gaps, image is 16:10, and the text block needs a fixed budget.
+    const horizontalPadding = 48.0;
+    const columnGap = 16.0;
+    final cardWidth =
+        (width - horizontalPadding - columnGap * (columns - 1)) / columns;
+    final cardExtent = cardWidth / (16 / 10) + 150;
+
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(child: _Hero(searchController: _searchController, onSearchChanged: _onSearchChanged)),
         SliverToBoxAdapter(child: _buildFilterBar(context)),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          sliver: _buildResults(columns),
+          sliver: _buildResults(columns, cardExtent),
         ),
         if (_hasMore && !_loading)
           SliverToBoxAdapter(
@@ -164,14 +173,14 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget _buildResults(int columns) {
+  Widget _buildResults(int columns, double cardExtent) {
     if (_loading) {
       return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columns,
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          mainAxisExtent: 320,
+          mainAxisExtent: cardExtent,
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) => const ListingCardSkeleton(),
@@ -204,7 +213,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         crossAxisCount: columns,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        mainAxisExtent: 320,
+        mainAxisExtent: cardExtent,
       ),
       delegate: SliverChildBuilderDelegate(
         (context, index) {
