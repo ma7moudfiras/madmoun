@@ -121,6 +121,20 @@ After the first deploy, add the Vercel URL to the Supabase Auth **Site URL** /
 `.github/workflows/ci.yml` runs `flutter analyze` + `flutter test` (and checks
 that the generated `slang` output is committed) on every push/PR to `main`.
 
+## Auth
+
+Email/password sign-in works out of the box. New sign-ups must confirm their
+email — the confirmation, email-change, and password-reset links all rely on
+the Supabase **Site URL / Redirect URLs** (Authentication → URL Configuration)
+pointing at the deployed origin. Supabase's built-in email service is
+rate-limited (a few messages/hour); configure custom SMTP
+(Authentication → Emails → SMTP) for real volume.
+
+`supabase/migrations/20260720185124_auto_confirm_emails.sql` (a pre-confirm
+trigger) was superseded by
+`20260721140000_enforce_email_confirmation.sql`, which drops it so real
+confirmation applies. Existing/seed accounts stay confirmed.
+
 ## Manual steps
 
 - **Google OAuth** ships behind the `ENABLE_GOOGLE_AUTH` compile-time flag. To
@@ -128,5 +142,5 @@ that the generated `slang` output is committed) on every push/PR to `main`.
   (Authentication → Providers → Google), then build with
   `--dart-define=ENABLE_GOOGLE_AUTH=true`. Email/password auth works out of the
   box without it.
-- Add the production URL to Supabase Auth URL configuration (Site URL +
-  Redirect URLs) if not done via the management API.
+- Set the Supabase Auth **Site URL** + **Redirect URLs** to the deployed origin
+  (done), and configure custom SMTP for production email volume.

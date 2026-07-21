@@ -42,23 +42,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         email: _email.text.trim(),
         password: _password.text,
         data: {'full_name': _fullName.text.trim()},
+        emailRedirectTo: Uri.base.origin,
       );
       if (!mounted) return;
       if (response.session == null) {
-        // Confirmation may be required upstream; the DB pre-confirms emails
-        // for the MVP, so an immediate sign-in normally succeeds.
-        try {
-          await client.auth.signInWithPassword(
-            email: _email.text.trim(),
-            password: _password.text,
-          );
-        } catch (_) {
-          if (mounted) {
-            showAppSnackBar(context, t.auth.confirmEmailSent);
-            context.go('/login');
-          }
-          return;
-        }
+        // Email confirmation is required: no session until the link is clicked.
+        showAppSnackBar(context, t.auth.confirmEmailSent);
+        context.go('/login');
+        return;
       }
       final destination = await postLoginDestination(client, widget.from);
       if (mounted) context.go(destination);
