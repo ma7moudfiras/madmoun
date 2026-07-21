@@ -59,6 +59,18 @@ abstract final class AppTheme {
       colorScheme: scheme,
       fontFamily: fontFamily,
       scaffoldBackgroundColor: surface,
+      // A clean cross-fade on every platform: the default slide transition
+      // ignores RTL (always left→right) and feels janky between pages.
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: _FadePageTransitionsBuilder(),
+          TargetPlatform.iOS: _FadePageTransitionsBuilder(),
+          TargetPlatform.linux: _FadePageTransitionsBuilder(),
+          TargetPlatform.macOS: _FadePageTransitionsBuilder(),
+          TargetPlatform.windows: _FadePageTransitionsBuilder(),
+          TargetPlatform.fuchsia: _FadePageTransitionsBuilder(),
+        },
+      ),
     );
 
     return base.copyWith(
@@ -193,6 +205,30 @@ abstract final class AppTheme {
         ),
       ),
       extensions: const [AppColors.light],
+    );
+  }
+}
+
+/// A subtle, direction-neutral cross-fade used for all route transitions.
+class _FadePageTransitionsBuilder extends PageTransitionsBuilder {
+  const _FadePageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final curved = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    return FadeTransition(
+      opacity: curved,
+      child: child,
     );
   }
 }

@@ -21,15 +21,30 @@ class DevicePhotoImage extends ConsumerWidget {
     final url = path!.startsWith('http')
         ? path!
         : ref.watch(photoUrlProvider)(path!);
-    return Image.network(
-      url,
-      fit: fit,
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-        return const Shimmer(
-            child: SkeletonBox(height: double.infinity, radius: 0));
-      },
-      errorBuilder: (context, error, stack) => const _PhotoFallback(),
+    // A persistent shimmer sits behind the image; the image cross-fades in
+    // over it once decoded. frameBuilder is used instead of loadingBuilder
+    // because on web (CanvasKit) download progress is not reported, which
+    // otherwise leaves a white flash until the image pops in.
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        const Shimmer(child: SkeletonBox(height: double.infinity, radius: 0)),
+        Image.network(
+          url,
+          fit: fit,
+          gaplessPlayback: true,
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) return child;
+            return AnimatedOpacity(
+              opacity: frame == null ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              child: child,
+            );
+          },
+          errorBuilder: (context, error, stack) => const _PhotoFallback(),
+        ),
+      ],
     );
   }
 }
