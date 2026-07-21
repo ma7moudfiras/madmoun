@@ -83,9 +83,9 @@ class SellerShell extends ConsumerWidget {
         ),
         IconButton(
           tooltip: t.common.signOut,
-          onPressed: () async {
-            await ref.read(supabaseClientProvider).auth.signOut();
-            if (context.mounted) context.go('/');
+          onPressed: () {
+            context.go('/');
+            ref.read(supabaseClientProvider).auth.signOut();
           },
           icon: const Icon(Icons.logout_rounded),
         ),

@@ -9,9 +9,12 @@ import '../../marketplace/widgets/listing_card.dart';
 import '../data/seller_repository.dart';
 
 final incomingReservationsProvider =
-    FutureProvider<List<Reservation>>((ref) {
-  ref.watch(myShopProvider);
-  return ref.watch(sellerRepositoryProvider).fetchIncomingReservations();
+    FutureProvider<List<Reservation>>((ref) async {
+  final shop = await ref.watch(myShopProvider.future);
+  if (shop == null) return const [];
+  return ref
+      .watch(sellerRepositoryProvider)
+      .fetchIncomingReservations(shop.id);
 });
 
 class SellerReservationsPage extends ConsumerWidget {

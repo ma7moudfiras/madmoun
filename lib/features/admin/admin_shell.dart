@@ -66,9 +66,11 @@ class AdminShell extends ConsumerWidget {
         ),
         IconButton(
           tooltip: t.common.signOut,
-          onPressed: () async {
-            await ref.read(supabaseClientProvider).auth.signOut();
-            if (context.mounted) context.go('/');
+          onPressed: () {
+            // Navigate home first so the auth-change redirect doesn't bounce
+            // an authed route to /login before we leave the dashboard.
+            context.go('/');
+            ref.read(supabaseClientProvider).auth.signOut();
           },
           icon: const Icon(Icons.logout_rounded),
         ),

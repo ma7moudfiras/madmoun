@@ -12,9 +12,10 @@ import '../data/seller_repository.dart';
 
 /// Provider that pages the seller's devices; invalidated after any mutation.
 final sellerDevicesProvider =
-    FutureProvider<List<SellerDevice>>((ref) {
-  ref.watch(myShopProvider);
-  return ref.watch(sellerRepositoryProvider).fetchMyDevices();
+    FutureProvider<List<SellerDevice>>((ref) async {
+  final shop = await ref.watch(myShopProvider.future);
+  if (shop == null) return const [];
+  return ref.watch(sellerRepositoryProvider).fetchMyDevices(shop.id);
 });
 
 class SellerDevicesPage extends ConsumerWidget {

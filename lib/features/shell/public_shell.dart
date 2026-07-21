@@ -113,8 +113,8 @@ class _AccountMenu extends ConsumerWidget {
           case 'admin':
             context.go('/admin');
           case 'signout':
+            context.go('/');
             await ref.read(supabaseClientProvider).auth.signOut();
-            if (context.mounted) context.go('/');
         }
       },
       itemBuilder: (context) => [

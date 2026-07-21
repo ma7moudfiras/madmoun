@@ -49,9 +49,7 @@ class SellerRepository {
     }).eq('id', id);
   }
 
-  Future<List<SellerDevice>> fetchMyDevices({int? cursor}) async {
-    final shopId = await _myShopId();
-    if (shopId == null) return const [];
+  Future<List<SellerDevice>> fetchMyDevices(int shopId, {int? cursor}) async {
     var query =
         _client.from('devices').select(_deviceColumns).eq('shop_id', shopId);
     if (cursor != null) query = query.lt('id', cursor);
@@ -70,11 +68,6 @@ class SellerRepository {
     return row == null
         ? null
         : SellerDevice.fromJson(Map<String, dynamic>.from(row));
-  }
-
-  Future<int?> _myShopId() async {
-    final result = await _client.rpc('my_shop_id');
-    return result == null ? null : (result as num).toInt();
   }
 
   Future<int> createDeviceDraft({
@@ -162,9 +155,8 @@ class SellerRepository {
   /// Scoped to the caller's own shop: RLS also lets buyers/admins read
   /// reservations, so without the filter this portal view would show rows
   /// the seller has no authority over.
-  Future<List<Reservation>> fetchIncomingReservations({int? cursor}) async {
-    final shopId = await _myShopId();
-    if (shopId == null) return const [];
+  Future<List<Reservation>> fetchIncomingReservations(int shopId,
+      {int? cursor}) async {
     var query = _client
         .from('reservations')
         .select(
@@ -188,9 +180,7 @@ class SellerRepository {
 
   // ----- warranty claims on the seller's devices -----
 
-  Future<List<WarrantyClaim>> fetchClaims() async {
-    final shopId = await _myShopId();
-    if (shopId == null) return const [];
+  Future<List<WarrantyClaim>> fetchClaims(int shopId) async {
     final rows = await _client
         .from('warranty_claims')
         .select('*, devices!inner(title, public_id, shop_id)')

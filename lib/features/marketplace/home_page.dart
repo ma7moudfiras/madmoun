@@ -35,7 +35,32 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    _reload();
+    // Restore the previous Home view instantly if we've been here before;
+    // the images are still in Flutter's ImageCache so there's no reload flash.
+    final snap = ref.read(homeSnapshotProvider);
+    if (snap.loaded) {
+      _items.addAll(snap.items);
+      _filters = snap.filters;
+      _hasMore = snap.hasMore;
+      _searchController.text = snap.search;
+      _minPrice.text = snap.minPrice;
+      _maxPrice.text = snap.maxPrice;
+      _loading = false;
+    } else {
+      _reload();
+    }
+  }
+
+  void _saveSnapshot() {
+    final snap = ref.read(homeSnapshotProvider);
+    snap
+      ..items = List.of(_items)
+      ..hasMore = _hasMore
+      ..loaded = true
+      ..filters = _filters
+      ..search = _searchController.text
+      ..minPrice = _minPrice.text
+      ..maxPrice = _maxPrice.text;
   }
 
   @override
@@ -64,6 +89,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         _hasMore = page.hasMore;
         _loading = false;
       });
+      _saveSnapshot();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -86,6 +112,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         _hasMore = page.hasMore;
         _loadingMore = false;
       });
+      _saveSnapshot();
     } catch (e) {
       if (!mounted) return;
       setState(() => _loadingMore = false);

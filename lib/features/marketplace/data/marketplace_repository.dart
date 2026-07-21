@@ -196,6 +196,21 @@ final marketplaceRepositoryProvider = Provider<MarketplaceRepository>(
   (ref) => MarketplaceRepository(ref.watch(supabaseClientProvider)),
 );
 
+/// In-memory snapshot of the last Home view. Restoring it on re-entry avoids
+/// the refetch + skeleton flash + image reload that made returning to Home
+/// flicker every time.
+class HomeSnapshot {
+  List<Listing> items = const [];
+  bool hasMore = false;
+  bool loaded = false;
+  ListingFilters filters = const ListingFilters();
+  String search = '';
+  String minPrice = '';
+  String maxPrice = '';
+}
+
+final homeSnapshotProvider = Provider<HomeSnapshot>((ref) => HomeSnapshot());
+
 final impactStatsProvider = FutureProvider<ImpactStats>(
   (ref) => ref.watch(marketplaceRepositoryProvider).fetchImpactStats(),
 );

@@ -65,7 +65,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'CITY_REQUIRED': 'أدخل مدينة التسليم.',
 		'ADMIN_ONLY': 'صلاحيات غير كافية.',
 		'REJECTION_REASON_REQUIRED': 'اكتب سبب الرفض.',
-		'SHOP_NOT_APPROVED': 'لا يمكن إضافة أجهزة قبل اعتماد الورشة.',
+		'SHOP_NOT_APPROVED': 'لا يمكن إضافة أجهزة قبل اعتماد المتجر.',
 		'UPDATE_FORBIDDEN': 'لا تملك صلاحية تنفيذ هذا الإجراء.',
 	};
 }
@@ -81,8 +81,8 @@ class Translations$common$ar {
 	/// ar: 'مضمون'
 	String get appName => 'مضمون';
 
-	/// ar: 'أجهزة مجدّدة بضمان، من ورشات معتمدة'
-	String get tagline => 'أجهزة مجدّدة بضمان، من ورشات معتمدة';
+	/// ar: 'أجهزة مستعملة بضمان، من متاجر معتمدة'
+	String get tagline => 'أجهزة مستعملة بضمان، من متاجر معتمدة';
 
 	/// ar: 'جارٍ التحميل…'
 	String get loading => 'جارٍ التحميل…';
@@ -324,8 +324,8 @@ class Translations$enums$ar {
 	};
 	Map<String, String> get shopStatus => {
 		'pending': 'بانتظار الموافقة',
-		'approved': 'معتمدة',
-		'rejected': 'مرفوضة',
+		'approved': 'معتمد',
+		'rejected': 'مرفوض',
 	};
 	Map<String, String> get claimStatus => {
 		'open': 'مفتوحة',
@@ -362,11 +362,11 @@ class Translations$home$ar {
 
 	// Translations
 
-	/// ar: 'أجهزة مجدّدة… مضمونة'
-	String get heroTitle => 'أجهزة مجدّدة… مضمونة';
+	/// ar: 'أجهزة مستعملة… مضمونة'
+	String get heroTitle => 'أجهزة مستعملة… مضمونة';
 
-	/// ar: 'موبايلات ولابتوبات مفحوصة فنيًا من ورشات معتمدة، بضمان إلزامي والدفع عند الاستلام.'
-	String get heroSubtitle => 'موبايلات ولابتوبات مفحوصة فنيًا من ورشات معتمدة، بضمان إلزامي والدفع عند الاستلام.';
+	/// ar: 'موبايلات ولابتوبات مفحوصة فنيًا من متاجر معتمدة، بضمان إلزامي والدفع عند الاستلام.'
+	String get heroSubtitle => 'موبايلات ولابتوبات مفحوصة فنيًا من متاجر معتمدة، بضمان إلزامي والدفع عند الاستلام.';
 
 	/// ar: '{count} جهازًا أُنقذ من النفايات الإلكترونية'
 	String impactDevices({required Object count}) => '${count} جهازًا أُنقذ من النفايات الإلكترونية';
@@ -434,8 +434,8 @@ class Translations$device$ar {
 	/// ar: 'الرقم التسلسلي (آخر 4)'
 	String get serialLabel => 'الرقم التسلسلي (آخر 4)';
 
-	/// ar: 'الورشة'
-	String get shopLabel => 'الورشة';
+	/// ar: 'المتجر'
+	String get shopLabel => 'المتجر';
 
 	/// ar: 'الضمان'
 	String get warrantyTitle => 'الضمان';
@@ -500,8 +500,8 @@ class Translations$reserve$ar {
 	/// ar: 'ماذا يحدث الآن؟'
 	String get whatNextTitle => 'ماذا يحدث الآن؟';
 
-	/// ar: 'ستتواصل معك الورشة خلال 24 ساعة لتأكيد الحجز.'
-	String get whatNext1 => 'ستتواصل معك الورشة خلال 24 ساعة لتأكيد الحجز.';
+	/// ar: 'سيتواصل معك المتجر خلال 24 ساعة لتأكيد الحجز.'
+	String get whatNext1 => 'سيتواصل معك المتجر خلال 24 ساعة لتأكيد الحجز.';
 
 	/// ar: 'يتم توصيل الجهاز إلى عنوانك وتدفع نقدًا عند الاستلام.'
 	String get whatNext2 => 'يتم توصيل الجهاز إلى عنوانك وتدفع نقدًا عند الاستلام.';
@@ -560,8 +560,8 @@ class Translations$orders$ar {
 	/// ar: 'قرار المنصة: {note}'
 	String claimResolution({required Object note}) => 'قرار المنصة: ${note}';
 
-	/// ar: 'رد الورشة: {note}'
-	String shopResponse({required Object note}) => 'رد الورشة: ${note}';
+	/// ar: 'رد المتجر: {note}'
+	String shopResponse({required Object note}) => 'رد المتجر: ${note}';
 }
 
 // Path: auth
@@ -608,8 +608,8 @@ class Translations$auth$ar {
 	/// ar: 'أرسلنا رابط تأكيد إلى بريدك. افتح الرسالة ثم سجّل الدخول.'
 	String get confirmEmailSent => 'أرسلنا رابط تأكيد إلى بريدك. افتح الرسالة ثم سجّل الدخول.';
 
-	/// ar: 'هل تملك ورشة تصليح؟'
-	String get sellerCta => 'هل تملك ورشة تصليح؟';
+	/// ar: 'هل تملك متجرًا لبيع الأجهزة؟'
+	String get sellerCta => 'هل تملك متجرًا لبيع الأجهزة؟';
 
 	/// ar: 'انضم كبائع'
 	String get sellerCtaAction => 'انضم كبائع';
@@ -635,8 +635,8 @@ class Translations$seller$ar {
 	/// ar: 'الضمان'
 	String get navClaims => 'الضمان';
 
-	/// ar: 'ورشتي'
-	String get navShop => 'ورشتي';
+	/// ar: 'متجري'
+	String get navShop => 'متجري';
 
 	late final Translations$seller$onboarding$ar onboarding = Translations$seller$onboarding$ar.internal(_root);
 	late final Translations$seller$devices$ar devices = Translations$seller$devices$ar.internal(_root);
@@ -659,8 +659,8 @@ class Translations$admin$ar {
 	/// ar: 'الرئيسية'
 	String get navDashboard => 'الرئيسية';
 
-	/// ar: 'الورشات'
-	String get navShops => 'الورشات';
+	/// ar: 'المتاجر'
+	String get navShops => 'المتاجر';
 
 	/// ar: 'مراجعة الأجهزة'
 	String get navReview => 'مراجعة الأجهزة';
@@ -696,14 +696,14 @@ class Translations$seller$onboarding$ar {
 
 	// Translations
 
-	/// ar: 'تسجيل الورشة'
-	String get title => 'تسجيل الورشة';
+	/// ar: 'تسجيل المتجر'
+	String get title => 'تسجيل المتجر';
 
-	/// ar: 'سجّل ورشتك لبيع الأجهزة المجدّدة على مضمون. تراجع المنصة الطلبات خلال يوم عمل.'
-	String get intro => 'سجّل ورشتك لبيع الأجهزة المجدّدة على مضمون. تراجع المنصة الطلبات خلال يوم عمل.';
+	/// ar: 'سجّل متجرك لبيع الأجهزة المستعملة على مضمون. تراجع المنصة الطلبات خلال يوم عمل.'
+	String get intro => 'سجّل متجرك لبيع الأجهزة المستعملة على مضمون. تراجع المنصة الطلبات خلال يوم عمل.';
 
-	/// ar: 'اسم الورشة'
-	String get shopNameLabel => 'اسم الورشة';
+	/// ar: 'اسم المتجر'
+	String get shopNameLabel => 'اسم المتجر';
 
 	/// ar: 'إرسال طلب الانضمام'
 	String get submit => 'إرسال طلب الانضمام';
@@ -711,23 +711,23 @@ class Translations$seller$onboarding$ar {
 	/// ar: 'طلبك قيد المراجعة'
 	String get pendingTitle => 'طلبك قيد المراجعة';
 
-	/// ar: 'استلمنا بيانات ورشتك وسنراجعها خلال يوم عمل. ستتمكن من إضافة الأجهزة فور الاعتماد.'
-	String get pendingBody => 'استلمنا بيانات ورشتك وسنراجعها خلال يوم عمل. ستتمكن من إضافة الأجهزة فور الاعتماد.';
+	/// ar: 'استلمنا بيانات متجرك وسنراجعها خلال يوم عمل. ستتمكن من إضافة الأجهزة فور الاعتماد.'
+	String get pendingBody => 'استلمنا بيانات متجرك وسنراجعها خلال يوم عمل. ستتمكن من إضافة الأجهزة فور الاعتماد.';
 
-	/// ar: 'لم يتم اعتماد الورشة'
-	String get rejectedTitle => 'لم يتم اعتماد الورشة';
+	/// ar: 'لم يتم اعتماد المتجر'
+	String get rejectedTitle => 'لم يتم اعتماد المتجر';
 
 	/// ar: 'السبب: {reason}'
 	String rejectedReason({required Object reason}) => 'السبب: ${reason}';
 
-	/// ar: 'ورشة معتمدة'
-	String get approvedTitle => 'ورشة معتمدة';
+	/// ar: 'متجر معتمد'
+	String get approvedTitle => 'متجر معتمد';
 
-	/// ar: 'تعديل بيانات الورشة'
-	String get editShop => 'تعديل بيانات الورشة';
+	/// ar: 'تعديل بيانات المتجر'
+	String get editShop => 'تعديل بيانات المتجر';
 
-	/// ar: 'تم تحديث بيانات الورشة'
-	String get updated => 'تم تحديث بيانات الورشة';
+	/// ar: 'تم تحديث بيانات المتجر'
+	String get updated => 'تم تحديث بيانات المتجر';
 }
 
 // Path: seller.devices
@@ -747,8 +747,8 @@ class Translations$seller$devices$ar {
 	/// ar: 'لا توجد أجهزة بعد'
 	String get emptyTitle => 'لا توجد أجهزة بعد';
 
-	/// ar: 'أضف أول جهاز مجدّد بعد فحصه فنيًا ليظهر للمشترين بعد موافقة المنصة.'
-	String get emptyBody => 'أضف أول جهاز مجدّد بعد فحصه فنيًا ليظهر للمشترين بعد موافقة المنصة.';
+	/// ar: 'أضف أول جهاز مستعمل بعد فحصه فنيًا ليظهر للمشترين بعد موافقة المنصة.'
+	String get emptyBody => 'أضف أول جهاز مستعمل بعد فحصه فنيًا ليظهر للمشترين بعد موافقة المنصة.';
 
 	/// ar: 'إرسال للفحص'
 	String get submitForInspection => 'إرسال للفحص';
@@ -885,8 +885,8 @@ class Translations$seller$deviceForm$ar {
 	/// ar: 'جارٍ الرفع…'
 	String get uploading => 'جارٍ الرفع…';
 
-	/// ar: 'فشل رفع الصورة. حاول مجددًا.'
-	String get uploadFailed => 'فشل رفع الصورة. حاول مجددًا.';
+	/// ar: 'فشل رفع الصورة. حاول مستعملًا.'
+	String get uploadFailed => 'فشل رفع الصورة. حاول مستعملًا.';
 
 	/// ar: 'إزالة الصورة'
 	String get removePhoto => 'إزالة الصورة';
@@ -951,11 +951,11 @@ class Translations$seller$claims$ar {
 	/// ar: 'مطالبات الضمان على أجهزتك ستظهر هنا.'
 	String get emptyBody => 'مطالبات الضمان على أجهزتك ستظهر هنا.';
 
-	/// ar: 'ردّ الورشة'
-	String get respondLabel => 'ردّ الورشة';
+	/// ar: 'ردّ المتجر'
+	String get respondLabel => 'ردّ المتجر';
 
-	/// ar: 'مثال: يرجى إحضار الجهاز للورشة للفحص…'
-	String get respondHint => 'مثال: يرجى إحضار الجهاز للورشة للفحص…';
+	/// ar: 'مثال: يرجى إحضار الجهاز للمتجر للفحص…'
+	String get respondHint => 'مثال: يرجى إحضار الجهاز للمتجر للفحص…';
 
 	/// ar: 'إرسال الرد'
 	String get respondSubmit => 'إرسال الرد';
@@ -972,8 +972,8 @@ class Translations$admin$dashboard$ar {
 
 	// Translations
 
-	/// ar: 'ورشات بانتظار الاعتماد'
-	String get pendingShops => 'ورشات بانتظار الاعتماد';
+	/// ar: 'متاجر بانتظار الاعتماد'
+	String get pendingShops => 'متاجر بانتظار الاعتماد';
 
 	/// ar: 'أجهزة قيد الفحص'
 	String get devicesInReview => 'أجهزة قيد الفحص';
@@ -999,11 +999,11 @@ class Translations$admin$shops$ar {
 
 	// Translations
 
-	/// ar: 'طلبات الورشات'
-	String get title => 'طلبات الورشات';
+	/// ar: 'طلبات المتاجر'
+	String get title => 'طلبات المتاجر';
 
-	/// ar: 'لا توجد ورشات بانتظار الاعتماد'
-	String get emptyTitle => 'لا توجد ورشات بانتظار الاعتماد';
+	/// ar: 'لا توجد متاجر بانتظار الاعتماد'
+	String get emptyTitle => 'لا توجد متاجر بانتظار الاعتماد';
 
 	/// ar: 'الطلبات الجديدة ستظهر هنا لمراجعتها.'
 	String get emptyBody => 'الطلبات الجديدة ستظهر هنا لمراجعتها.';
@@ -1017,17 +1017,17 @@ class Translations$admin$shops$ar {
 	/// ar: 'سبب الرفض'
 	String get rejectTitle => 'سبب الرفض';
 
-	/// ar: 'اكتب سببًا واضحًا يظهر لصاحب الورشة…'
-	String get rejectHint => 'اكتب سببًا واضحًا يظهر لصاحب الورشة…';
+	/// ar: 'اكتب سببًا واضحًا يظهر لصاحب المتجر…'
+	String get rejectHint => 'اكتب سببًا واضحًا يظهر لصاحب المتجر…';
 
-	/// ar: 'تم اعتماد الورشة'
-	String get approvedMsg => 'تم اعتماد الورشة';
+	/// ar: 'تم اعتماد المتجر'
+	String get approvedMsg => 'تم اعتماد المتجر';
 
-	/// ar: 'تم رفض الورشة'
-	String get rejectedMsg => 'تم رفض الورشة';
+	/// ar: 'تم رفض المتجر'
+	String get rejectedMsg => 'تم رفض المتجر';
 
-	/// ar: 'عرض كل الورشات'
-	String get showAll => 'عرض كل الورشات';
+	/// ar: 'عرض كل المتاجر'
+	String get showAll => 'عرض كل المتاجر';
 }
 
 // Path: admin.review
@@ -1044,8 +1044,8 @@ class Translations$admin$review$ar {
 	/// ar: 'لا توجد أجهزة بانتظار المراجعة'
 	String get emptyTitle => 'لا توجد أجهزة بانتظار المراجعة';
 
-	/// ar: 'الأجهزة المرسلة من الورشات ستظهر هنا للفحص والاعتماد.'
-	String get emptyBody => 'الأجهزة المرسلة من الورشات ستظهر هنا للفحص والاعتماد.';
+	/// ar: 'الأجهزة المرسلة من المتاجر ستظهر هنا للفحص والاعتماد.'
+	String get emptyBody => 'الأجهزة المرسلة من المتاجر ستظهر هنا للفحص والاعتماد.';
 
 	/// ar: 'اعتماد وعرض'
 	String get approve => 'اعتماد وعرض';
@@ -1056,8 +1056,8 @@ class Translations$admin$review$ar {
 	/// ar: 'سبب رفض الجهاز'
 	String get rejectTitle => 'سبب رفض الجهاز';
 
-	/// ar: 'اكتب سببًا واضحًا يظهر للورشة…'
-	String get rejectHint => 'اكتب سببًا واضحًا يظهر للورشة…';
+	/// ar: 'اكتب سببًا واضحًا يظهر للمتجر…'
+	String get rejectHint => 'اكتب سببًا واضحًا يظهر للمتجر…';
 
 	/// ar: 'تم اعتماد الجهاز وعرضه في السوق'
 	String get approvedMsg => 'تم اعتماد الجهاز وعرضه في السوق';
@@ -1174,7 +1174,7 @@ extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
 			'common.appName' => 'مضمون',
-			'common.tagline' => 'أجهزة مجدّدة بضمان، من ورشات معتمدة',
+			'common.tagline' => 'أجهزة مستعملة بضمان، من متاجر معتمدة',
 			'common.loading' => 'جارٍ التحميل…',
 			'common.retry' => 'إعادة المحاولة',
 			'common.cancel' => 'إلغاء',
@@ -1254,8 +1254,8 @@ extension on Translations {
 			'enums.reservationStatus.delivered' => 'تم التسليم',
 			'enums.reservationStatus.cancelled' => 'ملغي',
 			'enums.shopStatus.pending' => 'بانتظار الموافقة',
-			'enums.shopStatus.approved' => 'معتمدة',
-			'enums.shopStatus.rejected' => 'مرفوضة',
+			'enums.shopStatus.approved' => 'معتمد',
+			'enums.shopStatus.rejected' => 'مرفوض',
 			'enums.claimStatus.open' => 'مفتوحة',
 			'enums.claimStatus.in_review' => 'قيد المراجعة',
 			'enums.claimStatus.resolved' => 'تم الحل',
@@ -1271,8 +1271,8 @@ extension on Translations {
 			'enums.checklistResult.fail' => 'عطل',
 			'enums.currency.ILS' => 'شيكل (₪)',
 			'enums.currency.USD' => 'دولار (\$)',
-			'home.heroTitle' => 'أجهزة مجدّدة… مضمونة',
-			'home.heroSubtitle' => 'موبايلات ولابتوبات مفحوصة فنيًا من ورشات معتمدة، بضمان إلزامي والدفع عند الاستلام.',
+			'home.heroTitle' => 'أجهزة مستعملة… مضمونة',
+			'home.heroSubtitle' => 'موبايلات ولابتوبات مفحوصة فنيًا من متاجر معتمدة، بضمان إلزامي والدفع عند الاستلام.',
 			'home.impactDevices' => ({required Object count}) => '${count} جهازًا أُنقذ من النفايات الإلكترونية',
 			'home.impactCo2' => ({required Object kg}) => '~${kg} كغم CO₂ تم تجنّبها',
 			'home.searchHint' => 'ابحث عن جهاز… (مثال: iPhone 13)',
@@ -1292,7 +1292,7 @@ extension on Translations {
 			'device.checklistTitle' => 'تقرير الفحص الفني',
 			'device.imeiLabel' => 'IMEI (آخر 4 أرقام)',
 			'device.serialLabel' => 'الرقم التسلسلي (آخر 4)',
-			'device.shopLabel' => 'الورشة',
+			'device.shopLabel' => 'المتجر',
 			'device.warrantyTitle' => 'الضمان',
 			'device.warrantyBody' => ({required Object days}) => 'يشمل هذا الجهاز ضمانًا إلزاميًا لمدة ${days} يومًا من تاريخ الاستلام.',
 			'device.reserveCta' => 'احجز الآن — الدفع عند الاستلام',
@@ -1311,7 +1311,7 @@ extension on Translations {
 			'reserve.successTitle' => 'تم استلام طلبك!',
 			'reserve.successBody' => ({required Object id}) => 'رقم الحجز الخاص بك: ${id}',
 			'reserve.whatNextTitle' => 'ماذا يحدث الآن؟',
-			'reserve.whatNext1' => 'ستتواصل معك الورشة خلال 24 ساعة لتأكيد الحجز.',
+			'reserve.whatNext1' => 'سيتواصل معك المتجر خلال 24 ساعة لتأكيد الحجز.',
 			'reserve.whatNext2' => 'يتم توصيل الجهاز إلى عنوانك وتدفع نقدًا عند الاستلام.',
 			'reserve.whatNext3' => 'يبدأ الضمان تلقائيًا من لحظة استلامك للجهاز.',
 			'reserve.goToOrders' => 'عرض طلباتي',
@@ -1328,7 +1328,7 @@ extension on Translations {
 			'orders.claimSubmitted' => 'تم فتح المطالبة وسيتم التواصل معك.',
 			'orders.claimsTitle' => 'مطالبات الضمان',
 			'orders.claimResolution' => ({required Object note}) => 'قرار المنصة: ${note}',
-			'orders.shopResponse' => ({required Object note}) => 'رد الورشة: ${note}',
+			'orders.shopResponse' => ({required Object note}) => 'رد المتجر: ${note}',
 			'auth.loginTitle' => 'تسجيل الدخول',
 			'auth.registerTitle' => 'حساب جديد',
 			'auth.submitLogin' => 'دخول',
@@ -1341,28 +1341,28 @@ extension on Translations {
 			'auth.weakPassword' => 'كلمة المرور قصيرة — 6 أحرف على الأقل.',
 			'auth.invalidEmail' => 'البريد الإلكتروني غير صالح.',
 			'auth.confirmEmailSent' => 'أرسلنا رابط تأكيد إلى بريدك. افتح الرسالة ثم سجّل الدخول.',
-			'auth.sellerCta' => 'هل تملك ورشة تصليح؟',
+			'auth.sellerCta' => 'هل تملك متجرًا لبيع الأجهزة؟',
 			'auth.sellerCtaAction' => 'انضم كبائع',
 			'seller.title' => 'بوابة البائع',
 			'seller.navDevices' => 'أجهزتي',
 			'seller.navReservations' => 'الحجوزات',
 			'seller.navClaims' => 'الضمان',
-			'seller.navShop' => 'ورشتي',
-			'seller.onboarding.title' => 'تسجيل الورشة',
-			'seller.onboarding.intro' => 'سجّل ورشتك لبيع الأجهزة المجدّدة على مضمون. تراجع المنصة الطلبات خلال يوم عمل.',
-			'seller.onboarding.shopNameLabel' => 'اسم الورشة',
+			'seller.navShop' => 'متجري',
+			'seller.onboarding.title' => 'تسجيل المتجر',
+			'seller.onboarding.intro' => 'سجّل متجرك لبيع الأجهزة المستعملة على مضمون. تراجع المنصة الطلبات خلال يوم عمل.',
+			'seller.onboarding.shopNameLabel' => 'اسم المتجر',
 			'seller.onboarding.submit' => 'إرسال طلب الانضمام',
 			'seller.onboarding.pendingTitle' => 'طلبك قيد المراجعة',
-			'seller.onboarding.pendingBody' => 'استلمنا بيانات ورشتك وسنراجعها خلال يوم عمل. ستتمكن من إضافة الأجهزة فور الاعتماد.',
-			'seller.onboarding.rejectedTitle' => 'لم يتم اعتماد الورشة',
+			'seller.onboarding.pendingBody' => 'استلمنا بيانات متجرك وسنراجعها خلال يوم عمل. ستتمكن من إضافة الأجهزة فور الاعتماد.',
+			'seller.onboarding.rejectedTitle' => 'لم يتم اعتماد المتجر',
 			'seller.onboarding.rejectedReason' => ({required Object reason}) => 'السبب: ${reason}',
-			'seller.onboarding.approvedTitle' => 'ورشة معتمدة',
-			'seller.onboarding.editShop' => 'تعديل بيانات الورشة',
-			'seller.onboarding.updated' => 'تم تحديث بيانات الورشة',
+			'seller.onboarding.approvedTitle' => 'متجر معتمد',
+			'seller.onboarding.editShop' => 'تعديل بيانات المتجر',
+			'seller.onboarding.updated' => 'تم تحديث بيانات المتجر',
 			'seller.devices.title' => 'أجهزتي',
 			'seller.devices.add' => 'إضافة جهاز',
 			'seller.devices.emptyTitle' => 'لا توجد أجهزة بعد',
-			'seller.devices.emptyBody' => 'أضف أول جهاز مجدّد بعد فحصه فنيًا ليظهر للمشترين بعد موافقة المنصة.',
+			'seller.devices.emptyBody' => 'أضف أول جهاز مستعمل بعد فحصه فنيًا ليظهر للمشترين بعد موافقة المنصة.',
 			'seller.devices.submitForInspection' => 'إرسال للفحص',
 			'seller.devices.submittedForInspection' => 'أُرسل الجهاز لمراجعة المنصة',
 			'seller.devices.rejectionReason' => ({required Object reason}) => 'سبب الرفض: ${reason}',
@@ -1405,7 +1405,7 @@ extension on Translations {
 			'seller.deviceForm.photosHint' => '4 صور على الأقل — الأولى هي صورة الغلاف. اسحب لإعادة الترتيب.',
 			'seller.deviceForm.addPhotos' => 'إضافة صور',
 			'seller.deviceForm.uploading' => 'جارٍ الرفع…',
-			'seller.deviceForm.uploadFailed' => 'فشل رفع الصورة. حاول مجددًا.',
+			'seller.deviceForm.uploadFailed' => 'فشل رفع الصورة. حاول مستعملًا.',
 			'seller.deviceForm.removePhoto' => 'إزالة الصورة',
 			'seller.reservations.title' => 'الحجوزات الواردة',
 			'seller.reservations.emptyTitle' => 'لا توجد حجوزات',
@@ -1421,42 +1421,42 @@ extension on Translations {
 			'seller.claims.title' => 'مطالبات الضمان',
 			'seller.claims.emptyTitle' => 'لا توجد مطالبات',
 			'seller.claims.emptyBody' => 'مطالبات الضمان على أجهزتك ستظهر هنا.',
-			'seller.claims.respondLabel' => 'ردّ الورشة',
-			'seller.claims.respondHint' => 'مثال: يرجى إحضار الجهاز للورشة للفحص…',
+			'seller.claims.respondLabel' => 'ردّ المتجر',
+			'seller.claims.respondHint' => 'مثال: يرجى إحضار الجهاز للمتجر للفحص…',
 			'seller.claims.respondSubmit' => 'إرسال الرد',
 			'seller.claims.responded' => 'تم حفظ الرد',
 			'admin.title' => 'لوحة الإدارة',
 			'admin.navDashboard' => 'الرئيسية',
-			'admin.navShops' => 'الورشات',
+			'admin.navShops' => 'المتاجر',
 			'admin.navReview' => 'مراجعة الأجهزة',
 			'admin.navTemplates' => 'بنود الفحص',
 			'admin.navClaims' => 'المطالبات',
 			'admin.navReservations' => 'الحجوزات',
 			'admin.forbiddenTitle' => 'صلاحيات غير كافية',
 			'admin.forbiddenBody' => 'هذه الصفحة مخصصة لمشغّلي المنصة.',
-			'admin.dashboard.pendingShops' => 'ورشات بانتظار الاعتماد',
+			'admin.dashboard.pendingShops' => 'متاجر بانتظار الاعتماد',
 			'admin.dashboard.devicesInReview' => 'أجهزة قيد الفحص',
 			'admin.dashboard.activeReservations' => 'حجوزات نشطة',
 			'admin.dashboard.openClaims' => 'مطالبات مفتوحة',
 			'admin.dashboard.devicesSaved' => 'أجهزة أُنقذت',
 			'admin.dashboard.co2Avoided' => 'كغم CO₂ تم تجنّبها',
-			'admin.shops.title' => 'طلبات الورشات',
-			'admin.shops.emptyTitle' => 'لا توجد ورشات بانتظار الاعتماد',
+			'admin.shops.title' => 'طلبات المتاجر',
+			'admin.shops.emptyTitle' => 'لا توجد متاجر بانتظار الاعتماد',
 			'admin.shops.emptyBody' => 'الطلبات الجديدة ستظهر هنا لمراجعتها.',
 			'admin.shops.approve' => 'اعتماد',
 			'admin.shops.reject' => 'رفض',
 			'admin.shops.rejectTitle' => 'سبب الرفض',
-			'admin.shops.rejectHint' => 'اكتب سببًا واضحًا يظهر لصاحب الورشة…',
-			'admin.shops.approvedMsg' => 'تم اعتماد الورشة',
-			'admin.shops.rejectedMsg' => 'تم رفض الورشة',
-			'admin.shops.showAll' => 'عرض كل الورشات',
+			'admin.shops.rejectHint' => 'اكتب سببًا واضحًا يظهر لصاحب المتجر…',
+			'admin.shops.approvedMsg' => 'تم اعتماد المتجر',
+			'admin.shops.rejectedMsg' => 'تم رفض المتجر',
+			'admin.shops.showAll' => 'عرض كل المتاجر',
 			'admin.review.title' => 'مراجعة الأجهزة',
 			'admin.review.emptyTitle' => 'لا توجد أجهزة بانتظار المراجعة',
-			'admin.review.emptyBody' => 'الأجهزة المرسلة من الورشات ستظهر هنا للفحص والاعتماد.',
+			'admin.review.emptyBody' => 'الأجهزة المرسلة من المتاجر ستظهر هنا للفحص والاعتماد.',
 			'admin.review.approve' => 'اعتماد وعرض',
 			'admin.review.reject' => 'رفض',
 			'admin.review.rejectTitle' => 'سبب رفض الجهاز',
-			'admin.review.rejectHint' => 'اكتب سببًا واضحًا يظهر للورشة…',
+			'admin.review.rejectHint' => 'اكتب سببًا واضحًا يظهر للمتجر…',
 			'admin.review.approvedMsg' => 'تم اعتماد الجهاز وعرضه في السوق',
 			'admin.review.rejectedMsg' => 'تم رفض الجهاز',
 			'admin.templates.title' => 'بنود الفحص',
@@ -1496,7 +1496,7 @@ extension on Translations {
 			'errors.CITY_REQUIRED' => 'أدخل مدينة التسليم.',
 			'errors.ADMIN_ONLY' => 'صلاحيات غير كافية.',
 			'errors.REJECTION_REASON_REQUIRED' => 'اكتب سبب الرفض.',
-			'errors.SHOP_NOT_APPROVED' => 'لا يمكن إضافة أجهزة قبل اعتماد الورشة.',
+			'errors.SHOP_NOT_APPROVED' => 'لا يمكن إضافة أجهزة قبل اعتماد المتجر.',
 			'errors.UPDATE_FORBIDDEN' => 'لا تملك صلاحية تنفيذ هذا الإجراء.',
 			_ => null,
 		};

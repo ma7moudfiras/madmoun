@@ -1,6 +1,6 @@
 # مضمون · Madmoun
 
-A Palestinian intermediary marketplace for certified refurbished electronics
+A Palestinian intermediary marketplace for certified used electronics
 (mobiles + laptops). No inventory: certified repair shops list devices after a
 standardized technical inspection, every device carries a mandatory warranty,
 buyers reserve and pay cash on delivery (COD), and the platform surfaces an
@@ -124,40 +124,16 @@ that the generated `slang` output is committed) on every push/PR to `main`.
 ## Auth
 
 Email/password sign-in works out of the box. New sign-ups must confirm their
-email — the confirmation, email-change, and password-reset links all rely on
-the Supabase **Site URL / Redirect URLs** (Authentication → URL Configuration)
-pointing at the deployed origin. Supabase's built-in email service is
-rate-limited (a few messages/hour); configure custom SMTP
-(Authentication → Emails → SMTP) for real volume.
+email through Supabase's built-in email service — the confirmation,
+email-change, and password-reset links rely on the **Site URL / Redirect URLs**
+(Authentication → URL Configuration) pointing at the deployed origin (set). The
+built-in service is rate-limited to a few messages/hour; if you later outgrow
+that, plug in custom SMTP under Authentication → Emails → SMTP.
 
 `supabase/migrations/20260720185124_auto_confirm_emails.sql` (a pre-confirm
 trigger) was superseded by
 `20260721101620_enforce_email_confirmation.sql`, which drops it so real
 confirmation applies. Existing/seed accounts stay confirmed.
-
-### Custom SMTP (recommended for anything past testing)
-
-Supabase's built-in email service is capped at a few messages/hour and often
-lands in spam — fine for clicking through the app, not for real users. Wire up
-a provider's SMTP (Resend is the simplest free tier: 3,000/month, 100/day):
-
-1. Create an account at **resend.com** and generate an **API key** (`re_…`).
-2. Supabase → **Authentication → Emails → SMTP Settings → Enable Custom SMTP**:
-   - **Host:** `smtp.resend.com`
-   - **Port:** `465`
-   - **Username:** `resend`
-   - **Password:** the `re_…` API key
-   - **Sender email:** `onboarding@resend.dev` (works with no domain, for
-     testing) or `noreply@<your-domain>` after verifying the domain in Resend
-   - **Sender name:** `مضمون`
-3. **Save.** Confirmation / email-change / password-reset emails now send with
-   no hourly cap.
-4. **Production:** verify a domain in Resend (add the SPF/DKIM/DMARC DNS records
-   it provides), then switch the sender to `noreply@<your-domain>` for inbox
-   deliverability.
-
-Other providers (SendGrid, Postmark, Mailgun, Brevo) work the same way — only
-the SMTP host/port/username differ.
 
 ## Manual steps
 
@@ -166,7 +142,5 @@ the SMTP host/port/username differ.
   (Authentication → Providers → Google), then build with
   `--dart-define=ENABLE_GOOGLE_AUTH=true`. Email/password auth works out of the
   box without it.
-- Set the Supabase Auth **Site URL** + **Redirect URLs** to the deployed origin
-  (done).
-- Configure custom SMTP (see *Custom SMTP* above) — needs a provider account +
-  API key, so it's the one step that can't be scripted from the repo.
+- Supabase Auth **Site URL** + **Redirect URLs** are set to the deployed origin;
+  email confirmation uses the built-in service (custom SMTP optional later).

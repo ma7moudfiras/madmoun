@@ -9,10 +9,19 @@ import '../../../i18n/strings.g.dart';
 
 /// Photo from the device-photos bucket with placeholder + error fallback.
 class DevicePhotoImage extends ConsumerWidget {
-  const DevicePhotoImage({super.key, this.path, this.fit = BoxFit.cover});
+  const DevicePhotoImage({
+    super.key,
+    this.path,
+    this.fit = BoxFit.cover,
+    this.decodeWidth = 700,
+  });
 
   final String? path;
   final BoxFit fit;
+
+  /// Decode the bitmap at roughly display width to cut decode time + memory
+  /// (a big source of jank when many cards scroll). Null = full resolution.
+  final int? decodeWidth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +42,7 @@ class DevicePhotoImage extends ConsumerWidget {
           url,
           fit: fit,
           gaplessPlayback: true,
+          cacheWidth: decodeWidth,
           frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
             if (wasSynchronouslyLoaded) return child;
             return AnimatedOpacity(
