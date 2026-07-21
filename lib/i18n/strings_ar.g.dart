@@ -674,12 +674,16 @@ class Translations$admin$ar {
 	/// ar: 'الحجوزات'
 	String get navReservations => 'الحجوزات';
 
+	/// ar: 'المستخدمون'
+	String get navUsers => 'المستخدمون';
+
 	/// ar: 'صلاحيات غير كافية'
 	String get forbiddenTitle => 'صلاحيات غير كافية';
 
 	/// ar: 'هذه الصفحة مخصصة لمشغّلي المنصة.'
 	String get forbiddenBody => 'هذه الصفحة مخصصة لمشغّلي المنصة.';
 
+	late final Translations$admin$users$ar users = Translations$admin$users$ar.internal(_root);
 	late final Translations$admin$dashboard$ar dashboard = Translations$admin$dashboard$ar.internal(_root);
 	late final Translations$admin$shops$ar shops = Translations$admin$shops$ar.internal(_root);
 	late final Translations$admin$review$ar review = Translations$admin$review$ar.internal(_root);
@@ -962,6 +966,72 @@ class Translations$seller$claims$ar {
 
 	/// ar: 'تم حفظ الرد'
 	String get responded => 'تم حفظ الرد';
+}
+
+// Path: admin.users
+class Translations$admin$users$ar {
+	Translations$admin$users$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'المستخدمون'
+	String get title => 'المستخدمون';
+
+	/// ar: 'ابحث بالاسم أو البريد…'
+	String get searchHint => 'ابحث بالاسم أو البريد…';
+
+	/// ar: 'لا يوجد مستخدمون'
+	String get emptyTitle => 'لا يوجد مستخدمون';
+
+	/// ar: 'لا توجد نتائج مطابقة لبحثك.'
+	String get emptyBody => 'لا توجد نتائج مطابقة لبحثك.';
+
+	/// ar: 'إجمالي المستخدمين'
+	String get total => 'إجمالي المستخدمين';
+
+	/// ar: 'مشترون'
+	String get buyers => 'مشترون';
+
+	/// ar: 'بائعون'
+	String get sellers => 'بائعون';
+
+	/// ar: 'مشرفون'
+	String get admins => 'مشرفون';
+
+	/// ar: 'جدد (7 أيام)'
+	String get newLast7d => 'جدد (7 أيام)';
+
+	/// ar: 'الدور'
+	String get roleLabel => 'الدور';
+
+	/// ar: 'انضم'
+	String get joinedLabel => 'انضم';
+
+	/// ar: 'آخر دخول'
+	String get lastSeenLabel => 'آخر دخول';
+
+	/// ar: 'لم يسجّل دخولًا'
+	String get neverSignedIn => 'لم يسجّل دخولًا';
+
+	/// ar: 'تغيير الدور'
+	String get changeRole => 'تغيير الدور';
+
+	/// ar: 'تم تحديث دور المستخدم'
+	String get roleChanged => 'تم تحديث دور المستخدم';
+
+	/// ar: 'تغيير دور «{name}» إلى {role}؟'
+	String roleChangeConfirm({required Object name, required Object role}) => 'تغيير دور «${name}» إلى ${role}؟';
+
+	/// ar: 'مشترٍ'
+	String get roleBuyer => 'مشترٍ';
+
+	/// ar: 'بائع'
+	String get roleSeller => 'بائع';
+
+	/// ar: 'مشرف'
+	String get roleAdmin => 'مشرف';
 }
 
 // Path: admin.dashboard
@@ -1432,8 +1502,28 @@ extension on Translations {
 			'admin.navTemplates' => 'بنود الفحص',
 			'admin.navClaims' => 'المطالبات',
 			'admin.navReservations' => 'الحجوزات',
+			'admin.navUsers' => 'المستخدمون',
 			'admin.forbiddenTitle' => 'صلاحيات غير كافية',
 			'admin.forbiddenBody' => 'هذه الصفحة مخصصة لمشغّلي المنصة.',
+			'admin.users.title' => 'المستخدمون',
+			'admin.users.searchHint' => 'ابحث بالاسم أو البريد…',
+			'admin.users.emptyTitle' => 'لا يوجد مستخدمون',
+			'admin.users.emptyBody' => 'لا توجد نتائج مطابقة لبحثك.',
+			'admin.users.total' => 'إجمالي المستخدمين',
+			'admin.users.buyers' => 'مشترون',
+			'admin.users.sellers' => 'بائعون',
+			'admin.users.admins' => 'مشرفون',
+			'admin.users.newLast7d' => 'جدد (7 أيام)',
+			'admin.users.roleLabel' => 'الدور',
+			'admin.users.joinedLabel' => 'انضم',
+			'admin.users.lastSeenLabel' => 'آخر دخول',
+			'admin.users.neverSignedIn' => 'لم يسجّل دخولًا',
+			'admin.users.changeRole' => 'تغيير الدور',
+			'admin.users.roleChanged' => 'تم تحديث دور المستخدم',
+			'admin.users.roleChangeConfirm' => ({required Object name, required Object role}) => 'تغيير دور «${name}» إلى ${role}؟',
+			'admin.users.roleBuyer' => 'مشترٍ',
+			'admin.users.roleSeller' => 'بائع',
+			'admin.users.roleAdmin' => 'مشرف',
 			'admin.dashboard.pendingShops' => 'متاجر بانتظار الاعتماد',
 			'admin.dashboard.devicesInReview' => 'أجهزة قيد الفحص',
 			'admin.dashboard.activeReservations' => 'حجوزات نشطة',

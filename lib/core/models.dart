@@ -33,6 +33,63 @@ class Profile {
       );
 }
 
+/// A user as the admin panel sees it (profile + auth email/timestamps).
+class AdminUser {
+  const AdminUser({
+    required this.id,
+    required this.role,
+    required this.createdAt,
+    this.email,
+    this.fullName,
+    this.phoneE164,
+    this.lastSignInAt,
+  });
+
+  final String id;
+  final String? email;
+  final String? fullName;
+  final UserRole role;
+  final String? phoneE164;
+  final DateTime createdAt;
+  final DateTime? lastSignInAt;
+
+  factory AdminUser.fromJson(Map<String, dynamic> json) => AdminUser(
+        id: json['id'] as String,
+        email: json['email'] as String?,
+        fullName: json['full_name'] as String?,
+        role: UserRole.fromDb(json['role'] as String),
+        phoneE164: json['phone_e164'] as String?,
+        createdAt: _date(json['created_at']),
+        lastSignInAt: json['last_sign_in_at'] == null
+            ? null
+            : _date(json['last_sign_in_at']),
+      );
+}
+
+class UserStats {
+  const UserStats({
+    required this.total,
+    required this.buyers,
+    required this.sellers,
+    required this.admins,
+    required this.newLast7d,
+  });
+
+  final int total;
+  final int buyers;
+  final int sellers;
+  final int admins;
+  final int newLast7d;
+
+  factory UserStats.fromJson(Map<String, dynamic> json) => UserStats(
+        total: _int(json['total'] ?? 0),
+        buyers: _int(json['buyers'] ?? 0),
+        sellers: _int(json['sellers'] ?? 0),
+        admins: _int(json['admins'] ?? 0),
+        newLast7d: _int(json['new_last_7d'] ?? 0),
+      );
+}
+
 class Shop {
   const Shop({
     required this.id,

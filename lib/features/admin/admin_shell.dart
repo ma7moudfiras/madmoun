@@ -27,6 +27,7 @@ class AdminShell extends ConsumerWidget {
       _Dest('/admin/claims', Icons.gavel_rounded, t.admin.navClaims),
       _Dest('/admin/reservations', Icons.receipt_long_rounded,
           t.admin.navReservations),
+      _Dest('/admin/users', Icons.group_rounded, t.admin.navUsers),
     ];
 
     int selectedIndex() {

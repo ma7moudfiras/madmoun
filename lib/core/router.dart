@@ -12,6 +12,7 @@ import '../features/admin/pages/admin_reservations_page.dart';
 import '../features/admin/pages/admin_review_page.dart';
 import '../features/admin/pages/admin_shops_page.dart';
 import '../features/admin/pages/admin_templates_page.dart';
+import '../features/admin/pages/admin_users_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/register_page.dart';
 import '../features/auth/reset_password_page.dart';
@@ -177,6 +178,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/admin/reservations',
             builder: (context, state) => const AdminReservationsPage(),
+          ),
+          GoRoute(
+            path: '/admin/users',
+            builder: (context, state) => const AdminUsersPage(),
           ),
         ],
       ),

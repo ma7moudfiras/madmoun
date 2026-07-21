@@ -125,6 +125,27 @@ class AdminRepository {
         .map((r) => Reservation.fromJson(Map<String, dynamic>.from(r as Map)))
         .toList();
   }
+
+  Future<UserStats> fetchUserStats() async {
+    final result = await _client.rpc('admin_user_stats');
+    return UserStats.fromJson(Map<String, dynamic>.from(result as Map));
+  }
+
+  Future<List<AdminUser>> fetchUsers({String? search}) async {
+    final rows = await _client.rpc('admin_list_users', params: {
+      'p_search': (search == null || search.isEmpty) ? null : search,
+    }) as List<dynamic>;
+    return rows
+        .map((r) => AdminUser.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
+  Future<void> setUserRole(String userId, UserRole role) async {
+    await _client.rpc('admin_set_role', params: {
+      'p_user_id': userId,
+      'p_role': role.dbValue,
+    });
+  }
 }
 
 final adminRepositoryProvider = Provider<AdminRepository>(
@@ -159,3 +180,12 @@ final adminReservationsProvider =
     FutureProvider<List<Reservation>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchAllReservations(),
 );
+
+final adminUserStatsProvider = FutureProvider<UserStats>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchUserStats(),
+);
+
+final adminUsersProvider =
+    FutureProvider.family<List<AdminUser>, String>((ref, search) {
+  return ref.watch(adminRepositoryProvider).fetchUsers(search: search);
+});
