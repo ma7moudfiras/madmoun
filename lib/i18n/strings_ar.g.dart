@@ -64,6 +64,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'ADMIN_ONLY': 'صلاحيات غير كافية.',
 		'REJECTION_REASON_REQUIRED': 'اكتب سبب الرفض.',
 		'SHOP_NOT_APPROVED': 'لا يمكن إضافة أجهزة قبل اعتماد الورشة.',
+		'UPDATE_FORBIDDEN': 'لا تملك صلاحية تنفيذ هذا الإجراء.',
 	};
 }
 
@@ -119,6 +120,9 @@ class Translations$common$ar {
 
 	/// ar: 'تسجيل الخروج'
 	String get signOut => 'تسجيل الخروج';
+
+	/// ar: 'الحساب'
+	String get account => 'الحساب';
 
 	/// ar: 'تسجيل الدخول'
 	String get login => 'تسجيل الدخول';
@@ -1074,6 +1078,7 @@ extension on Translations {
 			'common.requiredField' => 'هذا الحقل مطلوب',
 			'common.invalidPhone' => 'رقم الهاتف غير صالح — مثال: 0599123456',
 			'common.signOut' => 'تسجيل الخروج',
+			'common.account' => 'الحساب',
 			'common.login' => 'تسجيل الدخول',
 			'common.register' => 'إنشاء حساب',
 			'common.myOrders' => 'طلباتي',
@@ -1352,6 +1357,7 @@ extension on Translations {
 			'errors.ADMIN_ONLY' => 'صلاحيات غير كافية.',
 			'errors.REJECTION_REASON_REQUIRED' => 'اكتب سبب الرفض.',
 			'errors.SHOP_NOT_APPROVED' => 'لا يمكن إضافة أجهزة قبل اعتماد الورشة.',
+			'errors.UPDATE_FORBIDDEN' => 'لا تملك صلاحية تنفيذ هذا الإجراء.',
 			_ => null,
 		};
 	}

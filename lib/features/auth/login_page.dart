@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/supabase_providers.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import 'auth_destination.dart';
 import 'auth_form_card.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -35,11 +36,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
     try {
-      await ref.read(supabaseClientProvider).auth.signInWithPassword(
-            email: _email.text.trim(),
-            password: _password.text,
-          );
-      // The router redirect takes over once the auth state changes.
+      final client = ref.read(supabaseClientProvider);
+      await client.auth.signInWithPassword(
+        email: _email.text.trim(),
+        password: _password.text,
+      );
+      final destination = await postLoginDestination(client, widget.from);
+      if (mounted) context.go(destination);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     } finally {

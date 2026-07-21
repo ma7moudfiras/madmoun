@@ -6,6 +6,7 @@ import '../../core/domain.dart';
 import '../../core/supabase_providers.dart';
 import '../../i18n/strings.g.dart';
 import 'data/seller_repository.dart';
+import 'pages/seller_shop_page.dart';
 
 /// Chrome for the seller portal: brand bar + destination rail/menu. Device,
 /// reservation and claim tabs only appear once the shop is approved.
@@ -18,9 +19,18 @@ class SellerShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final shop = ref.watch(myShopProvider).valueOrNull;
+    final shopAsync = ref.watch(myShopProvider);
+    final shop = shopAsync.valueOrNull;
     final approved = shop?.status == ShopStatus.approved;
     final isWide = MediaQuery.sizeOf(context).width >= 820;
+
+    // Until the shop is approved, every tab funnels into onboarding/status;
+    // this also keeps buyers/admins who type seller URLs out of the tools.
+    final Widget body = shopAsync.isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : (!approved && location != '/seller/shop')
+            ? const SellerShopPage()
+            : child;
 
     final destinations = <_Dest>[
       if (approved) _Dest('/seller', Icons.devices_rounded, t.seller.navDevices),
@@ -96,7 +106,7 @@ class SellerShell extends ConsumerWidget {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: child),
+            Expanded(child: body),
           ],
         ),
       );
@@ -104,7 +114,7 @@ class SellerShell extends ConsumerWidget {
 
     return Scaffold(
       appBar: appBar,
-      body: child,
+      body: body,
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex(),
         onDestinationSelected: (i) => context.go(destinations[i].path),

@@ -29,9 +29,16 @@ import 'supabase_providers.dart';
 const _authedPrefixes = ['/orders', '/reserve', '/seller', '/admin'];
 
 final routerProvider = Provider<GoRouter>((ref) {
+  // Subscribe to auth changes directly: the redirect below must re-run the
+  // moment a session appears/disappears.
+  final client = ref.watch(supabaseClientProvider);
   final refresh = ValueNotifier(0);
-  ref.listen(authStateProvider, (_, _) => refresh.value++);
-  ref.onDispose(refresh.dispose);
+  final subscription =
+      client.auth.onAuthStateChange.listen((_) => refresh.value++);
+  ref.onDispose(() {
+    subscription.cancel();
+    refresh.dispose();
+  });
 
   return GoRouter(
     refreshListenable: refresh,

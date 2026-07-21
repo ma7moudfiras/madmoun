@@ -43,15 +43,17 @@ class PublicShell extends ConsumerWidget {
               onPressed: () => context.go('/'),
               child: Text(t.common.marketplace),
             ),
-            if (signedIn)
+            // Admins only manage the platform: no orders, no seller portal.
+            if (signedIn && role != UserRole.admin)
               TextButton(
                 onPressed: () => context.go('/orders'),
                 child: Text(t.common.myOrders),
               ),
-            TextButton(
-              onPressed: () => context.go('/seller'),
-              child: Text(t.common.sellerPortal),
-            ),
+            if (role != UserRole.admin)
+              TextButton(
+                onPressed: () => context.go('/seller'),
+                child: Text(t.common.sellerPortal),
+              ),
             if (role == UserRole.admin)
               TextButton(
                 onPressed: () => context.go('/admin'),
@@ -90,7 +92,7 @@ class _AccountMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(userRoleProvider);
     return PopupMenuButton<String>(
-      tooltip: t.common.myOrders,
+      tooltip: t.common.account,
       icon: CircleAvatar(
         radius: 16,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -115,8 +117,10 @@ class _AccountMenu extends ConsumerWidget {
       },
       itemBuilder: (context) => [
         if (showCompactNav) ...[
-          PopupMenuItem(value: 'orders', child: Text(t.common.myOrders)),
-          PopupMenuItem(value: 'seller', child: Text(t.common.sellerPortal)),
+          if (role != UserRole.admin)
+            PopupMenuItem(value: 'orders', child: Text(t.common.myOrders)),
+          if (role != UserRole.admin)
+            PopupMenuItem(value: 'seller', child: Text(t.common.sellerPortal)),
           if (role == UserRole.admin)
             PopupMenuItem(value: 'admin', child: Text(t.common.adminPanel)),
           const PopupMenuDivider(),

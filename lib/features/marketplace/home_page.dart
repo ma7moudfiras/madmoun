@@ -25,6 +25,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool _loading = true;
   bool _loadingMore = false;
   bool _hasMore = false;
+  bool _filtersExpanded = false;
   Object? _error;
   Timer? _searchDebounce;
   final _searchController = TextEditingController();
@@ -218,11 +219,63 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  int get _activeFilterCount {
+    var count = 0;
+    if (_filters.category != null) count++;
+    if (_filters.brand != null) count++;
+    if (_filters.city != null) count++;
+    if (_filters.currency != null) count++;
+    if (_filters.grade != null) count++;
+    if (_filters.minMinor != null || _filters.maxMinor != null) count++;
+    return count;
+  }
+
+  /// Compact by default: a single toggle row; the dropdowns only unfold on
+  /// demand so the grid stays above the fold.
   Widget _buildFilterBar(BuildContext context) {
-    final options = ref.watch(filterOptionsProvider).valueOrNull;
+    final active = _activeFilterCount;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Wrap(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              TextButton.icon(
+                onPressed: () =>
+                    setState(() => _filtersExpanded = !_filtersExpanded),
+                icon: Icon(
+                  _filtersExpanded
+                      ? Icons.expand_less_rounded
+                      : Icons.tune_rounded,
+                  size: 18,
+                ),
+                label: Text(
+                  active > 0
+                      ? '${t.home.filters} ($active)'
+                      : t.home.filters,
+                ),
+              ),
+              if (active > 0 || (_filters.query?.isNotEmpty ?? false))
+                TextButton.icon(
+                  onPressed: _clearFilters,
+                  icon: const Icon(Icons.filter_alt_off_rounded, size: 16),
+                  label: Text(t.home.clearFilters),
+                ),
+            ],
+          ),
+          if (_filtersExpanded) ...[
+            const SizedBox(height: 4),
+            _buildFilterControls(context),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterControls(BuildContext context) {
+    final options = ref.watch(filterOptionsProvider).valueOrNull;
+    return Wrap(
         spacing: 12,
         runSpacing: 12,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -306,17 +359,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           IconButton(
             tooltip: t.common.search,
             onPressed: _applyPriceRange,
-            icon: const Icon(Icons.tune_rounded),
+            icon: const Icon(Icons.check_rounded),
           ),
-          if (!_filters.isEmpty)
-            TextButton.icon(
-              onPressed: _clearFilters,
-              icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
-              label: Text(t.home.clearFilters),
-            ),
-        ],
-      ),
-    );
+        ]);
   }
 
   Widget _dropdown<T>({
