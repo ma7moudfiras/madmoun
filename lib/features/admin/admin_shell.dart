@@ -60,6 +60,11 @@ class AdminShell extends ConsumerWidget {
           label: Text(t.common.marketplace),
         ),
         IconButton(
+          tooltip: t.common.accountSettings,
+          onPressed: () => context.go('/account'),
+          icon: const Icon(Icons.manage_accounts_rounded),
+        ),
+        IconButton(
           tooltip: t.common.signOut,
           onPressed: () async {
             await ref.read(supabaseClientProvider).auth.signOut();

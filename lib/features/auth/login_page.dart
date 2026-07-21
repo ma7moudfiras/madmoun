@@ -8,6 +8,7 @@ import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
 import 'auth_destination.dart';
 import 'auth_form_card.dart';
+import 'reset_password_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key, this.from});
@@ -123,7 +124,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 label: Text(t.auth.googleSignIn),
               ),
             ],
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => showForgotPasswordDialog(context, ref),
+              child: Text(t.reset.forgot),
+            ),
+            const SizedBox(height: 4),
             TextButton(
               onPressed: () => context.go(registerUri),
               child: Text(t.auth.toRegister),

@@ -7,7 +7,7 @@ import '../../../i18n/strings.g.dart';
 import '../data/seller_repository.dart';
 
 final sellerClaimsProvider =
-    FutureProvider.autoDispose<List<WarrantyClaim>>((ref) {
+    FutureProvider<List<WarrantyClaim>>((ref) {
   ref.watch(myShopProvider);
   return ref.watch(sellerRepositoryProvider).fetchClaims();
 });

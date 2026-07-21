@@ -41,6 +41,8 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 
 	// Translations
 	late final Translations$common$ar common = Translations$common$ar.internal(_root);
+	late final Translations$account$ar account = Translations$account$ar.internal(_root);
+	late final Translations$reset$ar reset = Translations$reset$ar.internal(_root);
 	late final Translations$enums$ar enums = Translations$enums$ar.internal(_root);
 	late final Translations$home$ar home = Translations$home$ar.internal(_root);
 	late final Translations$device$ar device = Translations$device$ar.internal(_root);
@@ -195,6 +197,105 @@ class Translations$common$ar {
 
 	/// ar: 'اليوم'
 	String get today => 'اليوم';
+
+	/// ar: 'إعدادات الحساب'
+	String get accountSettings => 'إعدادات الحساب';
+
+	/// ar: 'تم الحفظ'
+	String get saved => 'تم الحفظ';
+}
+
+// Path: account
+class Translations$account$ar {
+	Translations$account$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'حسابي'
+	String get title => 'حسابي';
+
+	/// ar: 'المعلومات الشخصية'
+	String get profileSection => 'المعلومات الشخصية';
+
+	/// ar: 'تظهر هذه المعلومات لتنسيق الطلبات والتوصيل.'
+	String get profileHint => 'تظهر هذه المعلومات لتنسيق الطلبات والتوصيل.';
+
+	/// ar: 'حفظ المعلومات'
+	String get saveProfile => 'حفظ المعلومات';
+
+	/// ar: 'تم تحديث معلوماتك'
+	String get profileSaved => 'تم تحديث معلوماتك';
+
+	/// ar: 'البريد الإلكتروني'
+	String get emailSection => 'البريد الإلكتروني';
+
+	/// ar: 'بريدك الحالي: {email}'
+	String currentEmail({required Object email}) => 'بريدك الحالي: ${email}';
+
+	/// ar: 'البريد الإلكتروني الجديد'
+	String get newEmailLabel => 'البريد الإلكتروني الجديد';
+
+	/// ar: 'تغيير البريد'
+	String get changeEmail => 'تغيير البريد';
+
+	/// ar: 'أرسلنا رابط تأكيد إلى بريدك الجديد. افتحه لإتمام التغيير.'
+	String get emailChangeSent => 'أرسلنا رابط تأكيد إلى بريدك الجديد. افتحه لإتمام التغيير.';
+
+	/// ar: 'كلمة المرور'
+	String get passwordSection => 'كلمة المرور';
+
+	/// ar: 'كلمة المرور الجديدة'
+	String get newPasswordLabel => 'كلمة المرور الجديدة';
+
+	/// ar: 'تأكيد كلمة المرور'
+	String get confirmPasswordLabel => 'تأكيد كلمة المرور';
+
+	/// ar: 'تغيير كلمة المرور'
+	String get changePassword => 'تغيير كلمة المرور';
+
+	/// ar: 'تم تغيير كلمة المرور بنجاح'
+	String get passwordChanged => 'تم تغيير كلمة المرور بنجاح';
+
+	/// ar: 'كلمتا المرور غير متطابقتين'
+	String get passwordMismatch => 'كلمتا المرور غير متطابقتين';
+
+	/// ar: 'نوع الحساب'
+	String get roleLabel => 'نوع الحساب';
+}
+
+// Path: reset
+class Translations$reset$ar {
+	Translations$reset$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'نسيت كلمة المرور؟'
+	String get forgot => 'نسيت كلمة المرور؟';
+
+	/// ar: 'استعادة كلمة المرور'
+	String get title => 'استعادة كلمة المرور';
+
+	/// ar: 'أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.'
+	String get body => 'أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.';
+
+	/// ar: 'إرسال الرابط'
+	String get send => 'إرسال الرابط';
+
+	/// ar: 'إذا كان البريد مسجّلًا، ستصلك رسالة لإعادة التعيين.'
+	String get sent => 'إذا كان البريد مسجّلًا، ستصلك رسالة لإعادة التعيين.';
+
+	/// ar: 'تعيين كلمة مرور جديدة'
+	String get newTitle => 'تعيين كلمة مرور جديدة';
+
+	/// ar: 'اختر كلمة مرور جديدة لحسابك.'
+	String get newBody => 'اختر كلمة مرور جديدة لحسابك.';
+
+	/// ar: 'تم تحديث كلمة المرور. يمكنك المتابعة الآن.'
+	String get updated => 'تم تحديث كلمة المرور. يمكنك المتابعة الآن.';
 }
 
 // Path: enums
@@ -673,6 +774,15 @@ class Translations$seller$devices$ar {
 	/// ar: 'إعادة العرض'
 	String get relist => 'إعادة العرض';
 
+	/// ar: 'تعديل'
+	String get edit => 'تعديل';
+
+	/// ar: 'أي تعديل على جهاز معروض يُعيده للفحص ويخفيه من السوق حتى تعتمده المنصة من جديد.'
+	String get editListedNote => 'أي تعديل على جهاز معروض يُعيده للفحص ويخفيه من السوق حتى تعتمده المنصة من جديد.';
+
+	/// ar: 'أُرسل الجهاز لإعادة المراجعة وسيظهر في السوق بعد الاعتماد'
+	String get resubmitted => 'أُرسل الجهاز لإعادة المراجعة وسيظهر في السوق بعد الاعتماد';
+
 	/// ar: '{count} صور'
 	String photosCount({required Object count}) => '${count} صور';
 
@@ -1103,6 +1213,33 @@ extension on Translations {
 			'common.refresh' => 'تحديث',
 			'common.copied' => 'تم النسخ',
 			'common.today' => 'اليوم',
+			'common.accountSettings' => 'إعدادات الحساب',
+			'common.saved' => 'تم الحفظ',
+			'account.title' => 'حسابي',
+			'account.profileSection' => 'المعلومات الشخصية',
+			'account.profileHint' => 'تظهر هذه المعلومات لتنسيق الطلبات والتوصيل.',
+			'account.saveProfile' => 'حفظ المعلومات',
+			'account.profileSaved' => 'تم تحديث معلوماتك',
+			'account.emailSection' => 'البريد الإلكتروني',
+			'account.currentEmail' => ({required Object email}) => 'بريدك الحالي: ${email}',
+			'account.newEmailLabel' => 'البريد الإلكتروني الجديد',
+			'account.changeEmail' => 'تغيير البريد',
+			'account.emailChangeSent' => 'أرسلنا رابط تأكيد إلى بريدك الجديد. افتحه لإتمام التغيير.',
+			'account.passwordSection' => 'كلمة المرور',
+			'account.newPasswordLabel' => 'كلمة المرور الجديدة',
+			'account.confirmPasswordLabel' => 'تأكيد كلمة المرور',
+			'account.changePassword' => 'تغيير كلمة المرور',
+			'account.passwordChanged' => 'تم تغيير كلمة المرور بنجاح',
+			'account.passwordMismatch' => 'كلمتا المرور غير متطابقتين',
+			'account.roleLabel' => 'نوع الحساب',
+			'reset.forgot' => 'نسيت كلمة المرور؟',
+			'reset.title' => 'استعادة كلمة المرور',
+			'reset.body' => 'أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.',
+			'reset.send' => 'إرسال الرابط',
+			'reset.sent' => 'إذا كان البريد مسجّلًا، ستصلك رسالة لإعادة التعيين.',
+			'reset.newTitle' => 'تعيين كلمة مرور جديدة',
+			'reset.newBody' => 'اختر كلمة مرور جديدة لحسابك.',
+			'reset.updated' => 'تم تحديث كلمة المرور. يمكنك المتابعة الآن.',
 			'enums.deviceStatus.draft' => 'مسودة',
 			'enums.deviceStatus.under_inspection' => 'قيد الفحص',
 			'enums.deviceStatus.listed' => 'معروض',
@@ -1234,6 +1371,9 @@ extension on Translations {
 			'seller.devices.deleted' => 'تم حذف المسودة',
 			'seller.devices.backToDraft' => 'إرجاع لمسودة',
 			'seller.devices.relist' => 'إعادة العرض',
+			'seller.devices.edit' => 'تعديل',
+			'seller.devices.editListedNote' => 'أي تعديل على جهاز معروض يُعيده للفحص ويخفيه من السوق حتى تعتمده المنصة من جديد.',
+			'seller.devices.resubmitted' => 'أُرسل الجهاز لإعادة المراجعة وسيظهر في السوق بعد الاعتماد',
 			'seller.devices.photosCount' => ({required Object count}) => '${count} صور',
 			'seller.devices.needsPhotos' => ({required Object count}) => 'أضف ${count} صور على الأقل قبل الإرسال',
 			'seller.devices.checklistIncomplete' => 'أكمل جميع بنود الفحص قبل الإرسال',

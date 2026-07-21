@@ -132,30 +132,30 @@ final adminRepositoryProvider = Provider<AdminRepository>(
 );
 
 final adminDashboardProvider =
-    FutureProvider.autoDispose<AdminDashboardStats>(
+    FutureProvider<AdminDashboardStats>(
   (ref) => ref.watch(adminRepositoryProvider).fetchDashboard(),
 );
 
-final adminShopsProvider = FutureProvider.autoDispose
+final adminShopsProvider = FutureProvider
     .family<List<Shop>, ShopStatus?>((ref, status) {
   return ref.watch(adminRepositoryProvider).fetchShops(status: status);
 });
 
 final adminReviewQueueProvider =
-    FutureProvider.autoDispose<List<SellerDevice>>(
+    FutureProvider<List<SellerDevice>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchDevicesInReview(),
 );
 
 final adminTemplatesProvider =
-    FutureProvider.autoDispose<List<ChecklistTemplate>>(
+    FutureProvider<List<ChecklistTemplate>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchTemplates(),
 );
 
-final adminClaimsProvider = FutureProvider.autoDispose<List<WarrantyClaim>>(
+final adminClaimsProvider = FutureProvider<List<WarrantyClaim>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchClaims(),
 );
 
 final adminReservationsProvider =
-    FutureProvider.autoDispose<List<Reservation>>(
+    FutureProvider<List<Reservation>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchAllReservations(),
 );

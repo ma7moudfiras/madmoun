@@ -9,7 +9,7 @@ import '../../marketplace/widgets/listing_card.dart';
 import '../data/seller_repository.dart';
 
 final incomingReservationsProvider =
-    FutureProvider.autoDispose<List<Reservation>>((ref) {
+    FutureProvider<List<Reservation>>((ref) {
   ref.watch(myShopProvider);
   return ref.watch(sellerRepositoryProvider).fetchIncomingReservations();
 });

@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../features/account/account_page.dart';
 import '../features/admin/admin_shell.dart';
 import '../features/admin/pages/admin_claims_page.dart';
 import '../features/admin/pages/admin_dashboard_page.dart';
@@ -11,6 +14,7 @@ import '../features/admin/pages/admin_shops_page.dart';
 import '../features/admin/pages/admin_templates_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/register_page.dart';
+import '../features/auth/reset_password_page.dart';
 import '../features/buyer/orders_page.dart';
 import '../features/buyer/reserve_page.dart';
 import '../features/marketplace/device_page.dart';
@@ -26,15 +30,20 @@ import '../features/shell/public_shell.dart';
 import 'supabase_providers.dart';
 
 /// Routes that require a signed-in user of any role.
-const _authedPrefixes = ['/orders', '/reserve', '/seller', '/admin'];
+const _authedPrefixes = ['/orders', '/reserve', '/seller', '/admin', '/account'];
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Subscribe to auth changes directly: the redirect below must re-run the
   // moment a session appears/disappears.
   final client = ref.watch(supabaseClientProvider);
   final refresh = ValueNotifier(0);
-  final subscription =
-      client.auth.onAuthStateChange.listen((_) => refresh.value++);
+  // A password-recovery deep link opens a temporary session; send the user to
+  // the set-new-password screen once, and only once, per recovery.
+  var recovering = false;
+  final subscription = client.auth.onAuthStateChange.listen((state) {
+    if (state.event == AuthChangeEvent.passwordRecovery) recovering = true;
+    refresh.value++;
+  });
   ref.onDispose(() {
     subscription.cancel();
     refresh.dispose();
@@ -48,6 +57,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final signedIn = ref.read(isSignedInProvider);
       final location = state.uri.path;
+
+      if (recovering && location != '/reset-password') {
+        recovering = false;
+        return '/reset-password';
+      }
+
       final needsAuth =
           _authedPrefixes.any((p) => location == p || location.startsWith('$p/'));
 
@@ -92,6 +107,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/register',
             builder: (context, state) =>
                 RegisterPage(from: state.uri.queryParameters['from']),
+          ),
+          GoRoute(
+            path: '/reset-password',
+            builder: (context, state) => const ResetPasswordPage(),
+          ),
+          GoRoute(
+            path: '/account',
+            builder: (context, state) => const AccountPage(),
           ),
         ],
       ),

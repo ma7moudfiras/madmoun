@@ -104,6 +104,8 @@ class _AccountMenu extends ConsumerWidget {
       ),
       onSelected: (value) async {
         switch (value) {
+          case 'account':
+            context.go('/account');
           case 'orders':
             context.go('/orders');
           case 'seller':
@@ -125,6 +127,7 @@ class _AccountMenu extends ConsumerWidget {
             PopupMenuItem(value: 'admin', child: Text(t.common.adminPanel)),
           const PopupMenuDivider(),
         ],
+        PopupMenuItem(value: 'account', child: Text(t.common.accountSettings)),
         PopupMenuItem(value: 'signout', child: Text(t.common.signOut)),
       ],
     );

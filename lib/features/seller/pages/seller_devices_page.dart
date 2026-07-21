@@ -12,7 +12,7 @@ import '../data/seller_repository.dart';
 
 /// Provider that pages the seller's devices; invalidated after any mutation.
 final sellerDevicesProvider =
-    FutureProvider.autoDispose<List<SellerDevice>>((ref) {
+    FutureProvider<List<SellerDevice>>((ref) {
   ref.watch(myShopProvider);
   return ref.watch(sellerRepositoryProvider).fetchMyDevices();
 });
@@ -149,7 +149,9 @@ class _DeviceRow extends ConsumerWidget {
     final photoCount = device.photos.length;
     final isDraft = device.status == DeviceStatus.draft;
     final isRejected = device.status == DeviceStatus.rejected;
-    final canEdit = isDraft || isRejected;
+    final isListed = device.status == DeviceStatus.listed;
+    // Listed devices are editable too, but editing resends them for review.
+    final canEdit = isDraft || isRejected || isListed;
 
     return Card(
       child: Padding(
@@ -226,6 +228,23 @@ class _DeviceRow extends ConsumerWidget {
                 ),
               ),
             ],
+            if (isListed) ...[
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Icon(Icons.info_outline_rounded,
+                      size: 16, color: theme.colorScheme.onSurfaceVariant),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      t.seller.devices.editListedNote,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant),
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
@@ -236,7 +255,7 @@ class _DeviceRow extends ConsumerWidget {
                     onPressed: () =>
                         context.go('/seller/devices/${device.id}'),
                     icon: const Icon(Icons.edit_rounded, size: 18),
-                    label: Text(t.seller.deviceForm.editTitle),
+                    label: Text(t.seller.devices.edit),
                   ),
                 if (isDraft)
                   FilledButton.icon(
