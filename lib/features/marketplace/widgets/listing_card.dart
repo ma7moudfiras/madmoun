@@ -85,9 +85,10 @@ class _DevicePlaceholder extends StatelessWidget {
     final icon = category == DeviceCategory.laptop
         ? Icons.laptop_mac_rounded
         : Icons.smartphone_rounded;
-    final label = (brand != null && brand!.trim().isNotEmpty)
-        ? brand!.trim()
-        : t.common.appName;
+    // Only name the brand when we actually have one; on generic surfaces
+    // (orders, seller lists) the silhouette alone reads cleaner than a label.
+    final label = brand?.trim();
+    final hasLabel = label != null && label.isNotEmpty;
     return LayoutBuilder(
       builder: (context, constraints) {
         // Scale with the card so thumbnails and full-width images both look
@@ -118,7 +119,7 @@ class _DevicePlaceholder extends StatelessWidget {
                 child: Icon(icon,
                     size: circle * 0.5, color: AppTheme.primary),
               ),
-              if (!compact) ...[
+              if (hasLabel && !compact) ...[
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
