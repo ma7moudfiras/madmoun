@@ -8,7 +8,11 @@ import '../../../core/supabase_providers.dart';
 const listingColumns =
     'id, public_id, category, brand, model, title, description, price_minor, '
     'currency, grade, warranty_days, imei_last4, checklist, created_at, '
-    'shop_id, shop_name, shop_city';
+    'shop_id, shop_name, shop_city, shop_phone';
+
+/// How the marketplace grid is ordered. [newest] is the default and matches
+/// the old id-descending behaviour.
+enum ListingSort { newest, priceLowHigh, priceHighLow }
 
 class ListingFilters {
   const ListingFilters({
@@ -20,6 +24,7 @@ class ListingFilters {
     this.minMinor,
     this.maxMinor,
     this.grade,
+    this.sort = ListingSort.newest,
   });
 
   final String? query;
@@ -30,7 +35,10 @@ class ListingFilters {
   final int? minMinor;
   final int? maxMinor;
   final Grade? grade;
+  final ListingSort sort;
 
+  /// Sort is not a "filter" — it never counts toward the active-filter badge
+  /// or the clear-filters affordance.
   bool get isEmpty =>
       (query == null || query!.isEmpty) &&
       category == null &&
@@ -50,6 +58,7 @@ class ListingFilters {
     int? Function()? minMinor,
     int? Function()? maxMinor,
     Grade? Function()? grade,
+    ListingSort? sort,
   }) {
     return ListingFilters(
       query: query != null ? query() : this.query,
@@ -60,6 +69,7 @@ class ListingFilters {
       minMinor: minMinor != null ? minMinor() : this.minMinor,
       maxMinor: maxMinor != null ? maxMinor() : this.maxMinor,
       grade: grade != null ? grade() : this.grade,
+      sort: sort ?? this.sort,
     );
   }
 }
@@ -83,7 +93,7 @@ class MarketplaceRepository {
 
   Future<ListingsPage> fetchListings({
     ListingFilters filters = const ListingFilters(),
-    int? cursor,
+    int offset = 0,
   }) async {
     var query = _client.from('public_listings').select(listingColumns);
 
@@ -115,11 +125,16 @@ class MarketplaceRepository {
         'title.ilike.%$term%,brand.ilike.%$term%,model.ilike.%$term%',
       );
     }
-    if (cursor != null) {
-      query = query.lt('id', cursor);
-    }
-
-    final rows = await query.order('id', ascending: false).limit(pageSize);
+    // Offset pagination (the catalogue is small) so any sort order paginates
+    // correctly; every sort has `id` as a stable tiebreaker.
+    var ordered = switch (filters.sort) {
+      ListingSort.newest => query.order('id', ascending: false),
+      ListingSort.priceLowHigh =>
+        query.order('price_minor', ascending: true).order('id', ascending: false),
+      ListingSort.priceHighLow =>
+        query.order('price_minor', ascending: false).order('id', ascending: false),
+    };
+    final rows = await ordered.range(offset, offset + pageSize - 1);
     final listings = (rows as List<dynamic>)
         .map((r) => Listing.fromJson(Map<String, dynamic>.from(r as Map)))
         .toList();

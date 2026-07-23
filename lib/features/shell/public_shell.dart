@@ -59,6 +59,7 @@ class PublicShell extends ConsumerWidget {
                 onPressed: () => context.go('/admin'),
                 child: Text(t.common.adminPanel),
               ),
+            const _InfoMenu(),
             const SizedBox(width: 8),
           ],
           if (!signedIn)
@@ -148,7 +149,44 @@ class _CompactNav extends StatelessWidget {
       itemBuilder: (context) => [
         PopupMenuItem(value: '/', child: Text(t.common.marketplace)),
         PopupMenuItem(value: '/seller', child: Text(t.common.sellerPortal)),
+        const PopupMenuDivider(),
+        PopupMenuItem(value: '/how-it-works', child: Text(t.info.howTitle)),
+        PopupMenuItem(value: '/faq', child: Text(t.info.faqTitle)),
+        PopupMenuItem(value: '/terms', child: Text(t.info.termsTitle)),
+        PopupMenuItem(value: '/privacy', child: Text(t.info.privacyTitle)),
       ],
+    );
+  }
+}
+
+/// A compact "معلومات" dropdown in the top bar linking to the static pages.
+class _InfoMenu extends StatelessWidget {
+  const _InfoMenu();
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).appBarTheme.foregroundColor ??
+        Theme.of(context).colorScheme.onSurface;
+    return PopupMenuButton<String>(
+      tooltip: t.info.menuLabel,
+      onSelected: (value) => context.go(value),
+      itemBuilder: (context) => [
+        PopupMenuItem(value: '/how-it-works', child: Text(t.info.howTitle)),
+        PopupMenuItem(value: '/faq', child: Text(t.info.faqTitle)),
+        PopupMenuItem(value: '/terms', child: Text(t.info.termsTitle)),
+        PopupMenuItem(value: '/privacy', child: Text(t.info.privacyTitle)),
+      ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(t.info.menuLabel,
+                style: TextStyle(color: color, fontWeight: FontWeight.w500)),
+            Icon(Icons.arrow_drop_down_rounded, color: color, size: 20),
+          ],
+        ),
+      ),
     );
   }
 }

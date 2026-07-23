@@ -161,6 +161,7 @@ class Listing {
     this.description,
     this.grade,
     this.imeiLast4,
+    this.shopPhone,
     this.photoPaths = const [],
   });
 
@@ -178,6 +179,7 @@ class Listing {
   final List<ChecklistEntry> checklist;
   final String shopName;
   final String shopCity;
+  final String? shopPhone;
   final DateTime createdAt;
   final List<String> photoPaths;
 
@@ -207,6 +209,7 @@ class Listing {
         checklist: _checklist(json['checklist']),
         shopName: json['shop_name'] as String,
         shopCity: json['shop_city'] as String,
+        shopPhone: json['shop_phone'] as String?,
         createdAt: _date(json['created_at']),
         photoPaths: photoPaths,
       );
@@ -226,6 +229,7 @@ class Listing {
         checklist: checklist,
         shopName: shopName,
         shopCity: shopCity,
+        shopPhone: shopPhone,
         createdAt: createdAt,
         photoPaths: paths,
       );

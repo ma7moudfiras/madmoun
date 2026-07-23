@@ -9,6 +9,7 @@ import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import '../info/info_page.dart';
 import 'data/marketplace_repository.dart';
 import 'widgets/listing_card.dart';
 
@@ -105,7 +106,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     try {
       final page = await ref
           .read(marketplaceRepositoryProvider)
-          .fetchListings(filters: _filters, cursor: _items.last.id);
+          .fetchListings(filters: _filters, offset: _items.length);
       if (!mounted) return;
       setState(() {
         _items.addAll(page.items);
@@ -196,6 +197,10 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
+        const SliverPadding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
+          sliver: SliverToBoxAdapter(child: SiteFooter()),
+        ),
       ],
     );
   }
@@ -298,6 +303,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   icon: const Icon(Icons.filter_alt_off_rounded, size: 16),
                   label: Text(t.home.clearFilters),
                 ),
+              const Spacer(),
+              _buildSort(context),
             ],
           ),
           if (_filtersExpanded) ...[
@@ -306,6 +313,37 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildSort(BuildContext context) {
+    String label(ListingSort s) => switch (s) {
+          ListingSort.newest => t.home.sortNewest,
+          ListingSort.priceLowHigh => t.home.sortPriceLowHigh,
+          ListingSort.priceHighLow => t.home.sortPriceHighLow,
+        };
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.sort_rounded,
+            size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+        const SizedBox(width: 6),
+        DropdownButton<ListingSort>(
+          value: _filters.sort,
+          underline: const SizedBox.shrink(),
+          borderRadius: BorderRadius.circular(12),
+          isDense: true,
+          items: [
+            for (final s in ListingSort.values)
+              DropdownMenuItem(value: s, child: Text(label(s))),
+          ],
+          onChanged: (v) {
+            if (v == null || v == _filters.sort) return;
+            _filters = _filters.copyWith(sort: v);
+            _reload();
+          },
+        ),
+      ],
     );
   }
 
