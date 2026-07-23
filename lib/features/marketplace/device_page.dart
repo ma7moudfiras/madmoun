@@ -62,6 +62,8 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
       paths: listing.photoPaths,
       index: _photoIndex,
       onSelect: (i) => setState(() => _photoIndex = i),
+      brand: listing.brand,
+      category: listing.category,
     );
 
     final info = Column(
@@ -218,11 +220,15 @@ class _Gallery extends StatelessWidget {
     required this.paths,
     required this.index,
     required this.onSelect,
+    this.brand,
+    this.category,
   });
 
   final List<String> paths;
   final int index;
   final ValueChanged<int> onSelect;
+  final String? brand;
+  final DeviceCategory? category;
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +239,12 @@ class _Gallery extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           child: AspectRatio(
             aspectRatio: 4 / 3,
-            child: DevicePhotoImage(path: current, fit: BoxFit.contain),
+            child: DevicePhotoImage(
+              path: current,
+              fit: BoxFit.contain,
+              brand: brand,
+              category: category,
+            ),
           ),
         ),
         if (paths.length > 1) ...[
@@ -262,7 +273,11 @@ class _Gallery extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(9),
-                      child: DevicePhotoImage(path: paths[i]),
+                      child: DevicePhotoImage(
+                        path: paths[i],
+                        brand: brand,
+                        category: category,
+                      ),
                     ),
                   ),
                 );
