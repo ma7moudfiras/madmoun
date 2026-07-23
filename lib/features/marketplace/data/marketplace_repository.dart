@@ -5,10 +5,13 @@ import '../../../core/domain.dart';
 import '../../../core/models.dart';
 import '../../../core/supabase_providers.dart';
 
+// Madmoun is a managed, opaque intermediary: the buyer never sees the shop's
+// identity or contact — only the device, its inspection, and the delivery
+// city. The shop stays anonymous behind the platform.
 const listingColumns =
     'id, public_id, category, brand, model, title, description, price_minor, '
     'currency, grade, warranty_days, imei_last4, checklist, created_at, '
-    'shop_id, shop_name, shop_city, shop_phone';
+    'shop_id, shop_city';
 
 /// How the marketplace grid is ordered. [newest] is the default and matches
 /// the old id-descending behaviour.

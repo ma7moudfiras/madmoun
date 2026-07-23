@@ -155,13 +155,11 @@ class Listing {
     required this.price,
     required this.warrantyDays,
     required this.checklist,
-    required this.shopName,
     required this.shopCity,
     required this.createdAt,
     this.description,
     this.grade,
     this.imeiLast4,
-    this.shopPhone,
     this.photoPaths = const [],
   });
 
@@ -177,9 +175,7 @@ class Listing {
   final int warrantyDays;
   final String? imeiLast4;
   final List<ChecklistEntry> checklist;
-  final String shopName;
   final String shopCity;
-  final String? shopPhone;
   final DateTime createdAt;
   final List<String> photoPaths;
 
@@ -207,9 +203,7 @@ class Listing {
         warrantyDays: _int(json['warranty_days']),
         imeiLast4: json['imei_last4'] as String?,
         checklist: _checklist(json['checklist']),
-        shopName: json['shop_name'] as String,
         shopCity: json['shop_city'] as String,
-        shopPhone: json['shop_phone'] as String?,
         createdAt: _date(json['created_at']),
         photoPaths: photoPaths,
       );
@@ -227,9 +221,7 @@ class Listing {
         warrantyDays: warrantyDays,
         imeiLast4: imeiLast4,
         checklist: checklist,
-        shopName: shopName,
         shopCity: shopCity,
-        shopPhone: shopPhone,
         createdAt: createdAt,
         photoPaths: paths,
       );

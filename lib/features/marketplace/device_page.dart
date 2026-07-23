@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/domain.dart';
 import '../../core/models.dart';
@@ -10,23 +9,6 @@ import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
 import 'data/marketplace_repository.dart';
 import 'widgets/listing_card.dart';
-
-/// Opens WhatsApp (or its web fallback) with a prefilled Arabic message about
-/// this listing. wa.me expects a plain international number — no '+' or spaces.
-Future<void> _contactShopOnWhatsApp(
-    BuildContext context, Listing listing) async {
-  final digits = listing.shopPhone!.replaceAll(RegExp(r'[^0-9]'), '');
-  final message = t.device.contactMessage(
-    title: listing.title,
-    id: listing.publicId,
-  );
-  final uri = Uri.parse(
-      'https://wa.me/$digits?text=${Uri.encodeComponent(message)}');
-  final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
-  if (!launched && context.mounted) {
-    showAppSnackBar(context, t.device.contactFailed);
-  }
-}
 
 class DevicePage extends ConsumerWidget {
   const DevicePage({super.key, required this.publicId});
@@ -129,11 +111,11 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
         const SizedBox(height: 16),
         Row(
           children: [
-            Icon(Icons.storefront_rounded,
-                size: 20, color: theme.colorScheme.onSurfaceVariant),
+            Icon(Icons.verified_rounded,
+                size: 20, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
             Text(
-              '${t.device.shopLabel}: ${listing.shopName} — ${listing.shopCity}',
+              '${t.device.sellerGeneric} — ${listing.shopCity}',
               style: theme.textTheme.bodyLarge,
             ),
           ],
@@ -166,17 +148,6 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
             label: Text(t.device.reserveCta),
           ),
         ),
-        if (listing.shopPhone != null && listing.shopPhone!.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _contactShopOnWhatsApp(context, listing),
-              icon: const Icon(Icons.chat_rounded),
-              label: Text(t.device.contactWhatsapp),
-            ),
-          ),
-        ],
         const SizedBox(height: 12),
         Card(
           child: Padding(
