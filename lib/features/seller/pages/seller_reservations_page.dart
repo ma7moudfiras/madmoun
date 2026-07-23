@@ -93,11 +93,6 @@ class SellerReservationsPage extends ConsumerWidget {
                         ReservationStatus.confirmed,
                         t.seller.reservations.confirmed)
                     : null,
-                onDeliver: reservation.status == ReservationStatus.confirmed
-                    ? () => _setStatus(context, ref, reservation,
-                        ReservationStatus.delivered,
-                        t.seller.reservations.delivered)
-                    : null,
                 onCancel: (reservation.status == ReservationStatus.pending ||
                         reservation.status == ReservationStatus.confirmed)
                     ? () => _cancel(context, ref, reservation)
@@ -115,13 +110,11 @@ class _ReservationCard extends StatelessWidget {
   const _ReservationCard({
     required this.reservation,
     this.onConfirm,
-    this.onDeliver,
     this.onCancel,
   });
 
   final Reservation reservation;
   final VoidCallback? onConfirm;
-  final VoidCallback? onDeliver;
   final VoidCallback? onCancel;
 
   @override
@@ -169,23 +162,20 @@ class _ReservationCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _InfoRow(
-              icon: Icons.phone_rounded,
-              label: t.seller.reservations.buyerPhone,
-              value: reservation.buyerPhone,
-              copyable: true,
-            ),
-            _InfoRow(
               icon: Icons.location_on_rounded,
               label: t.common.cityLabel,
               value: reservation.deliveryCity,
             ),
-            if (reservation.deliveryNote != null)
-              _InfoRow(
-                icon: Icons.sticky_note_2_rounded,
-                label: t.common.noteLabel,
-                value: reservation.deliveryNote!,
+            if (reservation.status == ReservationStatus.confirmed)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  t.seller.reservations.awaitingDispatch,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.primary),
+                ),
               ),
-            if (onConfirm != null || onDeliver != null || onCancel != null) ...[
+            if (onConfirm != null || onCancel != null) ...[
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
@@ -196,13 +186,6 @@ class _ReservationCard extends StatelessWidget {
                       onPressed: onConfirm,
                       icon: const Icon(Icons.check_rounded, size: 18),
                       label: Text(t.seller.reservations.confirmAction),
-                    ),
-                  if (onDeliver != null)
-                    FilledButton.icon(
-                      onPressed: onDeliver,
-                      icon: const Icon(
-                          Icons.local_shipping_rounded, size: 18),
-                      label: Text(t.seller.reservations.deliverAction),
                     ),
                   if (onCancel != null)
                     TextButton.icon(
@@ -225,13 +208,11 @@ class _InfoRow extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
-    this.copyable = false,
   });
 
   final IconData icon;
   final String label;
   final String value;
-  final bool copyable;
 
   @override
   Widget build(BuildContext context) {

@@ -88,7 +88,8 @@
       "pending": "بانتظار التأكيد",
       "confirmed": "مؤكد",
       "delivered": "تم التسليم",
-      "cancelled": "ملغي"
+      "cancelled": "ملغي",
+      "outForDelivery": "قيد التوصيل"
     },
     "shopStatus": {
       "pending": "بانتظار الموافقة",
@@ -189,7 +190,10 @@
     "claimSubmitted": "تم فتح المطالبة وسيتم التواصل معك.",
     "claimsTitle": "مطالبات الضمان",
     "claimResolution": "قرار المنصة: {note}",
-    "shopResponse": "رد المتجر: {note}"
+    "shopResponse": "رد المتجر: {note}",
+    "confirmReceiptAction": "تأكيد الاستلام",
+    "confirmReceiptBody": "بتأكيدك تُقرّ باستلام الجهاز والتأكد منه، ويبدأ سريان الكفالة من الآن.",
+    "receiptConfirmed": "تم تأكيد الاستلام وبدأت الكفالة."
   },
   "auth": {
     "loginTitle": "تسجيل الدخول",
@@ -283,13 +287,14 @@
       "emptyTitle": "لا توجد حجوزات",
       "emptyBody": "عندما يحجز مشترٍ أحد أجهزتك ستظهر تفاصيل الحجز هنا.",
       "buyerPhone": "هاتف المشتري",
-      "confirmAction": "تأكيد الحجز",
+      "confirmAction": "تأكيد التوفّر",
       "deliverAction": "تم التسليم",
       "cancelAction": "إلغاء الحجز",
       "cancelConfirm": "سيُعاد عرض الجهاز في السوق. متابعة؟",
-      "confirmed": "تم تأكيد الحجز",
+      "confirmed": "تم تأكيد التوفّر",
       "delivered": "تم تسجيل التسليم وبدأ الضمان",
-      "cancelled": "أُلغي الحجز وأُعيد عرض الجهاز"
+      "cancelled": "أُلغي الحجز وأُعيد عرض الجهاز",
+      "awaitingDispatch": "تم تأكيد التوفّر — بانتظار الشحن من مضمون."
     },
     "claims": {
       "title": "مطالبات الضمان",
@@ -392,7 +397,11 @@
       "title": "كل الحجوزات",
       "emptyTitle": "لا توجد حجوزات",
       "emptyBody": "حجوزات المشترين عبر المنصة ستظهر هنا.",
-      "commission": "عمولة المنصة"
+      "commission": "عمولة المنصة",
+      "dispatch": "إرسال للتوصيل",
+      "dispatched": "تم إرسال الطلب للتوصيل",
+      "markDelivered": "تأكيد الاستلام",
+      "markedDelivered": "تم تسجيل التسليم"
     }
   },
   "errors": {
@@ -410,7 +419,10 @@
     "ADMIN_ONLY": "صلاحيات غير كافية.",
     "REJECTION_REASON_REQUIRED": "اكتب سبب الرفض.",
     "SHOP_NOT_APPROVED": "لا يمكن إضافة أجهزة قبل اعتماد المتجر.",
-    "UPDATE_FORBIDDEN": "لا تملك صلاحية تنفيذ هذا الإجراء."
+    "UPDATE_FORBIDDEN": "لا تملك صلاحية تنفيذ هذا الإجراء.",
+    "SELLER_ONLY_TRANSITION": "هذا الإجراء متاح للمتجر فقط.",
+    "BUYER_ONLY_TRANSITION": "تأكيد الاستلام متاح للمشتري فقط.",
+    "CANCEL_FORBIDDEN": "لا تملك صلاحية إلغاء هذا الطلب."
   },
   "info": {
     "menuLabel": "معلومات",

@@ -75,6 +75,35 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
     }
   }
 
+  Future<void> _confirmReceipt(Reservation reservation) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t.orders.confirmReceiptAction),
+        content: Text(t.orders.confirmReceiptBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t.common.back),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(t.orders.confirmReceiptAction),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    try {
+      await ref.read(buyerRepositoryProvider).confirmReceipt(reservation.id);
+      if (!mounted) return;
+      showAppSnackBar(context, t.orders.receiptConfirmed);
+      _reload();
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
   Future<void> _openClaim(Reservation reservation) async {
     final description = await showDialog<String>(
       context: context,
@@ -143,6 +172,10 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                 _ReservationCard(
                   reservation: reservation,
                   onOpenClaim: () => _openClaim(reservation),
+                  onConfirmReceipt:
+                      reservation.status == ReservationStatus.outForDelivery
+                          ? () => _confirmReceipt(reservation)
+                          : null,
                 ),
                 const SizedBox(height: 12),
               ],
@@ -178,10 +211,12 @@ class _ReservationCard extends StatelessWidget {
   const _ReservationCard({
     required this.reservation,
     required this.onOpenClaim,
+    this.onConfirmReceipt,
   });
 
   final Reservation reservation;
   final VoidCallback onOpenClaim;
+  final VoidCallback? onConfirmReceipt;
 
   @override
   Widget build(BuildContext context) {
@@ -234,6 +269,17 @@ class _ReservationCard extends StatelessWidget {
                 StatusChip.reservation(context, reservation.status),
               ],
             ),
+            if (onConfirmReceipt != null) ...[
+              const SizedBox(height: 12),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: FilledButton.icon(
+                  onPressed: onConfirmReceipt,
+                  icon: const Icon(Icons.inventory_2_rounded, size: 18),
+                  label: Text(t.orders.confirmReceiptAction),
+                ),
+              ),
+            ],
             if (reservation.status == ReservationStatus.delivered) ...[
               const SizedBox(height: 12),
               Align(

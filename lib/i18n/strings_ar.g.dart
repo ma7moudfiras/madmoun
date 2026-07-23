@@ -67,6 +67,9 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'REJECTION_REASON_REQUIRED': 'اكتب سبب الرفض.',
 		'SHOP_NOT_APPROVED': 'لا يمكن إضافة أجهزة قبل اعتماد المتجر.',
 		'UPDATE_FORBIDDEN': 'لا تملك صلاحية تنفيذ هذا الإجراء.',
+		'SELLER_ONLY_TRANSITION': 'هذا الإجراء متاح للمتجر فقط.',
+		'BUYER_ONLY_TRANSITION': 'تأكيد الاستلام متاح للمشتري فقط.',
+		'CANCEL_FORBIDDEN': 'لا تملك صلاحية إلغاء هذا الطلب.',
 	};
 	late final Translations$info$ar info = Translations$info$ar.internal(_root);
 }
@@ -322,6 +325,7 @@ class Translations$enums$ar {
 		'confirmed': 'مؤكد',
 		'delivered': 'تم التسليم',
 		'cancelled': 'ملغي',
+		'outForDelivery': 'قيد التوصيل',
 	};
 	Map<String, String> get shopStatus => {
 		'pending': 'بانتظار الموافقة',
@@ -575,6 +579,15 @@ class Translations$orders$ar {
 
 	/// ar: 'رد المتجر: {note}'
 	String shopResponse({required Object note}) => 'رد المتجر: ${note}';
+
+	/// ar: 'تأكيد الاستلام'
+	String get confirmReceiptAction => 'تأكيد الاستلام';
+
+	/// ar: 'بتأكيدك تُقرّ باستلام الجهاز والتأكد منه، ويبدأ سريان الكفالة من الآن.'
+	String get confirmReceiptBody => 'بتأكيدك تُقرّ باستلام الجهاز والتأكد منه، ويبدأ سريان الكفالة من الآن.';
+
+	/// ar: 'تم تأكيد الاستلام وبدأت الكفالة.'
+	String get receiptConfirmed => 'تم تأكيد الاستلام وبدأت الكفالة.';
 }
 
 // Path: auth
@@ -1031,8 +1044,8 @@ class Translations$seller$reservations$ar {
 	/// ar: 'هاتف المشتري'
 	String get buyerPhone => 'هاتف المشتري';
 
-	/// ar: 'تأكيد الحجز'
-	String get confirmAction => 'تأكيد الحجز';
+	/// ar: 'تأكيد التوفّر'
+	String get confirmAction => 'تأكيد التوفّر';
 
 	/// ar: 'تم التسليم'
 	String get deliverAction => 'تم التسليم';
@@ -1043,14 +1056,17 @@ class Translations$seller$reservations$ar {
 	/// ar: 'سيُعاد عرض الجهاز في السوق. متابعة؟'
 	String get cancelConfirm => 'سيُعاد عرض الجهاز في السوق. متابعة؟';
 
-	/// ar: 'تم تأكيد الحجز'
-	String get confirmed => 'تم تأكيد الحجز';
+	/// ar: 'تم تأكيد التوفّر'
+	String get confirmed => 'تم تأكيد التوفّر';
 
 	/// ar: 'تم تسجيل التسليم وبدأ الضمان'
 	String get delivered => 'تم تسجيل التسليم وبدأ الضمان';
 
 	/// ar: 'أُلغي الحجز وأُعيد عرض الجهاز'
 	String get cancelled => 'أُلغي الحجز وأُعيد عرض الجهاز';
+
+	/// ar: 'تم تأكيد التوفّر — بانتظار الشحن من مضمون.'
+	String get awaitingDispatch => 'تم تأكيد التوفّر — بانتظار الشحن من مضمون.';
 }
 
 // Path: seller.claims
@@ -1348,6 +1364,18 @@ class Translations$admin$reservations$ar {
 
 	/// ar: 'عمولة المنصة'
 	String get commission => 'عمولة المنصة';
+
+	/// ar: 'إرسال للتوصيل'
+	String get dispatch => 'إرسال للتوصيل';
+
+	/// ar: 'تم إرسال الطلب للتوصيل'
+	String get dispatched => 'تم إرسال الطلب للتوصيل';
+
+	/// ar: 'تأكيد الاستلام'
+	String get markDelivered => 'تأكيد الاستلام';
+
+	/// ar: 'تم تسجيل التسليم'
+	String get markedDelivered => 'تم تسجيل التسليم';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -1438,6 +1466,7 @@ extension on Translations {
 			'enums.reservationStatus.confirmed' => 'مؤكد',
 			'enums.reservationStatus.delivered' => 'تم التسليم',
 			'enums.reservationStatus.cancelled' => 'ملغي',
+			'enums.reservationStatus.outForDelivery' => 'قيد التوصيل',
 			'enums.shopStatus.pending' => 'بانتظار الموافقة',
 			'enums.shopStatus.approved' => 'معتمد',
 			'enums.shopStatus.rejected' => 'مرفوض',
@@ -1518,6 +1547,9 @@ extension on Translations {
 			'orders.claimsTitle' => 'مطالبات الضمان',
 			'orders.claimResolution' => ({required Object note}) => 'قرار المنصة: ${note}',
 			'orders.shopResponse' => ({required Object note}) => 'رد المتجر: ${note}',
+			'orders.confirmReceiptAction' => 'تأكيد الاستلام',
+			'orders.confirmReceiptBody' => 'بتأكيدك تُقرّ باستلام الجهاز والتأكد منه، ويبدأ سريان الكفالة من الآن.',
+			'orders.receiptConfirmed' => 'تم تأكيد الاستلام وبدأت الكفالة.',
 			'auth.loginTitle' => 'تسجيل الدخول',
 			'auth.registerTitle' => 'حساب جديد',
 			'auth.submitLogin' => 'دخول',
@@ -1600,13 +1632,14 @@ extension on Translations {
 			'seller.reservations.emptyTitle' => 'لا توجد حجوزات',
 			'seller.reservations.emptyBody' => 'عندما يحجز مشترٍ أحد أجهزتك ستظهر تفاصيل الحجز هنا.',
 			'seller.reservations.buyerPhone' => 'هاتف المشتري',
-			'seller.reservations.confirmAction' => 'تأكيد الحجز',
+			'seller.reservations.confirmAction' => 'تأكيد التوفّر',
 			'seller.reservations.deliverAction' => 'تم التسليم',
 			'seller.reservations.cancelAction' => 'إلغاء الحجز',
 			'seller.reservations.cancelConfirm' => 'سيُعاد عرض الجهاز في السوق. متابعة؟',
-			'seller.reservations.confirmed' => 'تم تأكيد الحجز',
+			'seller.reservations.confirmed' => 'تم تأكيد التوفّر',
 			'seller.reservations.delivered' => 'تم تسجيل التسليم وبدأ الضمان',
 			'seller.reservations.cancelled' => 'أُلغي الحجز وأُعيد عرض الجهاز',
+			'seller.reservations.awaitingDispatch' => 'تم تأكيد التوفّر — بانتظار الشحن من مضمون.',
 			'seller.claims.title' => 'مطالبات الضمان',
 			'seller.claims.emptyTitle' => 'لا توجد مطالبات',
 			'seller.claims.emptyBody' => 'مطالبات الضمان على أجهزتك ستظهر هنا.',
@@ -1692,6 +1725,10 @@ extension on Translations {
 			'admin.reservations.emptyTitle' => 'لا توجد حجوزات',
 			'admin.reservations.emptyBody' => 'حجوزات المشترين عبر المنصة ستظهر هنا.',
 			'admin.reservations.commission' => 'عمولة المنصة',
+			'admin.reservations.dispatch' => 'إرسال للتوصيل',
+			'admin.reservations.dispatched' => 'تم إرسال الطلب للتوصيل',
+			'admin.reservations.markDelivered' => 'تأكيد الاستلام',
+			'admin.reservations.markedDelivered' => 'تم تسجيل التسليم',
 			'errors.INVALID_STATE_TRANSITION' => 'لا يمكن تنفيذ هذا الانتقال في حالة الجهاز.',
 			'errors.ADMIN_ONLY_TRANSITION' => 'هذا الإجراء متاح لإدارة المنصة فقط.',
 			'errors.CHECKLIST_INCOMPLETE' => 'أكمل جميع بنود الفحص أولًا.',
@@ -1707,6 +1744,9 @@ extension on Translations {
 			'errors.REJECTION_REASON_REQUIRED' => 'اكتب سبب الرفض.',
 			'errors.SHOP_NOT_APPROVED' => 'لا يمكن إضافة أجهزة قبل اعتماد المتجر.',
 			'errors.UPDATE_FORBIDDEN' => 'لا تملك صلاحية تنفيذ هذا الإجراء.',
+			'errors.SELLER_ONLY_TRANSITION' => 'هذا الإجراء متاح للمتجر فقط.',
+			'errors.BUYER_ONLY_TRANSITION' => 'تأكيد الاستلام متاح للمشتري فقط.',
+			'errors.CANCEL_FORBIDDEN' => 'لا تملك صلاحية إلغاء هذا الطلب.',
 			'info.menuLabel' => 'معلومات',
 			'info.footerTagline' => 'منصّة فلسطينية للأجهزة الإلكترونية المستعملة الموثوقة.',
 			'info.footerRights' => '© 2026 مضمون. جميع الحقوق محفوظة.',

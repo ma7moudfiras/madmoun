@@ -9,6 +9,17 @@ import '../data/admin_repository.dart';
 class AdminReservationsPage extends ConsumerWidget {
   const AdminReservationsPage({super.key});
 
+  Future<void> _setStatus(BuildContext context, WidgetRef ref, int id,
+      ReservationStatus status, String successMessage) async {
+    try {
+      await ref.read(adminRepositoryProvider).setReservationStatus(id, status);
+      ref.invalidate(adminReservationsProvider);
+      if (context.mounted) showAppSnackBar(context, successMessage);
+    } catch (e) {
+      if (context.mounted) showErrorSnackBar(context, e);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reservations = ref.watch(adminReservationsProvider);
@@ -57,8 +68,40 @@ class AdminReservationsPage extends ConsumerWidget {
                               Money(r.commissionMinor, r.price.currency)
                                   .format())),
                           DataCell(Text(r.deliveryCity)),
-                          DataCell(Text(r.buyerPhone)),
-                          DataCell(StatusChip.reservation(context, r.status)),
+                          DataCell(Text(r.buyerPhone ?? '—')),
+                          DataCell(Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              StatusChip.reservation(context, r.status),
+                              if (r.status == ReservationStatus.confirmed) ...[
+                                const SizedBox(width: 8),
+                                FilledButton.icon(
+                                  onPressed: () => _setStatus(
+                                      context,
+                                      ref,
+                                      r.id,
+                                      ReservationStatus.outForDelivery,
+                                      t.admin.reservations.dispatched),
+                                  icon: const Icon(
+                                      Icons.local_shipping_rounded, size: 16),
+                                  label: Text(t.admin.reservations.dispatch),
+                                ),
+                              ] else if (r.status ==
+                                  ReservationStatus.outForDelivery) ...[
+                                const SizedBox(width: 8),
+                                OutlinedButton(
+                                  onPressed: () => _setStatus(
+                                      context,
+                                      ref,
+                                      r.id,
+                                      ReservationStatus.delivered,
+                                      t.admin.reservations.markedDelivered),
+                                  child:
+                                      Text(t.admin.reservations.markDelivered),
+                                ),
+                              ],
+                            ],
+                          )),
                         ]),
                     ],
                   ),

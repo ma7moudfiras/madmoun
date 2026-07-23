@@ -307,7 +307,7 @@ class Reservation {
     required this.publicId,
     required this.deviceId,
     required this.buyerId,
-    required this.buyerPhone,
+    this.buyerPhone,
     required this.deliveryCity,
     required this.price,
     required this.commissionMinor,
@@ -323,7 +323,7 @@ class Reservation {
   final String publicId;
   final int deviceId;
   final String buyerId;
-  final String buyerPhone;
+  final String? buyerPhone;
   final String deliveryCity;
   final String? deliveryNote;
   final Money price;
@@ -354,7 +354,7 @@ class Reservation {
       publicId: json['public_id'] as String,
       deviceId: _int(json['device_id']),
       buyerId: json['buyer_id'] as String,
-      buyerPhone: json['buyer_phone_e164'] as String,
+      buyerPhone: json['buyer_phone_e164'] as String?,
       deliveryCity: json['delivery_city'] as String,
       deliveryNote: json['delivery_note'] as String?,
       price: Money(

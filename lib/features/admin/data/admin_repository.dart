@@ -126,6 +126,18 @@ class AdminRepository {
         .toList();
   }
 
+  /// Platform-side reservation transitions (dispatch to courier, or confirm
+  /// receipt on the buyer's behalf). The reservation trigger authorizes admins
+  /// for every managed-flow transition.
+  Future<void> setReservationStatus(int id, ReservationStatus status) async {
+    final rows = await _client
+        .from('reservations')
+        .update({'status': status.dbValue})
+        .eq('id', id)
+        .select('id');
+    if (rows.isEmpty) throw Exception('UPDATE_FORBIDDEN');
+  }
+
   Future<UserStats> fetchUserStats() async {
     final result = await _client.rpc('admin_user_stats');
     return UserStats.fromJson(Map<String, dynamic>.from(result as Map));

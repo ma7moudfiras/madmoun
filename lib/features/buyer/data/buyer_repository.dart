@@ -54,6 +54,20 @@ class BuyerRepository {
         .toList();
   }
 
+  /// Buyer confirms receipt: out_for_delivery -> delivered, which activates the
+  /// warranty and records the completed sale. RLS + the reservation trigger
+  /// guarantee only the owning buyer can do this and only from the right state.
+  Future<void> confirmReceipt(int reservationId) async {
+    final rows = await _client
+        .from('reservations')
+        .update({'status': 'delivered'})
+        .eq('id', reservationId)
+        .select('id');
+    if (rows.isEmpty) {
+      throw Exception('UPDATE_FORBIDDEN');
+    }
+  }
+
   Future<void> openClaim({
     required int deviceId,
     required int reservationId,

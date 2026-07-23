@@ -157,10 +157,15 @@ class SellerRepository {
   /// the seller has no authority over.
   Future<List<Reservation>> fetchIncomingReservations(int shopId,
       {int? cursor}) async {
+    // Opaque model: the shop must not learn the buyer's identity, so the
+    // buyer phone and free-text delivery note are deliberately not selected.
     var query = _client
         .from('reservations')
         .select(
-            '*, devices!inner(title, public_id, shop_id, device_photos(storage_path, is_deleted, sort_order))')
+            'id, public_id, device_id, buyer_id, delivery_city, price_minor, '
+            'currency, commission_percent, commission_minor, status, created_at, '
+            'updated_at, devices!inner(title, public_id, shop_id, '
+            'device_photos(storage_path, is_deleted, sort_order))')
         .eq('devices.shop_id', shopId);
     if (cursor != null) query = query.lt('id', cursor);
     final rows = await query.order('id', ascending: false).limit(pageSize);
