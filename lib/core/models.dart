@@ -317,6 +317,7 @@ class Reservation {
     this.deviceTitle,
     this.devicePublicId,
     this.deviceCoverPath,
+    this.settlementStatus,
   });
 
   final int id;
@@ -334,6 +335,10 @@ class Reservation {
   final String? deviceTitle;
   final String? devicePublicId;
   final String? deviceCoverPath;
+  final String? settlementStatus;
+
+  /// Amount owed to the shop after the platform's commission.
+  Money get netToShop => Money(price.minor - commissionMinor, price.currency);
 
   factory Reservation.fromJson(Map<String, dynamic> json) {
     final device = json['devices'] == null
@@ -367,6 +372,39 @@ class Reservation {
       deviceTitle: device?['title'] as String?,
       devicePublicId: device?['public_id'] as String?,
       deviceCoverPath: cover,
+      settlementStatus: json['settlement_status'] as String?,
+    );
+  }
+}
+
+/// Per-currency commission totals over completed orders (admin ledger).
+class CommissionSummary {
+  const CommissionSummary({
+    required this.currency,
+    required this.orders,
+    required this.gross,
+    required this.commission,
+    required this.settled,
+    required this.pending,
+  });
+
+  final Currency currency;
+  final int orders;
+  final Money gross;
+  final Money commission;
+  final Money settled;
+  final Money pending;
+
+  factory CommissionSummary.fromJson(Map<String, dynamic> json) {
+    final currency = Currency.fromDb(json['currency'] as String);
+    Money money(String key) => Money(_int(json[key]), currency);
+    return CommissionSummary(
+      currency: currency,
+      orders: _int(json['orders']),
+      gross: money('gross_minor'),
+      commission: money('commission_minor'),
+      settled: money('settled_minor'),
+      pending: money('pending_minor'),
     );
   }
 }

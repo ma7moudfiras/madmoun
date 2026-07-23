@@ -716,6 +716,11 @@ class Translations$admin$ar {
 	late final Translations$admin$templates$ar templates = Translations$admin$templates$ar.internal(_root);
 	late final Translations$admin$claims$ar claims = Translations$admin$claims$ar.internal(_root);
 	late final Translations$admin$reservations$ar reservations = Translations$admin$reservations$ar.internal(_root);
+
+	/// ar: 'السجل المالي'
+	String get navLedger => 'السجل المالي';
+
+	late final Translations$admin$ledger$ar ledger = Translations$admin$ledger$ar.internal(_root);
 }
 
 // Path: info
@@ -1378,6 +1383,60 @@ class Translations$admin$reservations$ar {
 	String get markedDelivered => 'تم تسجيل التسليم';
 }
 
+// Path: admin.ledger
+class Translations$admin$ledger$ar {
+	Translations$admin$ledger$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'السجل المالي والعمولات'
+	String get title => 'السجل المالي والعمولات';
+
+	/// ar: 'عمولتك من الطلبات المكتملة، مفصّلة حسب العملة. تُحصّل عبر تحصيل المندوب عند الاستلام.'
+	String get subtitle => 'عمولتك من الطلبات المكتملة، مفصّلة حسب العملة. تُحصّل عبر تحصيل المندوب عند الاستلام.';
+
+	/// ar: 'لا عمولات بعد'
+	String get emptyTitle => 'لا عمولات بعد';
+
+	/// ar: 'عند اكتمال أول طلب (تأكيد استلام المشتري) ستظهر عمولته هنا.'
+	String get emptyBody => 'عند اكتمال أول طلب (تأكيد استلام المشتري) ستظهر عمولته هنا.';
+
+	/// ar: 'الطلبات المكتملة'
+	String get ordersTitle => 'الطلبات المكتملة';
+
+	/// ar: '{currency} · {count} طلب'
+	String currencyOrders({required Object currency, required Object count}) => '${currency} · ${count} طلب';
+
+	/// ar: 'عمولة مستحقّة (غير مُسوّاة)'
+	String get pendingCommission => 'عمولة مستحقّة (غير مُسوّاة)';
+
+	/// ar: 'مُسوّى: {amount}'
+	String settledLabel({required Object amount}) => 'مُسوّى: ${amount}';
+
+	/// ar: 'السعر {amount}'
+	String priceLabel({required Object amount}) => 'السعر ${amount}';
+
+	/// ar: 'للمتجر {amount}'
+	String netLabel({required Object amount}) => 'للمتجر ${amount}';
+
+	/// ar: 'عمولة المنصّة'
+	String get commissionLabel => 'عمولة المنصّة';
+
+	/// ar: 'مُسوّى'
+	String get statusSettled => 'مُسوّى';
+
+	/// ar: 'تسوية'
+	String get settleAction => 'تسوية';
+
+	/// ar: 'تأكيد تسوية هذا الطلب؟ يعني أنك حصّلت المبلغ من المندوب ودفعت للمتجر حصته، وتحقّقت عمولتك ({amount}).'
+	String settleConfirm({required Object amount}) => 'تأكيد تسوية هذا الطلب؟ يعني أنك حصّلت المبلغ من المندوب ودفعت للمتجر حصته، وتحقّقت عمولتك (${amount}).';
+
+	/// ar: 'تمت التسوية'
+	String get settled => 'تمت التسوية';
+}
+
 /// The flat map containing all translations for locale <ar>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -1729,6 +1788,22 @@ extension on Translations {
 			'admin.reservations.dispatched' => 'تم إرسال الطلب للتوصيل',
 			'admin.reservations.markDelivered' => 'تأكيد الاستلام',
 			'admin.reservations.markedDelivered' => 'تم تسجيل التسليم',
+			'admin.navLedger' => 'السجل المالي',
+			'admin.ledger.title' => 'السجل المالي والعمولات',
+			'admin.ledger.subtitle' => 'عمولتك من الطلبات المكتملة، مفصّلة حسب العملة. تُحصّل عبر تحصيل المندوب عند الاستلام.',
+			'admin.ledger.emptyTitle' => 'لا عمولات بعد',
+			'admin.ledger.emptyBody' => 'عند اكتمال أول طلب (تأكيد استلام المشتري) ستظهر عمولته هنا.',
+			'admin.ledger.ordersTitle' => 'الطلبات المكتملة',
+			'admin.ledger.currencyOrders' => ({required Object currency, required Object count}) => '${currency} · ${count} طلب',
+			'admin.ledger.pendingCommission' => 'عمولة مستحقّة (غير مُسوّاة)',
+			'admin.ledger.settledLabel' => ({required Object amount}) => 'مُسوّى: ${amount}',
+			'admin.ledger.priceLabel' => ({required Object amount}) => 'السعر ${amount}',
+			'admin.ledger.netLabel' => ({required Object amount}) => 'للمتجر ${amount}',
+			'admin.ledger.commissionLabel' => 'عمولة المنصّة',
+			'admin.ledger.statusSettled' => 'مُسوّى',
+			'admin.ledger.settleAction' => 'تسوية',
+			'admin.ledger.settleConfirm' => ({required Object amount}) => 'تأكيد تسوية هذا الطلب؟ يعني أنك حصّلت المبلغ من المندوب ودفعت للمتجر حصته، وتحقّقت عمولتك (${amount}).',
+			'admin.ledger.settled' => 'تمت التسوية',
 			'errors.INVALID_STATE_TRANSITION' => 'لا يمكن تنفيذ هذا الانتقال في حالة الجهاز.',
 			'errors.ADMIN_ONLY_TRANSITION' => 'هذا الإجراء متاح لإدارة المنصة فقط.',
 			'errors.CHECKLIST_INCOMPLETE' => 'أكمل جميع بنود الفحص أولًا.',

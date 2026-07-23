@@ -402,6 +402,24 @@
       "dispatched": "تم إرسال الطلب للتوصيل",
       "markDelivered": "تأكيد الاستلام",
       "markedDelivered": "تم تسجيل التسليم"
+    },
+    "navLedger": "السجل المالي",
+    "ledger": {
+      "title": "السجل المالي والعمولات",
+      "subtitle": "عمولتك من الطلبات المكتملة، مفصّلة حسب العملة. تُحصّل عبر تحصيل المندوب عند الاستلام.",
+      "emptyTitle": "لا عمولات بعد",
+      "emptyBody": "عند اكتمال أول طلب (تأكيد استلام المشتري) ستظهر عمولته هنا.",
+      "ordersTitle": "الطلبات المكتملة",
+      "currencyOrders": "{currency} · {count} طلب",
+      "pendingCommission": "عمولة مستحقّة (غير مُسوّاة)",
+      "settledLabel": "مُسوّى: {amount}",
+      "priceLabel": "السعر {amount}",
+      "netLabel": "للمتجر {amount}",
+      "commissionLabel": "عمولة المنصّة",
+      "statusSettled": "مُسوّى",
+      "settleAction": "تسوية",
+      "settleConfirm": "تأكيد تسوية هذا الطلب؟ يعني أنك حصّلت المبلغ من المندوب ودفعت للمتجر حصته، وتحقّقت عمولتك ({amount}).",
+      "settled": "تمت التسوية"
     }
   },
   "errors": {

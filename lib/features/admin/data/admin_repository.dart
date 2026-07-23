@@ -143,6 +143,31 @@ class AdminRepository {
     return UserStats.fromJson(Map<String, dynamic>.from(result as Map));
   }
 
+  Future<List<CommissionSummary>> fetchCommissionSummary() async {
+    final rows = await _client.rpc('admin_commission_summary') as List<dynamic>;
+    return rows
+        .map((r) =>
+            CommissionSummary.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
+  /// Delivered orders with their settlement state — the ledger's line items.
+  Future<List<Reservation>> fetchSettlements() async {
+    final rows = await _client
+        .from('reservations')
+        .select('*, devices(title, public_id)')
+        .eq('status', 'delivered')
+        .order('id', ascending: false)
+        .limit(100);
+    return (rows as List<dynamic>)
+        .map((r) => Reservation.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
+  Future<void> settleReservation(int id) async {
+    await _client.rpc('admin_settle_reservation', params: {'p_id': id});
+  }
+
   Future<List<AdminUser>> fetchUsers({String? search}) async {
     final rows = await _client.rpc('admin_list_users', params: {
       'p_search': (search == null || search.isEmpty) ? null : search,
@@ -195,6 +220,15 @@ final adminReservationsProvider =
 
 final adminUserStatsProvider = FutureProvider<UserStats>(
   (ref) => ref.watch(adminRepositoryProvider).fetchUserStats(),
+);
+
+final adminCommissionSummaryProvider =
+    FutureProvider<List<CommissionSummary>>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchCommissionSummary(),
+);
+
+final adminSettlementsProvider = FutureProvider<List<Reservation>>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchSettlements(),
 );
 
 final adminUsersProvider =
