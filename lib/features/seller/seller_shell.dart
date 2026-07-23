@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/domain.dart';
 import '../../core/supabase_providers.dart';
 import '../../i18n/strings.g.dart';
+import '../notifications/notifications_page.dart';
 import 'data/seller_repository.dart';
 import 'pages/seller_shop_page.dart';
 
@@ -71,6 +72,7 @@ class SellerShell extends ConsumerWidget {
         ),
       ),
       actions: [
+        const NotificationBell(),
         TextButton.icon(
           onPressed: () => context.go('/'),
           icon: const Icon(Icons.storefront_outlined, size: 18),

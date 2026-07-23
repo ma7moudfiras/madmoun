@@ -6,6 +6,7 @@ import '../../core/domain.dart';
 import '../../core/supabase_providers.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import '../notifications/notifications_page.dart';
 
 /// Admin chrome, role-gated in the UI (RLS enforces it at the DB regardless).
 class AdminShell extends ConsumerWidget {
@@ -57,6 +58,7 @@ class AdminShell extends ConsumerWidget {
         ],
       ),
       actions: [
+        const NotificationBell(),
         TextButton.icon(
           onPressed: () => context.go('/'),
           icon: const Icon(Icons.storefront_outlined, size: 18),

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/domain.dart';
 import '../../core/supabase_providers.dart';
 import '../../i18n/strings.g.dart';
+import '../notifications/notifications_page.dart';
 
 /// Top-level chrome for the public marketplace: brand, nav, account menu.
 class PublicShell extends ConsumerWidget {
@@ -62,6 +63,7 @@ class PublicShell extends ConsumerWidget {
             const _InfoMenu(),
             const SizedBox(width: 8),
           ],
+          if (signedIn) const NotificationBell(),
           if (!signedIn)
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 16),

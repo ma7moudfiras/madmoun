@@ -20,6 +20,7 @@ import '../features/auth/reset_password_page.dart';
 import '../features/buyer/orders_page.dart';
 import '../features/buyer/reserve_page.dart';
 import '../features/info/info_page.dart';
+import '../features/notifications/notifications_page.dart';
 import '../features/marketplace/device_page.dart';
 import '../features/marketplace/home_page.dart';
 import '../features/seller/pages/seller_claims_page.dart';
@@ -118,6 +119,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/account',
             builder: (context, state) => const AccountPage(),
+          ),
+          GoRoute(
+            path: '/notifications',
+            builder: (context, state) => const NotificationsPage(),
           ),
           GoRoute(
             path: '/how-it-works',

@@ -72,6 +72,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'CANCEL_FORBIDDEN': 'لا تملك صلاحية إلغاء هذا الطلب.',
 	};
 	late final Translations$info$ar info = Translations$info$ar.internal(_root);
+	late final Translations$notif$ar notif = Translations$notif$ar.internal(_root);
 }
 
 // Path: common
@@ -825,6 +826,26 @@ class Translations$info$ar {
 	String get privacyBody => 'نحترم خصوصيتك ونجمع الحد الأدنى من البيانات اللازمة لتشغيل الخدمة.\n\nالبيانات التي نجمعها: الاسم والبريد الإلكتروني ورقم الهاتف ومدينة التسليم، إضافةً إلى بيانات الأجهزة والحجوزات التي تنشئها.\n\nكيف نستخدمها: لإتمام الحجوزات، وتمكين التواصل بينك وبين المتجر، وتشغيل الكفالة والدعم، وتحسين الخدمة.\n\nالمشاركة: تُشارَك بيانات التواصل الضرورية مع المتجر المعني لإتمام الصفقة فقط، ولا نبيع بياناتك لأي طرف ثالث.\n\nالأمان: تُخزَّن البيانات لدى مزوّد بنية تحتية آمن مع ضوابط وصول صارمة على مستوى قاعدة البيانات.\n\nحقوقك: يمكنك تعديل بياناتك من إعدادات الحساب، أو طلب حذف حسابك بالتواصل معنا عبر المنصّة.';
 }
 
+// Path: notif
+class Translations$notif$ar {
+	Translations$notif$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'الإشعارات'
+	String get title => 'الإشعارات';
+
+	/// ar: 'لا إشعارات'
+	String get emptyTitle => 'لا إشعارات';
+
+	/// ar: 'ستظهر هنا تحديثات طلباتك وأجهزتك أولاً بأول.'
+	String get emptyBody => 'ستظهر هنا تحديثات طلباتك وأجهزتك أولاً بأول.';
+
+	late final Translations$notif$kinds$ar kinds = Translations$notif$kinds$ar.internal(_root);
+}
+
 // Path: seller.onboarding
 class Translations$seller$onboarding$ar {
 	Translations$seller$onboarding$ar.internal(this._root);
@@ -1437,6 +1458,39 @@ class Translations$admin$ledger$ar {
 	String get settled => 'تمت التسوية';
 }
 
+// Path: notif.kinds
+class Translations$notif$kinds$ar {
+	Translations$notif$kinds$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'طلب جديد على أحد أجهزتك ({ref}) — بانتظار تأكيد التوفّر.'
+	String newOrderShop({required Object ref}) => 'طلب جديد على أحد أجهزتك (${ref}) — بانتظار تأكيد التوفّر.';
+
+	/// ar: 'تم تأكيد توفّر طلبك ({ref}).'
+	String orderConfirmedBuyer({required Object ref}) => 'تم تأكيد توفّر طلبك (${ref}).';
+
+	/// ar: 'متجر أكّد التوفّر للطلب ({ref}) — جاهز للشحن.'
+	String orderConfirmedAdmin({required Object ref}) => 'متجر أكّد التوفّر للطلب (${ref}) — جاهز للشحن.';
+
+	/// ar: 'طلبك ({ref}) قيد التوصيل — أكّد الاستلام عند وصوله.'
+	String outForDeliveryBuyer({required Object ref}) => 'طلبك (${ref}) قيد التوصيل — أكّد الاستلام عند وصوله.';
+
+	/// ar: 'تم تسليم جهازك للمشتري ({ref}).'
+	String deliveredShop({required Object ref}) => 'تم تسليم جهازك للمشتري (${ref}).';
+
+	/// ar: 'طلب مكتمل ({ref}) — عمولة مستحقّة.'
+	String deliveredAdmin({required Object ref}) => 'طلب مكتمل (${ref}) — عمولة مستحقّة.';
+
+	/// ar: 'أُلغي طلبك ({ref}).'
+	String cancelledBuyer({required Object ref}) => 'أُلغي طلبك (${ref}).';
+
+	/// ar: 'أُلغي طلب على أحد أجهزتك ({ref}).'
+	String cancelledShop({required Object ref}) => 'أُلغي طلب على أحد أجهزتك (${ref}).';
+}
+
 /// The flat map containing all translations for locale <ar>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -1853,6 +1907,17 @@ extension on Translations {
 			'info.privacyTitle' => 'سياسة الخصوصية',
 			'info.privacyUpdated' => 'آخر تحديث: تموز 2026',
 			'info.privacyBody' => 'نحترم خصوصيتك ونجمع الحد الأدنى من البيانات اللازمة لتشغيل الخدمة.\n\nالبيانات التي نجمعها: الاسم والبريد الإلكتروني ورقم الهاتف ومدينة التسليم، إضافةً إلى بيانات الأجهزة والحجوزات التي تنشئها.\n\nكيف نستخدمها: لإتمام الحجوزات، وتمكين التواصل بينك وبين المتجر، وتشغيل الكفالة والدعم، وتحسين الخدمة.\n\nالمشاركة: تُشارَك بيانات التواصل الضرورية مع المتجر المعني لإتمام الصفقة فقط، ولا نبيع بياناتك لأي طرف ثالث.\n\nالأمان: تُخزَّن البيانات لدى مزوّد بنية تحتية آمن مع ضوابط وصول صارمة على مستوى قاعدة البيانات.\n\nحقوقك: يمكنك تعديل بياناتك من إعدادات الحساب، أو طلب حذف حسابك بالتواصل معنا عبر المنصّة.',
+			'notif.title' => 'الإشعارات',
+			'notif.emptyTitle' => 'لا إشعارات',
+			'notif.emptyBody' => 'ستظهر هنا تحديثات طلباتك وأجهزتك أولاً بأول.',
+			'notif.kinds.newOrderShop' => ({required Object ref}) => 'طلب جديد على أحد أجهزتك (${ref}) — بانتظار تأكيد التوفّر.',
+			'notif.kinds.orderConfirmedBuyer' => ({required Object ref}) => 'تم تأكيد توفّر طلبك (${ref}).',
+			'notif.kinds.orderConfirmedAdmin' => ({required Object ref}) => 'متجر أكّد التوفّر للطلب (${ref}) — جاهز للشحن.',
+			'notif.kinds.outForDeliveryBuyer' => ({required Object ref}) => 'طلبك (${ref}) قيد التوصيل — أكّد الاستلام عند وصوله.',
+			'notif.kinds.deliveredShop' => ({required Object ref}) => 'تم تسليم جهازك للمشتري (${ref}).',
+			'notif.kinds.deliveredAdmin' => ({required Object ref}) => 'طلب مكتمل (${ref}) — عمولة مستحقّة.',
+			'notif.kinds.cancelledBuyer' => ({required Object ref}) => 'أُلغي طلبك (${ref}).',
+			'notif.kinds.cancelledShop' => ({required Object ref}) => 'أُلغي طلب على أحد أجهزتك (${ref}).',
 			_ => null,
 		};
 	}
