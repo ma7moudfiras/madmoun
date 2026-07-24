@@ -22,6 +22,7 @@ class AdminShell extends ConsumerWidget {
 
     final destinations = <_Dest>[
       _Dest('/admin', Icons.dashboard_rounded, t.admin.navDashboard),
+      _Dest('/admin/ops', Icons.dashboard_customize_rounded, t.admin.navOps),
       _Dest('/admin/shops', Icons.storefront_rounded, t.admin.navShops),
       _Dest('/admin/review', Icons.fact_check_rounded, t.admin.navReview),
       _Dest('/admin/templates', Icons.checklist_rounded, t.admin.navTemplates),

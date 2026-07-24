@@ -729,6 +729,11 @@ class Translations$admin$ar {
 
 	late final Translations$admin$ledger$ar ledger = Translations$admin$ledger$ar.internal(_root);
 	late final Translations$admin$dispatch$ar dispatch = Translations$admin$dispatch$ar.internal(_root);
+
+	/// ar: 'لوحة التشغيل'
+	String get navOps => 'لوحة التشغيل';
+
+	late final Translations$admin$ops$ar ops = Translations$admin$ops$ar.internal(_root);
 }
 
 // Path: info
@@ -1504,6 +1509,48 @@ class Translations$admin$dispatch$ar {
 	String get collect => 'المبلغ المطلوب تحصيله عند الاستلام';
 }
 
+// Path: admin.ops
+class Translations$admin$ops$ar {
+	Translations$admin$ops$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'لوحة التشغيل'
+	String get title => 'لوحة التشغيل';
+
+	/// ar: 'خطّ الطلبات كاملاً في مكان واحد — كل مرحلة وإجراؤها.'
+	String get subtitle => 'خطّ الطلبات كاملاً في مكان واحد — كل مرحلة وإجراؤها.';
+
+	/// ar: 'جديدة'
+	String get stageNew => 'جديدة';
+
+	/// ar: 'جاهزة للشحن'
+	String get stageToDispatch => 'جاهزة للشحن';
+
+	/// ar: 'قيد التوصيل'
+	String get stageOutForDelivery => 'قيد التوصيل';
+
+	/// ar: 'بانتظار التسوية'
+	String get stageToSettle => 'بانتظار التسوية';
+
+	/// ar: 'بانتظار تأكيد المتجر للتوفّر — لا إجراء مطلوب منك بعد.'
+	String get awaitingShop => 'بانتظار تأكيد المتجر للتوفّر — لا إجراء مطلوب منك بعد.';
+
+	/// ar: 'عمولة مستحقّة'
+	String get pendingCommission => 'عمولة مستحقّة';
+
+	/// ar: 'إلغاء الطلب'
+	String get cancelAction => 'إلغاء الطلب';
+
+	/// ar: 'سيُلغى الطلب ويُعاد عرض الجهاز في السوق. متابعة؟'
+	String get cancelConfirm => 'سيُلغى الطلب ويُعاد عرض الجهاز في السوق. متابعة؟';
+
+	/// ar: 'أُلغي الطلب'
+	String get cancelled => 'أُلغي الطلب';
+}
+
 // Path: notif.kinds
 class Translations$notif$kinds$ar {
 	Translations$notif$kinds$ar.internal(this._root);
@@ -1916,6 +1963,18 @@ extension on Translations {
 			'admin.dispatch.phone' => 'هاتف',
 			'admin.dispatch.note' => 'ملاحظة',
 			'admin.dispatch.collect' => 'المبلغ المطلوب تحصيله عند الاستلام',
+			'admin.navOps' => 'لوحة التشغيل',
+			'admin.ops.title' => 'لوحة التشغيل',
+			'admin.ops.subtitle' => 'خطّ الطلبات كاملاً في مكان واحد — كل مرحلة وإجراؤها.',
+			'admin.ops.stageNew' => 'جديدة',
+			'admin.ops.stageToDispatch' => 'جاهزة للشحن',
+			'admin.ops.stageOutForDelivery' => 'قيد التوصيل',
+			'admin.ops.stageToSettle' => 'بانتظار التسوية',
+			'admin.ops.awaitingShop' => 'بانتظار تأكيد المتجر للتوفّر — لا إجراء مطلوب منك بعد.',
+			'admin.ops.pendingCommission' => 'عمولة مستحقّة',
+			'admin.ops.cancelAction' => 'إلغاء الطلب',
+			'admin.ops.cancelConfirm' => 'سيُلغى الطلب ويُعاد عرض الجهاز في السوق. متابعة؟',
+			'admin.ops.cancelled' => 'أُلغي الطلب',
 			'errors.INVALID_STATE_TRANSITION' => 'لا يمكن تنفيذ هذا الانتقال في حالة الجهاز.',
 			'errors.ADMIN_ONLY_TRANSITION' => 'هذا الإجراء متاح لإدارة المنصة فقط.',
 			'errors.CHECKLIST_INCOMPLETE' => 'أكمل جميع بنود الفحص أولًا.',
