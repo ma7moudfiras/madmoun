@@ -70,6 +70,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'SELLER_ONLY_TRANSITION': 'هذا الإجراء متاح للمتجر فقط.',
 		'BUYER_ONLY_TRANSITION': 'تأكيد الاستلام متاح للمشتري فقط.',
 		'CANCEL_FORBIDDEN': 'لا تملك صلاحية إلغاء هذا الطلب.',
+		'OWN_DEVICE': 'لا يمكنك حجز جهاز معروض من متجرك.',
 	};
 	late final Translations$info$ar info = Translations$info$ar.internal(_root);
 	late final Translations$notif$ar notif = Translations$notif$ar.internal(_root);
@@ -676,6 +677,12 @@ class Translations$seller$ar {
 	late final Translations$seller$deviceForm$ar deviceForm = Translations$seller$deviceForm$ar.internal(_root);
 	late final Translations$seller$reservations$ar reservations = Translations$seller$reservations$ar.internal(_root);
 	late final Translations$seller$claims$ar claims = Translations$seller$claims$ar.internal(_root);
+
+	/// ar: 'هذه البوابة للبائعين فقط'
+	String get adminNotAllowedTitle => 'هذه البوابة للبائعين فقط';
+
+	/// ar: 'حسابك حساب إدارة للمنصّة، وليس له متجر. استخدم لوحة الإدارة لمتابعة الطلبات والمتاجر.'
+	String get adminNotAllowedBody => 'حسابك حساب إدارة للمنصّة، وليس له متجر. استخدم لوحة الإدارة لمتابعة الطلبات والمتاجر.';
 }
 
 // Path: admin
@@ -1535,8 +1542,8 @@ class Translations$admin$ops$ar {
 	/// ar: 'بانتظار التسوية'
 	String get stageToSettle => 'بانتظار التسوية';
 
-	/// ar: 'بانتظار تأكيد المتجر للتوفّر — لا إجراء مطلوب منك بعد.'
-	String get awaitingShop => 'بانتظار تأكيد المتجر للتوفّر — لا إجراء مطلوب منك بعد.';
+	/// ar: 'بانتظار أن يؤكّد المتجرُ توفّرَ الجهاز — لا إجراء مطلوب منك الآن.'
+	String get awaitingShop => 'بانتظار أن يؤكّد المتجرُ توفّرَ الجهاز — لا إجراء مطلوب منك الآن.';
 
 	/// ar: 'عمولة مستحقّة'
 	String get pendingCommission => 'عمولة مستحقّة';
@@ -1857,6 +1864,8 @@ extension on Translations {
 			'seller.claims.respondHint' => 'مثال: يرجى إحضار الجهاز للمتجر للفحص…',
 			'seller.claims.respondSubmit' => 'إرسال الرد',
 			'seller.claims.responded' => 'تم حفظ الرد',
+			'seller.adminNotAllowedTitle' => 'هذه البوابة للبائعين فقط',
+			'seller.adminNotAllowedBody' => 'حسابك حساب إدارة للمنصّة، وليس له متجر. استخدم لوحة الإدارة لمتابعة الطلبات والمتاجر.',
 			'admin.title' => 'لوحة الإدارة',
 			'admin.navDashboard' => 'الرئيسية',
 			'admin.navShops' => 'المتاجر',
@@ -1970,7 +1979,7 @@ extension on Translations {
 			'admin.ops.stageToDispatch' => 'جاهزة للشحن',
 			'admin.ops.stageOutForDelivery' => 'قيد التوصيل',
 			'admin.ops.stageToSettle' => 'بانتظار التسوية',
-			'admin.ops.awaitingShop' => 'بانتظار تأكيد المتجر للتوفّر — لا إجراء مطلوب منك بعد.',
+			'admin.ops.awaitingShop' => 'بانتظار أن يؤكّد المتجرُ توفّرَ الجهاز — لا إجراء مطلوب منك الآن.',
 			'admin.ops.pendingCommission' => 'عمولة مستحقّة',
 			'admin.ops.cancelAction' => 'إلغاء الطلب',
 			'admin.ops.cancelConfirm' => 'سيُلغى الطلب ويُعاد عرض الجهاز في السوق. متابعة؟',
@@ -1993,6 +2002,7 @@ extension on Translations {
 			'errors.SELLER_ONLY_TRANSITION' => 'هذا الإجراء متاح للمتجر فقط.',
 			'errors.BUYER_ONLY_TRANSITION' => 'تأكيد الاستلام متاح للمشتري فقط.',
 			'errors.CANCEL_FORBIDDEN' => 'لا تملك صلاحية إلغاء هذا الطلب.',
+			'errors.OWN_DEVICE' => 'لا يمكنك حجز جهاز معروض من متجرك.',
 			'info.menuLabel' => 'معلومات',
 			'info.footerTagline' => 'منصّة فلسطينية للأجهزة الإلكترونية المستعملة الموثوقة.',
 			'info.footerRights' => '© 2026 مضمون. جميع الحقوق محفوظة.',

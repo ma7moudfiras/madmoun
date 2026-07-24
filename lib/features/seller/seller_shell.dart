@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/domain.dart';
 import '../../core/supabase_providers.dart';
+import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
 import '../notifications/notifications_page.dart';
 import 'data/seller_repository.dart';
@@ -20,6 +21,24 @@ class SellerShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+
+    // The platform admin is not a seller and has no store; keep them out of the
+    // onboarding form entirely rather than showing a "register your store" page.
+    if (ref.watch(userRoleProvider) == UserRole.admin) {
+      return Scaffold(
+        appBar: AppBar(title: Text(t.common.sellerPortal)),
+        body: EmptyState(
+          icon: Icons.storefront_rounded,
+          title: t.seller.adminNotAllowedTitle,
+          body: t.seller.adminNotAllowedBody,
+          action: FilledButton(
+            onPressed: () => context.go('/admin'),
+            child: Text(t.common.adminPanel),
+          ),
+        ),
+      );
+    }
+
     final shopAsync = ref.watch(myShopProvider);
     final shop = shopAsync.valueOrNull;
     final approved = shop?.status == ShopStatus.approved;
