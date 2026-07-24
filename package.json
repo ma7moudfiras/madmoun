@@ -1,0 +1,6 @@
+{
+  "name": "madmoun-web",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Vercel Node.js function support for api/ (link-preview OG tags). The actual app is Flutter Web, built by scripts/vercel_build.sh."
+}
