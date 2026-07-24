@@ -5,6 +5,17 @@
   "outputDirectory": "build/web",
   "framework": null,
   "rewrites": [
+    {
+      "source": "/d/:id",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot|Googlebot|bingbot|Applebot|Pinterest|redditbot|vkShare|SkypeUriPreview|W3C_Validator|Embedly|Iframely|Outbrain)"
+        }
+      ],
+      "destination": "/api/og/:id"
+    },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [

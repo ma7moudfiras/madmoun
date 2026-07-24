@@ -157,7 +157,14 @@
     "notAvailableBody": "هذا الجهاز لم يعد معروضًا. تصفّح باقي الأجهزة في السوق.",
     "descriptionTitle": "الوصف",
     "publicIdLabel": "رقم الجهاز",
-    "sellerGeneric": "بائع معتمد عبر مضمون"
+    "sellerGeneric": "بائع معتمد عبر مضمون",
+    "shareCta": "مشاركة",
+    "shareSheetTitle": "شارك هذا الجهاز",
+    "shareWhatsapp": "مشاركة عبر واتساب",
+    "shareCopyLink": "نسخ الرابط",
+    "shareCopied": "تم نسخ الرابط",
+    "shareMore": "خيارات أخرى",
+    "shareWhatsappText": "شوف هالجهاز على مضمون: {title} — {price}\n{link}"
   },
   "reserve": {
     "title": "حجز الجهاز",

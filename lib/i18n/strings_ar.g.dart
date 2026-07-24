@@ -476,6 +476,27 @@ class Translations$device$ar {
 
 	/// ar: 'بائع معتمد عبر مضمون'
 	String get sellerGeneric => 'بائع معتمد عبر مضمون';
+
+	/// ar: 'مشاركة'
+	String get shareCta => 'مشاركة';
+
+	/// ar: 'شارك هذا الجهاز'
+	String get shareSheetTitle => 'شارك هذا الجهاز';
+
+	/// ar: 'مشاركة عبر واتساب'
+	String get shareWhatsapp => 'مشاركة عبر واتساب';
+
+	/// ar: 'نسخ الرابط'
+	String get shareCopyLink => 'نسخ الرابط';
+
+	/// ar: 'تم نسخ الرابط'
+	String get shareCopied => 'تم نسخ الرابط';
+
+	/// ar: 'خيارات أخرى'
+	String get shareMore => 'خيارات أخرى';
+
+	/// ar: 'شوف هالجهاز على مضمون: {title} — {price} {link}'
+	String shareWhatsappText({required Object title, required Object price, required Object link}) => 'شوف هالجهاز على مضمون: ${title} — ${price}\n${link}';
 }
 
 // Path: reserve
@@ -1802,6 +1823,13 @@ extension on Translations {
 			'device.descriptionTitle' => 'الوصف',
 			'device.publicIdLabel' => 'رقم الجهاز',
 			'device.sellerGeneric' => 'بائع معتمد عبر مضمون',
+			'device.shareCta' => 'مشاركة',
+			'device.shareSheetTitle' => 'شارك هذا الجهاز',
+			'device.shareWhatsapp' => 'مشاركة عبر واتساب',
+			'device.shareCopyLink' => 'نسخ الرابط',
+			'device.shareCopied' => 'تم نسخ الرابط',
+			'device.shareMore' => 'خيارات أخرى',
+			'device.shareWhatsappText' => ({required Object title, required Object price, required Object link}) => 'شوف هالجهاز على مضمون: ${title} — ${price}\n${link}',
 			'reserve.title' => 'حجز الجهاز',
 			'reserve.deviceSummary' => ({required Object title}) => 'أنت تحجز: ${title}',
 			'reserve.phoneHelp' => 'سنستخدم هذا الرقم للتواصل معك لتنسيق التسليم.',

@@ -7,6 +7,7 @@ import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import 'data/device_share.dart';
 import 'data/marketplace_repository.dart';
 import 'widgets/listing_card.dart';
 
@@ -69,22 +70,34 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
     final info = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (listing.grade != null) GradeBadge(listing.grade!),
-            Chip(
-              avatar: const Icon(Icons.category_rounded, size: 16),
-              label: Text(
-                  t.enums.category[listing.category.dbValue] ??
-                      listing.category.dbValue),
+            Expanded(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (listing.grade != null) GradeBadge(listing.grade!),
+                  Chip(
+                    avatar: const Icon(Icons.category_rounded, size: 16),
+                    label: Text(
+                        t.enums.category[listing.category.dbValue] ??
+                            listing.category.dbValue),
+                  ),
+                  Chip(
+                    avatar: const Icon(Icons.verified_user_rounded, size: 16),
+                    label: Text(t.common
+                        .warrantyDays(days: '${listing.warrantyDays}')),
+                  ),
+                ],
+              ),
             ),
-            Chip(
-              avatar: const Icon(Icons.verified_user_rounded, size: 16),
-              label: Text(
-                  t.common.warrantyDays(days: '${listing.warrantyDays}')),
+            IconButton(
+              tooltip: t.device.shareCta,
+              onPressed: () => shareDevice(context, listing),
+              icon: const Icon(Icons.share_rounded),
             ),
           ],
         ),
