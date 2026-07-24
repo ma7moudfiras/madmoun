@@ -388,14 +388,17 @@ class Reservation {
       commissionMinor: _int(json['commission_minor']),
       status: ReservationStatus.fromDb(json['status'] as String),
       createdAt: _date(json['created_at']),
-      deviceTitle: device?['title'] as String?,
-      devicePublicId: device?['public_id'] as String?,
+      // Nested keys come from the buyer/seller embeds; flat device_/shop_ keys
+      // come from the admin_reservations() RPC.
+      deviceTitle: (device?['title'] ?? json['device_title']) as String?,
+      devicePublicId:
+          (device?['public_id'] ?? json['device_public_id']) as String?,
       deviceCoverPath: cover,
       settlementStatus: json['settlement_status'] as String?,
-      shopName: shop?['name'] as String?,
-      shopCity: shop?['city'] as String?,
-      shopAddress: shop?['address'] as String?,
-      shopPhone: shop?['phone_e164'] as String?,
+      shopName: (shop?['name'] ?? json['shop_name']) as String?,
+      shopCity: (shop?['city'] ?? json['shop_city']) as String?,
+      shopAddress: (shop?['address'] ?? json['shop_address']) as String?,
+      shopPhone: (shop?['phone_e164'] ?? json['shop_phone']) as String?,
     );
   }
 }

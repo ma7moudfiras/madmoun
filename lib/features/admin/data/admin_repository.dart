@@ -115,14 +115,13 @@ class AdminRepository {
     });
   }
 
-  Future<List<Reservation>> fetchAllReservations({int? cursor}) async {
-    // The admin is the hub, so unlike the seller view this includes the shop's
-    // pickup details and the buyer contact needed to brief a courier.
-    var query = _client.from('reservations').select(
-        '*, devices(title, public_id, shops(name, city, address, phone_e164))');
-    if (cursor != null) query = query.lt('id', cursor);
-    final rows = await query.order('id', ascending: false).limit(30);
-    return (rows as List<dynamic>)
+  /// The admin is the hub and needs the shop's pickup contact to brief a
+  /// courier — columns that are deliberately not granted to authenticated for
+  /// opacity. An admin-gated security-definer RPC returns the full picture with
+  /// flat device_/shop_ fields.
+  Future<List<Reservation>> fetchAllReservations() async {
+    final rows = await _client.rpc('admin_reservations') as List<dynamic>;
+    return rows
         .map((r) => Reservation.fromJson(Map<String, dynamic>.from(r as Map)))
         .toList();
   }
