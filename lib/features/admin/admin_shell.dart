@@ -31,6 +31,7 @@ class AdminShell extends ConsumerWidget {
           t.admin.navReservations),
       _Dest('/admin/ledger', Icons.account_balance_wallet_rounded,
           t.admin.navLedger),
+      _Dest('/admin/reputation', Icons.shield_outlined, t.admin.navReputation),
       _Dest('/admin/users', Icons.group_rounded, t.admin.navUsers),
     ];
 

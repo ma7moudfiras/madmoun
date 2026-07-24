@@ -168,6 +168,15 @@ class AdminRepository {
     await _client.rpc('admin_settle_reservation', params: {'p_id': id});
   }
 
+  /// Objective, admin-only trust signal per shop — never shown to buyers or
+  /// sellers, so it's safe to compute from real transactions only.
+  Future<List<ShopReputation>> fetchShopReputation() async {
+    final rows = await _client.rpc('admin_shop_reputation') as List<dynamic>;
+    return rows
+        .map((r) => ShopReputation.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
   Future<List<AdminUser>> fetchUsers({String? search}) async {
     final rows = await _client.rpc('admin_list_users', params: {
       'p_search': (search == null || search.isEmpty) ? null : search,
@@ -229,6 +238,11 @@ final adminCommissionSummaryProvider =
 
 final adminSettlementsProvider = FutureProvider<List<Reservation>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchSettlements(),
+);
+
+final adminShopReputationProvider =
+    FutureProvider<List<ShopReputation>>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchShopReputation(),
 );
 
 final adminUsersProvider =

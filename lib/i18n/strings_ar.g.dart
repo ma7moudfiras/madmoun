@@ -741,6 +741,11 @@ class Translations$admin$ar {
 	String get navOps => 'لوحة التشغيل';
 
 	late final Translations$admin$ops$ar ops = Translations$admin$ops$ar.internal(_root);
+
+	/// ar: 'سمعة المتاجر'
+	String get navReputation => 'سمعة المتاجر';
+
+	late final Translations$admin$reputation$ar reputation = Translations$admin$reputation$ar.internal(_root);
 }
 
 // Path: info
@@ -1558,6 +1563,72 @@ class Translations$admin$ops$ar {
 	String get cancelled => 'أُلغي الطلب';
 }
 
+// Path: admin.reputation
+class Translations$admin$reputation$ar {
+	Translations$admin$reputation$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'سمعة المتاجر (داخلي)'
+	String get title => 'سمعة المتاجر (داخلي)';
+
+	/// ar: 'مؤشر ثقة محسوب تلقائياً من التعاملات الفعلية — لا يظهر لأي مشترٍ أو متجر، ولا يعتمد على تقييمات نصّية قابلة للتلاعب.'
+	String get subtitle => 'مؤشر ثقة محسوب تلقائياً من التعاملات الفعلية — لا يظهر لأي مشترٍ أو متجر، ولا يعتمد على تقييمات نصّية قابلة للتلاعب.';
+
+	/// ar: 'لا متاجر بعد'
+	String get emptyTitle => 'لا متاجر بعد';
+
+	/// ar: 'ستظهر هنا مؤشرات الثقة بمجرد اعتماد أول متجر.'
+	String get emptyBody => 'ستظهر هنا مؤشرات الثقة بمجرد اعتماد أول متجر.';
+
+	/// ar: 'درجة الثقة'
+	String get trustScore => 'درجة الثقة';
+
+	/// ar: 'بيانات غير كافية'
+	String get tierNew => 'بيانات غير كافية';
+
+	/// ar: 'ممتاز'
+	String get tierExcellent => 'ممتاز';
+
+	/// ar: 'جيد'
+	String get tierGood => 'جيد';
+
+	/// ar: 'بحاجة متابعة'
+	String get tierWatch => 'بحاجة متابعة';
+
+	/// ar: 'تحت المراقبة'
+	String get tierCritical => 'تحت المراقبة';
+
+	/// ar: 'طلبات مكتملة'
+	String get completedOrders => 'طلبات مكتملة';
+
+	/// ar: 'طلبات ملغاة'
+	String get cancelledOrders => 'طلبات ملغاة';
+
+	/// ar: 'طلبات جارية'
+	String get activeOrders => 'طلبات جارية';
+
+	/// ar: 'مطالبات كفالة'
+	String get claims => 'مطالبات كفالة';
+
+	/// ar: 'أجهزة مرفوضة من {submitted}'
+	String devicesRejected({required Object submitted}) => 'أجهزة مرفوضة من ${submitted}';
+
+	/// ar: 'نسبة الإلغاء {rate}'
+	String cancellationRate({required Object rate}) => 'نسبة الإلغاء ${rate}';
+
+	/// ar: 'نسبة مطالبات الكفالة {rate}'
+	String claimRate({required Object rate}) => 'نسبة مطالبات الكفالة ${rate}';
+
+	/// ar: 'نسبة رفض الفحص {rate}'
+	String rejectionRate({required Object rate}) => 'نسبة رفض الفحص ${rate}';
+
+	/// ar: 'أقل من 5 طلبات مكتملة — المؤشر غير موثوق بعد.'
+	String get insufficientData => 'أقل من 5 طلبات مكتملة — المؤشر غير موثوق بعد.';
+}
+
 // Path: notif.kinds
 class Translations$notif$kinds$ar {
 	Translations$notif$kinds$ar.internal(this._root);
@@ -1984,6 +2055,26 @@ extension on Translations {
 			'admin.ops.cancelAction' => 'إلغاء الطلب',
 			'admin.ops.cancelConfirm' => 'سيُلغى الطلب ويُعاد عرض الجهاز في السوق. متابعة؟',
 			'admin.ops.cancelled' => 'أُلغي الطلب',
+			'admin.navReputation' => 'سمعة المتاجر',
+			'admin.reputation.title' => 'سمعة المتاجر (داخلي)',
+			'admin.reputation.subtitle' => 'مؤشر ثقة محسوب تلقائياً من التعاملات الفعلية — لا يظهر لأي مشترٍ أو متجر، ولا يعتمد على تقييمات نصّية قابلة للتلاعب.',
+			'admin.reputation.emptyTitle' => 'لا متاجر بعد',
+			'admin.reputation.emptyBody' => 'ستظهر هنا مؤشرات الثقة بمجرد اعتماد أول متجر.',
+			'admin.reputation.trustScore' => 'درجة الثقة',
+			'admin.reputation.tierNew' => 'بيانات غير كافية',
+			'admin.reputation.tierExcellent' => 'ممتاز',
+			'admin.reputation.tierGood' => 'جيد',
+			'admin.reputation.tierWatch' => 'بحاجة متابعة',
+			'admin.reputation.tierCritical' => 'تحت المراقبة',
+			'admin.reputation.completedOrders' => 'طلبات مكتملة',
+			'admin.reputation.cancelledOrders' => 'طلبات ملغاة',
+			'admin.reputation.activeOrders' => 'طلبات جارية',
+			'admin.reputation.claims' => 'مطالبات كفالة',
+			'admin.reputation.devicesRejected' => ({required Object submitted}) => 'أجهزة مرفوضة من ${submitted}',
+			'admin.reputation.cancellationRate' => ({required Object rate}) => 'نسبة الإلغاء ${rate}',
+			'admin.reputation.claimRate' => ({required Object rate}) => 'نسبة مطالبات الكفالة ${rate}',
+			'admin.reputation.rejectionRate' => ({required Object rate}) => 'نسبة رفض الفحص ${rate}',
+			'admin.reputation.insufficientData' => 'أقل من 5 طلبات مكتملة — المؤشر غير موثوق بعد.',
 			'errors.INVALID_STATE_TRANSITION' => 'لا يمكن تنفيذ هذا الانتقال في حالة الجهاز.',
 			'errors.ADMIN_ONLY_TRANSITION' => 'هذا الإجراء متاح لإدارة المنصة فقط.',
 			'errors.CHECKLIST_INCOMPLETE' => 'أكمل جميع بنود الفحص أولًا.',

@@ -435,6 +435,68 @@ class CommissionSummary {
   }
 }
 
+/// Admin-only, computed trust signal for a shop — derived purely from real
+/// transactions (deliveries, cancellations, warranty claims, device review
+/// outcomes). Never shown to buyers or sellers.
+class ShopReputation {
+  const ShopReputation({
+    required this.shopId,
+    required this.shopName,
+    required this.shopCity,
+    required this.shopStatus,
+    required this.completedOrders,
+    required this.cancelledOrders,
+    required this.activeOrders,
+    required this.claims,
+    required this.devicesSubmitted,
+    required this.devicesRejected,
+    required this.cancellationRate,
+    required this.claimRate,
+    required this.rejectionRate,
+    required this.trustScore,
+    required this.tier,
+  });
+
+  final int shopId;
+  final String shopName;
+  final String shopCity;
+  final ShopStatus shopStatus;
+  final int completedOrders;
+  final int cancelledOrders;
+  final int activeOrders;
+  final int claims;
+  final int devicesSubmitted;
+  final int devicesRejected;
+  final double cancellationRate;
+  final double claimRate;
+  final double rejectionRate;
+  final double trustScore;
+
+  /// `new` | `excellent` | `good` | `watch` | `critical`.
+  final String tier;
+
+  factory ShopReputation.fromJson(Map<String, dynamic> json) {
+    double rate(String key) => double.parse(json[key].toString());
+    return ShopReputation(
+      shopId: _int(json['shop_id']),
+      shopName: json['shop_name'] as String,
+      shopCity: json['shop_city'] as String,
+      shopStatus: ShopStatus.fromDb(json['shop_status'] as String),
+      completedOrders: _int(json['completed_orders']),
+      cancelledOrders: _int(json['cancelled_orders']),
+      activeOrders: _int(json['active_orders']),
+      claims: _int(json['claims']),
+      devicesSubmitted: _int(json['devices_submitted']),
+      devicesRejected: _int(json['devices_rejected']),
+      cancellationRate: rate('cancellation_rate'),
+      claimRate: rate('claim_rate'),
+      rejectionRate: rate('rejection_rate'),
+      trustScore: rate('trust_score'),
+      tier: json['tier'] as String,
+    );
+  }
+}
+
 class WarrantyClaim {
   const WarrantyClaim({
     required this.id,
