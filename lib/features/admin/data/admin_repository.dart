@@ -116,9 +116,10 @@ class AdminRepository {
   }
 
   Future<List<Reservation>> fetchAllReservations({int? cursor}) async {
-    var query = _client
-        .from('reservations')
-        .select('*, devices(title, public_id)');
+    // The admin is the hub, so unlike the seller view this includes the shop's
+    // pickup details and the buyer contact needed to brief a courier.
+    var query = _client.from('reservations').select(
+        '*, devices(title, public_id, shops(name, city, address, phone_e164))');
     if (cursor != null) query = query.lt('id', cursor);
     final rows = await query.order('id', ascending: false).limit(30);
     return (rows as List<dynamic>)

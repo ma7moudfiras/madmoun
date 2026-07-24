@@ -97,6 +97,7 @@ class Shop {
     required this.city,
     required this.status,
     this.phoneE164,
+    this.address,
     this.rejectionReason,
     this.ownerId,
   });
@@ -108,6 +109,7 @@ class Shop {
 
   /// Present only when read through my_shop()/admin_shops().
   final String? phoneE164;
+  final String? address;
   final String? rejectionReason;
   final String? ownerId;
 
@@ -117,6 +119,7 @@ class Shop {
         city: json['city'] as String,
         status: ShopStatus.fromDb(json['status'] as String),
         phoneE164: json['phone_e164'] as String?,
+        address: json['address'] as String?,
         rejectionReason: json['rejection_reason'] as String?,
         ownerId: json['owner_id'] as String?,
       );
@@ -314,10 +317,15 @@ class Reservation {
     required this.status,
     required this.createdAt,
     this.deliveryNote,
+    this.deliveryAddress,
     this.deviceTitle,
     this.devicePublicId,
     this.deviceCoverPath,
     this.settlementStatus,
+    this.shopName,
+    this.shopCity,
+    this.shopAddress,
+    this.shopPhone,
   });
 
   final int id;
@@ -332,10 +340,17 @@ class Reservation {
   final ReservationStatus status;
   final DateTime createdAt;
 
+  final String? deliveryAddress;
   final String? deviceTitle;
   final String? devicePublicId;
   final String? deviceCoverPath;
   final String? settlementStatus;
+
+  /// Shop pickup details — populated only for the admin (opaque to others).
+  final String? shopName;
+  final String? shopCity;
+  final String? shopAddress;
+  final String? shopPhone;
 
   /// Amount owed to the shop after the platform's commission.
   Money get netToShop => Money(price.minor - commissionMinor, price.currency);
@@ -344,6 +359,9 @@ class Reservation {
     final device = json['devices'] == null
         ? null
         : Map<String, dynamic>.from(json['devices'] as Map);
+    final shop = device?['shops'] == null
+        ? null
+        : Map<String, dynamic>.from(device!['shops'] as Map);
     String? cover;
     if (device?['device_photos'] is List) {
       final photos = (device!['device_photos'] as List<dynamic>)
@@ -362,6 +380,7 @@ class Reservation {
       buyerPhone: json['buyer_phone_e164'] as String?,
       deliveryCity: json['delivery_city'] as String,
       deliveryNote: json['delivery_note'] as String?,
+      deliveryAddress: json['delivery_address'] as String?,
       price: Money(
         _int(json['price_minor']),
         Currency.fromDb(json['currency'] as String),
@@ -373,6 +392,10 @@ class Reservation {
       devicePublicId: device?['public_id'] as String?,
       deviceCoverPath: cover,
       settlementStatus: json['settlement_status'] as String?,
+      shopName: shop?['name'] as String?,
+      shopCity: shop?['city'] as String?,
+      shopAddress: shop?['address'] as String?,
+      shopPhone: shop?['phone_e164'] as String?,
     );
   }
 }

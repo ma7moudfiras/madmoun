@@ -532,6 +532,12 @@ class Translations$reserve$ar {
 
 	/// ar: 'عذرًا، حُجز هذا الجهاز للتو من مشترٍ آخر.'
 	String get deviceTaken => 'عذرًا، حُجز هذا الجهاز للتو من مشترٍ آخر.';
+
+	/// ar: 'العنوان التفصيلي للتسليم'
+	String get addressLabel => 'العنوان التفصيلي للتسليم';
+
+	/// ar: 'الحي/الشارع/أقرب معلم — ليصل المندوب إليك بسهولة.'
+	String get addressHelp => 'الحي/الشارع/أقرب معلم — ليصل المندوب إليك بسهولة.';
 }
 
 // Path: orders
@@ -722,6 +728,7 @@ class Translations$admin$ar {
 	String get navLedger => 'السجل المالي';
 
 	late final Translations$admin$ledger$ar ledger = Translations$admin$ledger$ar.internal(_root);
+	late final Translations$admin$dispatch$ar dispatch = Translations$admin$dispatch$ar.internal(_root);
 }
 
 // Path: info
@@ -886,6 +893,12 @@ class Translations$seller$onboarding$ar {
 
 	/// ar: 'تم تحديث بيانات المتجر'
 	String get updated => 'تم تحديث بيانات المتجر';
+
+	/// ar: 'عنوان المتجر (نقطة الاستلام)'
+	String get addressLabel => 'عنوان المتجر (نقطة الاستلام)';
+
+	/// ar: 'الحي/الشارع/أقرب معلم — يستلم منه المندوب الجهاز.'
+	String get addressHelp => 'الحي/الشارع/أقرب معلم — يستلم منه المندوب الجهاز.';
 }
 
 // Path: seller.devices
@@ -1391,8 +1404,8 @@ class Translations$admin$reservations$ar {
 	/// ar: 'عمولة المنصة'
 	String get commission => 'عمولة المنصة';
 
-	/// ar: 'إرسال للتوصيل'
-	String get dispatch => 'إرسال للتوصيل';
+	/// ar: 'إرسال للمندوب (واتساب)'
+	String get dispatch => 'إرسال للمندوب (واتساب)';
 
 	/// ar: 'تم إرسال الطلب للتوصيل'
 	String get dispatched => 'تم إرسال الطلب للتوصيل';
@@ -1456,6 +1469,39 @@ class Translations$admin$ledger$ar {
 
 	/// ar: 'تمت التسوية'
 	String get settled => 'تمت التسوية';
+}
+
+// Path: admin.dispatch
+class Translations$admin$dispatch$ar {
+	Translations$admin$dispatch$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'مهمة توصيل عبر منصّة مضمون'
+	String get msgTitle => 'مهمة توصيل عبر منصّة مضمون';
+
+	/// ar: 'الطلب'
+	String get order => 'الطلب';
+
+	/// ar: 'الجهاز'
+	String get device => 'الجهاز';
+
+	/// ar: 'الاستلام من المتجر'
+	String get pickup => 'الاستلام من المتجر';
+
+	/// ar: 'التسليم للزبون'
+	String get dropoff => 'التسليم للزبون';
+
+	/// ar: 'هاتف'
+	String get phone => 'هاتف';
+
+	/// ar: 'ملاحظة'
+	String get note => 'ملاحظة';
+
+	/// ar: 'المبلغ المطلوب تحصيله عند الاستلام'
+	String get collect => 'المبلغ المطلوب تحصيله عند الاستلام';
 }
 
 // Path: notif.kinds
@@ -1647,6 +1693,8 @@ extension on Translations {
 			'reserve.whatNext3' => 'يبدأ الضمان تلقائيًا من لحظة استلامك للجهاز.',
 			'reserve.goToOrders' => 'عرض طلباتي',
 			'reserve.deviceTaken' => 'عذرًا، حُجز هذا الجهاز للتو من مشترٍ آخر.',
+			'reserve.addressLabel' => 'العنوان التفصيلي للتسليم',
+			'reserve.addressHelp' => 'الحي/الشارع/أقرب معلم — ليصل المندوب إليك بسهولة.',
 			'orders.title' => 'طلباتي',
 			'orders.emptyTitle' => 'لا توجد طلبات بعد',
 			'orders.emptyBody' => 'عند حجزك لجهاز ستظهر تفاصيل الطلب هنا.',
@@ -1693,6 +1741,8 @@ extension on Translations {
 			'seller.onboarding.approvedTitle' => 'متجر معتمد',
 			'seller.onboarding.editShop' => 'تعديل بيانات المتجر',
 			'seller.onboarding.updated' => 'تم تحديث بيانات المتجر',
+			'seller.onboarding.addressLabel' => 'عنوان المتجر (نقطة الاستلام)',
+			'seller.onboarding.addressHelp' => 'الحي/الشارع/أقرب معلم — يستلم منه المندوب الجهاز.',
 			'seller.devices.title' => 'أجهزتي',
 			'seller.devices.add' => 'إضافة جهاز',
 			'seller.devices.emptyTitle' => 'لا توجد أجهزة بعد',
@@ -1838,7 +1888,7 @@ extension on Translations {
 			'admin.reservations.emptyTitle' => 'لا توجد حجوزات',
 			'admin.reservations.emptyBody' => 'حجوزات المشترين عبر المنصة ستظهر هنا.',
 			'admin.reservations.commission' => 'عمولة المنصة',
-			'admin.reservations.dispatch' => 'إرسال للتوصيل',
+			'admin.reservations.dispatch' => 'إرسال للمندوب (واتساب)',
 			'admin.reservations.dispatched' => 'تم إرسال الطلب للتوصيل',
 			'admin.reservations.markDelivered' => 'تأكيد الاستلام',
 			'admin.reservations.markedDelivered' => 'تم تسجيل التسليم',
@@ -1858,6 +1908,14 @@ extension on Translations {
 			'admin.ledger.settleAction' => 'تسوية',
 			'admin.ledger.settleConfirm' => ({required Object amount}) => 'تأكيد تسوية هذا الطلب؟ يعني أنك حصّلت المبلغ من المندوب ودفعت للمتجر حصته، وتحقّقت عمولتك (${amount}).',
 			'admin.ledger.settled' => 'تمت التسوية',
+			'admin.dispatch.msgTitle' => 'مهمة توصيل عبر منصّة مضمون',
+			'admin.dispatch.order' => 'الطلب',
+			'admin.dispatch.device' => 'الجهاز',
+			'admin.dispatch.pickup' => 'الاستلام من المتجر',
+			'admin.dispatch.dropoff' => 'التسليم للزبون',
+			'admin.dispatch.phone' => 'هاتف',
+			'admin.dispatch.note' => 'ملاحظة',
+			'admin.dispatch.collect' => 'المبلغ المطلوب تحصيله عند الاستلام',
 			'errors.INVALID_STATE_TRANSITION' => 'لا يمكن تنفيذ هذا الانتقال في حالة الجهاز.',
 			'errors.ADMIN_ONLY_TRANSITION' => 'هذا الإجراء متاح لإدارة المنصة فقط.',
 			'errors.CHECKLIST_INCOMPLETE' => 'أكمل جميع بنود الفحص أولًا.',

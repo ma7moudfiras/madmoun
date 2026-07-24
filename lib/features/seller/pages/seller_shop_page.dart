@@ -39,6 +39,7 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
   late final TextEditingController _name;
   late final TextEditingController _city;
   late final TextEditingController _phone;
+  late final TextEditingController _address;
   bool _busy = false;
   bool _editing = false;
 
@@ -48,6 +49,7 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
     _name = TextEditingController(text: widget.shop?.name ?? '');
     _city = TextEditingController(text: widget.shop?.city ?? '');
     _phone = TextEditingController(text: widget.shop?.phoneE164 ?? '');
+    _address = TextEditingController(text: widget.shop?.address ?? '');
   }
 
   @override
@@ -55,6 +57,7 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
     _name.dispose();
     _city.dispose();
     _phone.dispose();
+    _address.dispose();
     super.dispose();
   }
 
@@ -65,11 +68,14 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
     try {
       final repo = ref.read(sellerRepositoryProvider);
       final existing = widget.shop;
+      final address =
+          _address.text.trim().isEmpty ? null : _address.text.trim();
       if (existing == null) {
         await repo.createShop(
           name: _name.text.trim(),
           city: _city.text.trim(),
           phoneE164: phone,
+          address: address,
         );
       } else {
         await repo.updateShop(
@@ -77,6 +83,7 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
           name: _name.text.trim(),
           city: _city.text.trim(),
           phoneE164: phone,
+          address: address,
         );
       }
       ref.invalidate(myShopProvider);
@@ -158,6 +165,14 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
                             validator: (v) => normalizePhone(v ?? '') == null
                                 ? t.common.invalidPhone
                                 : null,
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _address,
+                            decoration: InputDecoration(
+                              labelText: t.seller.onboarding.addressLabel,
+                              helperText: t.seller.onboarding.addressHelp,
+                            ),
                           ),
                           const SizedBox(height: 24),
                           FilledButton(

@@ -17,12 +17,14 @@ class BuyerRepository {
     required String phoneE164,
     required String city,
     String? note,
+    String? address,
   }) async {
     final result = await _client.rpc('reserve_device', params: {
       'p_device_id': deviceId,
       'p_phone': phoneE164,
       'p_city': city,
       'p_note': note,
+      'p_address': address,
     });
     return (result as Map)['reservation_public_id'] as String;
   }

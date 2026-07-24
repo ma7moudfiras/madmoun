@@ -28,11 +28,13 @@ class SellerRepository {
     required String name,
     required String city,
     required String phoneE164,
+    String? address,
   }) async {
     await _client.from('shops').insert({
       'name': name,
       'city': city,
       'phone_e164': phoneE164,
+      'address': address,
     });
   }
 
@@ -41,11 +43,13 @@ class SellerRepository {
     required String name,
     required String city,
     required String phoneE164,
+    String? address,
   }) async {
     await _client.from('shops').update({
       'name': name,
       'city': city,
       'phone_e164': phoneE164,
+      'address': address,
     }).eq('id', id);
   }
 
