@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/domain.dart';
 import '../../../core/models.dart';
 import '../../../core/supabase_providers.dart';
+import '../../../core/text_normalize.dart';
 
 // Madmoun is a managed, opaque intermediary: the buyer never sees the shop's
 // identity or contact — only the device, its inspection, and the delivery
@@ -123,10 +124,12 @@ class MarketplaceRepository {
     }
     final search = filters.query?.trim();
     if (search != null && search.isNotEmpty) {
-      final term = search.replaceAll('%', r'\%').replaceAll(',', ' ');
-      query = query.or(
-        'title.ilike.%$term%,brand.ilike.%$term%,model.ilike.%$term%',
-      );
+      // search_text is pre-normalized (diacritics/tatweel stripped, alef and
+      // ya/ta-marbuta variants unified) so a query for one spelling of a word
+      // — إيفون vs آيفون vs ايفون — matches all of them. Normalize the typed
+      // term the same way before comparing.
+      final term = normalizeArabic(search).replaceAll('%', r'\%');
+      query = query.ilike('search_text', '%$term%');
     }
     // Offset pagination (the catalogue is small) so any sort order paginates
     // correctly; every sort has `id` as a stable tiebreaker.

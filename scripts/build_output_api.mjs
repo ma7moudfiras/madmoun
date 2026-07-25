@@ -12,6 +12,13 @@
 import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+const SUPABASE_URL =
+  process.env.SUPABASE_URL || 'https://dutmsyjwrueyyrdeccol.supabase.co';
+const SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1dG1zeWp3cnVleXlyZGVjY29sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Nzk4NDAsImV4cCI6MjEwMDA1NTg0MH0.wk_Y_1ZXcOKCj_09PNNn5uqDFQ5_hzbFqjUdlhrlXXA';
+const SITE_ORIGIN = 'https://madmoun-five.vercel.app';
+
 const root = process.cwd();
 const outputDir = join(root, '.vercel', 'output');
 const staticDir = join(outputDir, 'static');
@@ -19,6 +26,41 @@ const funcDir = join(outputDir, 'functions', 'api', 'og.func');
 
 mkdirSync(staticDir, { recursive: true });
 cpSync(join(root, 'build', 'web'), staticDir, { recursive: true });
+
+// A dynamic sitemap: static pages plus every currently listed device, so new
+// listings get discovered without a fresh manual sitemap on every deploy.
+async function buildSitemap() {
+  const staticPaths = ['/', '/how-it-works', '/faq', '/terms', '/privacy'];
+  let devices = [];
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/public_listings?select=public_id,created_at&order=id.desc&limit=5000`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      },
+    );
+    if (res.ok) devices = await res.json();
+  } catch (err) {
+    console.warn('sitemap: could not fetch listings, shipping static pages only', err);
+  }
+
+  const urlEntries = [
+    ...staticPaths.map((p) => `  <url><loc>${SITE_ORIGIN}${p}</loc></url>`),
+    ...devices.map(
+      (d) =>
+        `  <url><loc>${SITE_ORIGIN}/d/${d.public_id}</loc><lastmod>${new Date(d.created_at).toISOString().slice(0, 10)}</lastmod></url>`,
+    ),
+  ];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntries.join('\n')}\n</urlset>\n`;
+  writeFileSync(join(staticDir, 'sitemap.xml'), xml);
+  console.log(`sitemap.xml: ${staticPaths.length} static pages + ${devices.length} devices`);
+}
+
+await buildSitemap();
 
 mkdirSync(funcDir, { recursive: true });
 cpSync(join(root, 'api', 'og', '[id].js'), join(funcDir, 'index.js'));
