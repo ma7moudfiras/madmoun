@@ -282,31 +282,51 @@ class _HomePageState extends ConsumerState<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          // A plain Row here silently clips its rightmost content on narrow
+          // phones instead of shrinking (release builds don't show the debug
+          // overflow banner) — "التصفية" was getting cut down to "تصفية" at
+          // the screen edge. Wrap falls back to a second line instead.
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runSpacing: 8,
             children: [
-              TextButton.icon(
-                onPressed: () =>
-                    setState(() => _filtersExpanded = !_filtersExpanded),
-                icon: Icon(
-                  _filtersExpanded
-                      ? Icons.expand_less_rounded
-                      : Icons.tune_rounded,
-                  size: 18,
-                ),
-                label: Text(
-                  active > 0 ? '${t.home.filters} ($active)' : t.home.filters,
-                ),
+              Wrap(
+                spacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed: () => setState(
+                      () => _filtersExpanded = !_filtersExpanded,
+                    ),
+                    icon: Icon(
+                      _filtersExpanded
+                          ? Icons.expand_less_rounded
+                          : Icons.tune_rounded,
+                      size: 18,
+                    ),
+                    label: Text(
+                      active > 0
+                          ? '${t.home.filters} ($active)'
+                          : t.home.filters,
+                    ),
+                  ),
+                  if (active > 0 || (_filters.query?.isNotEmpty ?? false))
+                    TextButton.icon(
+                      onPressed: _clearFilters,
+                      icon: const Icon(Icons.filter_alt_off_rounded, size: 16),
+                      label: Text(t.home.clearFilters),
+                    ),
+                ],
               ),
-              if (active > 0 || (_filters.query?.isNotEmpty ?? false))
-                TextButton.icon(
-                  onPressed: _clearFilters,
-                  icon: const Icon(Icons.filter_alt_off_rounded, size: 16),
-                  label: Text(t.home.clearFilters),
-                ),
-              const Spacer(),
-              _buildCurrencyToggle(context),
-              const SizedBox(width: 12),
-              _buildSort(context),
+              Wrap(
+                spacing: 12,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  _buildCurrencyToggle(context),
+                  _buildSort(context),
+                ],
+              ),
             ],
           ),
           if (_filtersExpanded) ...[
