@@ -6,6 +6,10 @@
 /// Every Arabic code point is written as a \uXXXX escape rather than a
 /// literal combining/variant character, since those are easy to mis-copy
 /// as invisible marks in source — the escapes are grep-able and unambiguous.
+library;
+
+import 'domain.dart' show toWesternDigits;
+
 final _diacriticsAndTatweel = RegExp(
   '[ًٌٍَُِّْٰـ]',
 );
@@ -18,7 +22,10 @@ const _ha = 'ه';
 final _whitespace = RegExp(r'\s+');
 
 String normalizeArabic(String input) {
-  var s = input.toLowerCase();
+  // Arabic-Indic digits (١٤) must become ASCII (14) before anything else —
+  // devices are titled with ASCII digits ("iPhone 14"), and a buyer typing
+  // "ايفون ١٤" is extremely common.
+  var s = toWesternDigits(input).toLowerCase();
   s = s.replaceAll(_diacriticsAndTatweel, '');
   s = s.replaceAll(_alefVariants, _alef);
   s = s.replaceAll(_alefMaksura, _ya);
@@ -61,17 +68,27 @@ const _arabicToLatinTerms = <String, String>{
   'جوال': 'mobile',
 };
 
-/// Rewrites a normalized query word by word: any word that's a known Arabic
-/// brand/model spelling is replaced with its Latin form; every other word
-/// (numbers, sizes, colors already in Arabic) passes through unchanged.
-/// Returns null when nothing needed translating, so callers can skip the
-/// extra search clause entirely.
+/// Longest keys first, so a substring match never gets pre-empted by a
+/// shorter key contained within a longer one.
+final _arabicToLatinKeysByLength = _arabicToLatinTerms.keys.toList()
+  ..sort((a, b) => b.length.compareTo(a.length));
+
+/// Translates every known Arabic brand/model word found anywhere in
+/// [normalizedQuery] to its Latin form — as a plain substring replacement,
+/// not a whole-word match, so it doesn't matter whether the buyer typed a
+/// space ("ايفون 14"), no space at all ("ايفون14"), or the brand alone
+/// ("ايفون"). Numbers and words already in Arabic (colors, sizes) are left
+/// untouched. Returns null when nothing needed translating, so callers can
+/// skip the extra search clause entirely.
 String? translateArabicSearchTerm(String normalizedQuery) {
+  var result = normalizedQuery;
   var changed = false;
-  final words = normalizedQuery.split(' ').map((word) {
-    final latin = _arabicToLatinTerms[word];
-    if (latin != null) changed = true;
-    return latin ?? word;
-  }).toList();
-  return changed ? words.join(' ') : null;
+  for (final key in _arabicToLatinKeysByLength) {
+    if (result.contains(key)) {
+      result = result.replaceAll(key, '${_arabicToLatinTerms[key]} ');
+      changed = true;
+    }
+  }
+  if (!changed) return null;
+  return result.replaceAll(_whitespace, ' ').trim();
 }
