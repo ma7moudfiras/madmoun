@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/supabase_providers.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import 'auth_destination.dart';
 import 'auth_form_card.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
@@ -36,28 +37,22 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
     try {
-      final response = await ref.read(supabaseClientProvider).auth.signUp(
+      final client = ref.read(supabaseClientProvider);
+      final response = await client.auth.signUp(
         email: _email.text.trim(),
         password: _password.text,
         data: {'full_name': _fullName.text.trim()},
+        emailRedirectTo: Uri.base.origin,
       );
       if (!mounted) return;
       if (response.session == null) {
-        // Confirmation may be required upstream; the DB pre-confirms emails
-        // for the MVP, so an immediate sign-in normally succeeds.
-        try {
-          await ref.read(supabaseClientProvider).auth.signInWithPassword(
-                email: _email.text.trim(),
-                password: _password.text,
-              );
-        } catch (_) {
-          if (mounted) {
-            showAppSnackBar(context, t.auth.confirmEmailSent);
-            context.go('/login');
-          }
-        }
+        // Email confirmation is required: no session until the link is clicked.
+        showAppSnackBar(context, t.auth.confirmEmailSent);
+        context.go('/login');
+        return;
       }
-      // Otherwise the router redirect takes over.
+      final destination = await postLoginDestination(client, widget.from);
+      if (mounted) context.go(destination);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     } finally {

@@ -4,8 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/domain.dart';
 import '../../core/supabase_providers.dart';
+import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import '../notifications/notifications_page.dart';
 import 'data/seller_repository.dart';
+import 'pages/seller_shop_page.dart';
 
 /// Chrome for the seller portal: brand bar + destination rail/menu. Device,
 /// reservation and claim tabs only appear once the shop is approved.
@@ -18,9 +21,36 @@ class SellerShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final shop = ref.watch(myShopProvider).valueOrNull;
+
+    // The platform admin is not a seller and has no store; keep them out of the
+    // onboarding form entirely rather than showing a "register your store" page.
+    if (ref.watch(userRoleProvider) == UserRole.admin) {
+      return Scaffold(
+        appBar: AppBar(title: Text(t.common.sellerPortal)),
+        body: EmptyState(
+          icon: Icons.storefront_rounded,
+          title: t.seller.adminNotAllowedTitle,
+          body: t.seller.adminNotAllowedBody,
+          action: FilledButton(
+            onPressed: () => context.go('/admin'),
+            child: Text(t.common.adminPanel),
+          ),
+        ),
+      );
+    }
+
+    final shopAsync = ref.watch(myShopProvider);
+    final shop = shopAsync.valueOrNull;
     final approved = shop?.status == ShopStatus.approved;
     final isWide = MediaQuery.sizeOf(context).width >= 820;
+
+    // Until the shop is approved, every tab funnels into onboarding/status;
+    // this also keeps buyers/admins who type seller URLs out of the tools.
+    final Widget body = shopAsync.isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : (!approved && location != '/seller/shop')
+            ? const SellerShopPage()
+            : child;
 
     final destinations = <_Dest>[
       if (approved) _Dest('/seller', Icons.devices_rounded, t.seller.navDevices),
@@ -61,16 +91,22 @@ class SellerShell extends ConsumerWidget {
         ),
       ),
       actions: [
+        const NotificationBell(),
         TextButton.icon(
           onPressed: () => context.go('/'),
           icon: const Icon(Icons.storefront_outlined, size: 18),
           label: Text(t.common.marketplace),
         ),
         IconButton(
+          tooltip: t.common.accountSettings,
+          onPressed: () => context.go('/account'),
+          icon: const Icon(Icons.manage_accounts_rounded),
+        ),
+        IconButton(
           tooltip: t.common.signOut,
-          onPressed: () async {
-            await ref.read(supabaseClientProvider).auth.signOut();
-            if (context.mounted) context.go('/');
+          onPressed: () {
+            context.go('/');
+            ref.read(supabaseClientProvider).auth.signOut();
           },
           icon: const Icon(Icons.logout_rounded),
         ),
@@ -96,7 +132,7 @@ class SellerShell extends ConsumerWidget {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: child),
+            Expanded(child: body),
           ],
         ),
       );
@@ -104,7 +140,7 @@ class SellerShell extends ConsumerWidget {
 
     return Scaffold(
       appBar: appBar,
-      body: child,
+      body: body,
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex(),
         onDestinationSelected: (i) => context.go(destinations[i].path),

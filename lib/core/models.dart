@@ -33,6 +33,63 @@ class Profile {
       );
 }
 
+/// A user as the admin panel sees it (profile + auth email/timestamps).
+class AdminUser {
+  const AdminUser({
+    required this.id,
+    required this.role,
+    required this.createdAt,
+    this.email,
+    this.fullName,
+    this.phoneE164,
+    this.lastSignInAt,
+  });
+
+  final String id;
+  final String? email;
+  final String? fullName;
+  final UserRole role;
+  final String? phoneE164;
+  final DateTime createdAt;
+  final DateTime? lastSignInAt;
+
+  factory AdminUser.fromJson(Map<String, dynamic> json) => AdminUser(
+        id: json['id'] as String,
+        email: json['email'] as String?,
+        fullName: json['full_name'] as String?,
+        role: UserRole.fromDb(json['role'] as String),
+        phoneE164: json['phone_e164'] as String?,
+        createdAt: _date(json['created_at']),
+        lastSignInAt: json['last_sign_in_at'] == null
+            ? null
+            : _date(json['last_sign_in_at']),
+      );
+}
+
+class UserStats {
+  const UserStats({
+    required this.total,
+    required this.buyers,
+    required this.sellers,
+    required this.admins,
+    required this.newLast7d,
+  });
+
+  final int total;
+  final int buyers;
+  final int sellers;
+  final int admins;
+  final int newLast7d;
+
+  factory UserStats.fromJson(Map<String, dynamic> json) => UserStats(
+        total: _int(json['total'] ?? 0),
+        buyers: _int(json['buyers'] ?? 0),
+        sellers: _int(json['sellers'] ?? 0),
+        admins: _int(json['admins'] ?? 0),
+        newLast7d: _int(json['new_last_7d'] ?? 0),
+      );
+}
+
 class Shop {
   const Shop({
     required this.id,
@@ -40,6 +97,7 @@ class Shop {
     required this.city,
     required this.status,
     this.phoneE164,
+    this.address,
     this.rejectionReason,
     this.ownerId,
   });
@@ -51,6 +109,7 @@ class Shop {
 
   /// Present only when read through my_shop()/admin_shops().
   final String? phoneE164;
+  final String? address;
   final String? rejectionReason;
   final String? ownerId;
 
@@ -60,6 +119,7 @@ class Shop {
         city: json['city'] as String,
         status: ShopStatus.fromDb(json['status'] as String),
         phoneE164: json['phone_e164'] as String?,
+        address: json['address'] as String?,
         rejectionReason: json['rejection_reason'] as String?,
         ownerId: json['owner_id'] as String?,
       );
@@ -98,7 +158,6 @@ class Listing {
     required this.price,
     required this.warrantyDays,
     required this.checklist,
-    required this.shopName,
     required this.shopCity,
     required this.createdAt,
     this.description,
@@ -119,7 +178,6 @@ class Listing {
   final int warrantyDays;
   final String? imeiLast4;
   final List<ChecklistEntry> checklist;
-  final String shopName;
   final String shopCity;
   final DateTime createdAt;
   final List<String> photoPaths;
@@ -148,7 +206,6 @@ class Listing {
         warrantyDays: _int(json['warranty_days']),
         imeiLast4: json['imei_last4'] as String?,
         checklist: _checklist(json['checklist']),
-        shopName: json['shop_name'] as String,
         shopCity: json['shop_city'] as String,
         createdAt: _date(json['created_at']),
         photoPaths: photoPaths,
@@ -167,7 +224,6 @@ class Listing {
         warrantyDays: warrantyDays,
         imeiLast4: imeiLast4,
         checklist: checklist,
-        shopName: shopName,
         shopCity: shopCity,
         createdAt: createdAt,
         photoPaths: paths,
@@ -254,23 +310,29 @@ class Reservation {
     required this.publicId,
     required this.deviceId,
     required this.buyerId,
-    required this.buyerPhone,
+    this.buyerPhone,
     required this.deliveryCity,
     required this.price,
     required this.commissionMinor,
     required this.status,
     required this.createdAt,
     this.deliveryNote,
+    this.deliveryAddress,
     this.deviceTitle,
     this.devicePublicId,
     this.deviceCoverPath,
+    this.settlementStatus,
+    this.shopName,
+    this.shopCity,
+    this.shopAddress,
+    this.shopPhone,
   });
 
   final int id;
   final String publicId;
   final int deviceId;
   final String buyerId;
-  final String buyerPhone;
+  final String? buyerPhone;
   final String deliveryCity;
   final String? deliveryNote;
   final Money price;
@@ -278,14 +340,28 @@ class Reservation {
   final ReservationStatus status;
   final DateTime createdAt;
 
+  final String? deliveryAddress;
   final String? deviceTitle;
   final String? devicePublicId;
   final String? deviceCoverPath;
+  final String? settlementStatus;
+
+  /// Shop pickup details — populated only for the admin (opaque to others).
+  final String? shopName;
+  final String? shopCity;
+  final String? shopAddress;
+  final String? shopPhone;
+
+  /// Amount owed to the shop after the platform's commission.
+  Money get netToShop => Money(price.minor - commissionMinor, price.currency);
 
   factory Reservation.fromJson(Map<String, dynamic> json) {
     final device = json['devices'] == null
         ? null
         : Map<String, dynamic>.from(json['devices'] as Map);
+    final shop = device?['shops'] == null
+        ? null
+        : Map<String, dynamic>.from(device!['shops'] as Map);
     String? cover;
     if (device?['device_photos'] is List) {
       final photos = (device!['device_photos'] as List<dynamic>)
@@ -301,9 +377,10 @@ class Reservation {
       publicId: json['public_id'] as String,
       deviceId: _int(json['device_id']),
       buyerId: json['buyer_id'] as String,
-      buyerPhone: json['buyer_phone_e164'] as String,
+      buyerPhone: json['buyer_phone_e164'] as String?,
       deliveryCity: json['delivery_city'] as String,
       deliveryNote: json['delivery_note'] as String?,
+      deliveryAddress: json['delivery_address'] as String?,
       price: Money(
         _int(json['price_minor']),
         Currency.fromDb(json['currency'] as String),
@@ -311,9 +388,111 @@ class Reservation {
       commissionMinor: _int(json['commission_minor']),
       status: ReservationStatus.fromDb(json['status'] as String),
       createdAt: _date(json['created_at']),
-      deviceTitle: device?['title'] as String?,
-      devicePublicId: device?['public_id'] as String?,
+      // Nested keys come from the buyer/seller embeds; flat device_/shop_ keys
+      // come from the admin_reservations() RPC.
+      deviceTitle: (device?['title'] ?? json['device_title']) as String?,
+      devicePublicId:
+          (device?['public_id'] ?? json['device_public_id']) as String?,
       deviceCoverPath: cover,
+      settlementStatus: json['settlement_status'] as String?,
+      shopName: (shop?['name'] ?? json['shop_name']) as String?,
+      shopCity: (shop?['city'] ?? json['shop_city']) as String?,
+      shopAddress: (shop?['address'] ?? json['shop_address']) as String?,
+      shopPhone: (shop?['phone_e164'] ?? json['shop_phone']) as String?,
+    );
+  }
+}
+
+/// Per-currency commission totals over completed orders (admin ledger).
+class CommissionSummary {
+  const CommissionSummary({
+    required this.currency,
+    required this.orders,
+    required this.gross,
+    required this.commission,
+    required this.settled,
+    required this.pending,
+  });
+
+  final Currency currency;
+  final int orders;
+  final Money gross;
+  final Money commission;
+  final Money settled;
+  final Money pending;
+
+  factory CommissionSummary.fromJson(Map<String, dynamic> json) {
+    final currency = Currency.fromDb(json['currency'] as String);
+    Money money(String key) => Money(_int(json[key]), currency);
+    return CommissionSummary(
+      currency: currency,
+      orders: _int(json['orders']),
+      gross: money('gross_minor'),
+      commission: money('commission_minor'),
+      settled: money('settled_minor'),
+      pending: money('pending_minor'),
+    );
+  }
+}
+
+/// Admin-only, computed trust signal for a shop — derived purely from real
+/// transactions (deliveries, cancellations, warranty claims, device review
+/// outcomes). Never shown to buyers or sellers.
+class ShopReputation {
+  const ShopReputation({
+    required this.shopId,
+    required this.shopName,
+    required this.shopCity,
+    required this.shopStatus,
+    required this.completedOrders,
+    required this.cancelledOrders,
+    required this.activeOrders,
+    required this.claims,
+    required this.devicesSubmitted,
+    required this.devicesRejected,
+    required this.cancellationRate,
+    required this.claimRate,
+    required this.rejectionRate,
+    required this.trustScore,
+    required this.tier,
+  });
+
+  final int shopId;
+  final String shopName;
+  final String shopCity;
+  final ShopStatus shopStatus;
+  final int completedOrders;
+  final int cancelledOrders;
+  final int activeOrders;
+  final int claims;
+  final int devicesSubmitted;
+  final int devicesRejected;
+  final double cancellationRate;
+  final double claimRate;
+  final double rejectionRate;
+  final double trustScore;
+
+  /// `new` | `excellent` | `good` | `watch` | `critical`.
+  final String tier;
+
+  factory ShopReputation.fromJson(Map<String, dynamic> json) {
+    double rate(String key) => double.parse(json[key].toString());
+    return ShopReputation(
+      shopId: _int(json['shop_id']),
+      shopName: json['shop_name'] as String,
+      shopCity: json['shop_city'] as String,
+      shopStatus: ShopStatus.fromDb(json['shop_status'] as String),
+      completedOrders: _int(json['completed_orders']),
+      cancelledOrders: _int(json['cancelled_orders']),
+      activeOrders: _int(json['active_orders']),
+      claims: _int(json['claims']),
+      devicesSubmitted: _int(json['devices_submitted']),
+      devicesRejected: _int(json['devices_rejected']),
+      cancellationRate: rate('cancellation_rate'),
+      claimRate: rate('claim_rate'),
+      rejectionRate: rate('rejection_rate'),
+      trustScore: rate('trust_score'),
+      tier: json['tier'] as String,
     );
   }
 }

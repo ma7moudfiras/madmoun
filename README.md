@@ -1,6 +1,6 @@
 # مضمون · Madmoun
 
-A Palestinian intermediary marketplace for certified refurbished electronics
+A Palestinian intermediary marketplace for certified used electronics
 (mobiles + laptops). No inventory: certified repair shops list devices after a
 standardized technical inspection, every device carries a mandatory warranty,
 buyers reserve and pay cash on delivery (COD), and the platform surfaces an
@@ -121,6 +121,20 @@ After the first deploy, add the Vercel URL to the Supabase Auth **Site URL** /
 `.github/workflows/ci.yml` runs `flutter analyze` + `flutter test` (and checks
 that the generated `slang` output is committed) on every push/PR to `main`.
 
+## Auth
+
+Email/password sign-in works out of the box. New sign-ups must confirm their
+email through Supabase's built-in email service — the confirmation,
+email-change, and password-reset links rely on the **Site URL / Redirect URLs**
+(Authentication → URL Configuration) pointing at the deployed origin (set). The
+built-in service is rate-limited to a few messages/hour; if you later outgrow
+that, plug in custom SMTP under Authentication → Emails → SMTP.
+
+`supabase/migrations/20260720185124_auto_confirm_emails.sql` (a pre-confirm
+trigger) was superseded by
+`20260721101620_enforce_email_confirmation.sql`, which drops it so real
+confirmation applies. Existing/seed accounts stay confirmed.
+
 ## Manual steps
 
 - **Google OAuth** ships behind the `ENABLE_GOOGLE_AUTH` compile-time flag. To
@@ -128,5 +142,5 @@ that the generated `slang` output is committed) on every push/PR to `main`.
   (Authentication → Providers → Google), then build with
   `--dart-define=ENABLE_GOOGLE_AUTH=true`. Email/password auth works out of the
   box without it.
-- Add the production URL to Supabase Auth URL configuration (Site URL +
-  Redirect URLs) if not done via the management API.
+- Supabase Auth **Site URL** + **Redirect URLs** are set to the deployed origin;
+  email confirmation uses the built-in service (custom SMTP optional later).

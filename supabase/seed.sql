@@ -7,8 +7,10 @@
 -- Auth users use fixed UUIDs so the script is deterministic. Passwords are
 -- the demo credentials printed to README-local.md (gitignored).
 --
--- Photos reference hosted placeholder URLs; the app renders absolute URLs
--- directly and bucket paths via getPublicUrl, so no binary upload is needed.
+-- Demo devices ship without seeded photos on purpose: the app renders a
+-- branded, device-aware placeholder for photoless listings (see
+-- DevicePhotoImage), which looks intentional and avoids unrelated stock
+-- imagery. Real photos appear once a shop uploads them.
 
 begin;
 
@@ -60,19 +62,6 @@ select pg_temp.seed_user(
   '44444444-4444-4444-4444-444444444444',
   'buyer@madmoun.ps', 'Buyer#Madmoun2026', 'زبون تجريبي');
 
--- Attaches four hosted placeholder photos to a device (rendered as absolute
--- URLs by the client). Deterministic per tag so images are stable.
-create or replace function pg_temp.seed_photos(p_device_id bigint, p_tag text)
-returns void language plpgsql as $$
-begin
-  insert into public.device_photos (device_id, storage_path, sort_order)
-  select p_device_id,
-         format('https://picsum.photos/seed/madmoun-%s-%s/900/675', p_tag, g),
-         g - 1
-  from generate_series(1, 4) as g;
-end;
-$$;
-
 -- Roles (profiles auto-created by the handle_new_user trigger).
 update public.profiles
   set role = 'admin', full_name = 'مشرف المنصة', phone_e164 = '+970599000000'
@@ -120,7 +109,6 @@ begin
       {"key":"ports","result":"pass"},{"key":"cameras","result":"pass"},
       {"key":"imei_clean","result":"pass"},{"key":"network","result":"pass"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'phone-a');
 
   -- Device 2: Samsung Galaxy S21 — mobile, ILS, very_good, listed.
   insert into public.devices (shop_id, category, brand, model, title,
@@ -134,7 +122,6 @@ begin
       {"key":"cameras","result":"pass"},{"key":"imei_clean","result":"pass"},
       {"key":"network","result":"pass"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'phone-b');
 
   -- Device 3: iPhone 12 — mobile, USD, good, listed.
   insert into public.devices (shop_id, category, brand, model, title,
@@ -148,7 +135,6 @@ begin
       {"key":"ports","result":"pass"},{"key":"cameras","result":"pass"},
       {"key":"imei_clean","result":"pass"},{"key":"network","result":"minorIssue"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'phone-c');
 
   -- Device 4: MacBook Air M1 — laptop, USD, excellent, listed.
   insert into public.devices (shop_id, category, brand, model, title,
@@ -162,7 +148,6 @@ begin
       {"key":"screen","result":"pass"},{"key":"ports","result":"pass"},
       {"key":"storage_health","result":"pass"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'laptop-a');
 
   -- Device 5: Lenovo ThinkPad T14 — laptop, ILS, very_good, listed.
   insert into public.devices (shop_id, category, brand, model, title,
@@ -176,7 +161,6 @@ begin
       {"key":"screen","result":"pass"},{"key":"ports","result":"pass"},
       {"key":"storage_health","result":"pass"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'laptop-b');
 
   -- Device 6: Dell XPS 13 — laptop, USD, good, RESERVED (pending reservation).
   insert into public.devices (shop_id, category, brand, model, title,
@@ -190,7 +174,6 @@ begin
       {"key":"screen","result":"pass"},{"key":"ports","result":"minorIssue"},
       {"key":"storage_health","result":"pass"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'laptop-c');
   insert into public.reservations (device_id, buyer_id, buyer_phone_e164,
     delivery_city, delivery_note, price_minor, currency, commission_percent,
     commission_minor, status)
@@ -209,7 +192,6 @@ begin
       {"key":"cameras","result":"minorIssue"},{"key":"imei_clean","result":"pass"},
       {"key":"network","result":"pass"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'phone-d');
   insert into public.reservations (device_id, buyer_id, buyer_phone_e164,
     delivery_city, price_minor, currency, commission_percent,
     commission_minor, status)
@@ -228,7 +210,6 @@ begin
       {"key":"screen","result":"pass"},{"key":"ports","result":"pass"},
       {"key":"storage_health","result":"pass"}]'::jsonb)
   returning id into v_dev;
-  perform pg_temp.seed_photos(v_dev, 'laptop-d');
   insert into public.reservations (device_id, buyer_id, buyer_phone_e164,
     delivery_city, price_minor, currency, commission_percent,
     commission_minor, status)

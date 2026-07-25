@@ -17,12 +17,14 @@ class BuyerRepository {
     required String phoneE164,
     required String city,
     String? note,
+    String? address,
   }) async {
     final result = await _client.rpc('reserve_device', params: {
       'p_device_id': deviceId,
       'p_phone': phoneE164,
       'p_city': city,
       'p_note': note,
+      'p_address': address,
     });
     return (result as Map)['reservation_public_id'] as String;
   }
@@ -52,6 +54,20 @@ class BuyerRepository {
     return (rows as List<dynamic>)
         .map((r) => WarrantyClaim.fromJson(Map<String, dynamic>.from(r as Map)))
         .toList();
+  }
+
+  /// Buyer confirms receipt: out_for_delivery -> delivered, which activates the
+  /// warranty and records the completed sale. RLS + the reservation trigger
+  /// guarantee only the owning buyer can do this and only from the right state.
+  Future<void> confirmReceipt(int reservationId) async {
+    final rows = await _client
+        .from('reservations')
+        .update({'status': 'delivered'})
+        .eq('id', reservationId)
+        .select('id');
+    if (rows.isEmpty) {
+      throw Exception('UPDATE_FORBIDDEN');
+    }
   }
 
   Future<void> openClaim({

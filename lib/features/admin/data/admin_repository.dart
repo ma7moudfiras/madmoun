@@ -115,15 +115,82 @@ class AdminRepository {
     });
   }
 
-  Future<List<Reservation>> fetchAllReservations({int? cursor}) async {
-    var query = _client
+  /// The admin is the hub and needs the shop's pickup contact to brief a
+  /// courier — columns that are deliberately not granted to authenticated for
+  /// opacity. An admin-gated security-definer RPC returns the full picture with
+  /// flat device_/shop_ fields.
+  Future<List<Reservation>> fetchAllReservations() async {
+    final rows = await _client.rpc('admin_reservations') as List<dynamic>;
+    return rows
+        .map((r) => Reservation.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
+  /// Platform-side reservation transitions (dispatch to courier, or confirm
+  /// receipt on the buyer's behalf). The reservation trigger authorizes admins
+  /// for every managed-flow transition.
+  Future<void> setReservationStatus(int id, ReservationStatus status) async {
+    final rows = await _client
         .from('reservations')
-        .select('*, devices(title, public_id)');
-    if (cursor != null) query = query.lt('id', cursor);
-    final rows = await query.order('id', ascending: false).limit(30);
+        .update({'status': status.dbValue})
+        .eq('id', id)
+        .select('id');
+    if (rows.isEmpty) throw Exception('UPDATE_FORBIDDEN');
+  }
+
+  Future<UserStats> fetchUserStats() async {
+    final result = await _client.rpc('admin_user_stats');
+    return UserStats.fromJson(Map<String, dynamic>.from(result as Map));
+  }
+
+  Future<List<CommissionSummary>> fetchCommissionSummary() async {
+    final rows = await _client.rpc('admin_commission_summary') as List<dynamic>;
+    return rows
+        .map((r) =>
+            CommissionSummary.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
+  /// Delivered orders with their settlement state — the ledger's line items.
+  Future<List<Reservation>> fetchSettlements() async {
+    final rows = await _client
+        .from('reservations')
+        .select('*, devices(title, public_id)')
+        .eq('status', 'delivered')
+        .order('id', ascending: false)
+        .limit(100);
     return (rows as List<dynamic>)
         .map((r) => Reservation.fromJson(Map<String, dynamic>.from(r as Map)))
         .toList();
+  }
+
+  Future<void> settleReservation(int id) async {
+    await _client.rpc('admin_settle_reservation', params: {'p_id': id});
+  }
+
+  /// Objective, admin-only trust signal per shop — never shown to buyers or
+  /// sellers, so it's safe to compute from real transactions only.
+  Future<List<ShopReputation>> fetchShopReputation() async {
+    final rows = await _client.rpc('admin_shop_reputation') as List<dynamic>;
+    return rows
+        .map((r) => ShopReputation.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
+  Future<List<AdminUser>> fetchUsers({String? search}) async {
+    final rows = await _client.rpc('admin_list_users', params: {
+      'p_search': (search == null || search.isEmpty) ? null : search,
+    }) as List<dynamic>;
+    return rows
+        .map((r) => AdminUser.fromJson(Map<String, dynamic>.from(r as Map)))
+        .toList();
+  }
+
+  Future<void> setUserRole(String userId, UserRole role) async {
+    await _client.rpc('admin_set_role', params: {
+      'p_user_id': userId,
+      'p_role': role.dbValue,
+    });
   }
 }
 
@@ -132,30 +199,53 @@ final adminRepositoryProvider = Provider<AdminRepository>(
 );
 
 final adminDashboardProvider =
-    FutureProvider.autoDispose<AdminDashboardStats>(
+    FutureProvider<AdminDashboardStats>(
   (ref) => ref.watch(adminRepositoryProvider).fetchDashboard(),
 );
 
-final adminShopsProvider = FutureProvider.autoDispose
+final adminShopsProvider = FutureProvider
     .family<List<Shop>, ShopStatus?>((ref, status) {
   return ref.watch(adminRepositoryProvider).fetchShops(status: status);
 });
 
 final adminReviewQueueProvider =
-    FutureProvider.autoDispose<List<SellerDevice>>(
+    FutureProvider<List<SellerDevice>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchDevicesInReview(),
 );
 
 final adminTemplatesProvider =
-    FutureProvider.autoDispose<List<ChecklistTemplate>>(
+    FutureProvider<List<ChecklistTemplate>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchTemplates(),
 );
 
-final adminClaimsProvider = FutureProvider.autoDispose<List<WarrantyClaim>>(
+final adminClaimsProvider = FutureProvider<List<WarrantyClaim>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchClaims(),
 );
 
 final adminReservationsProvider =
-    FutureProvider.autoDispose<List<Reservation>>(
+    FutureProvider<List<Reservation>>(
   (ref) => ref.watch(adminRepositoryProvider).fetchAllReservations(),
 );
+
+final adminUserStatsProvider = FutureProvider<UserStats>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchUserStats(),
+);
+
+final adminCommissionSummaryProvider =
+    FutureProvider<List<CommissionSummary>>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchCommissionSummary(),
+);
+
+final adminSettlementsProvider = FutureProvider<List<Reservation>>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchSettlements(),
+);
+
+final adminShopReputationProvider =
+    FutureProvider<List<ShopReputation>>(
+  (ref) => ref.watch(adminRepositoryProvider).fetchShopReputation(),
+);
+
+final adminUsersProvider =
+    FutureProvider.family<List<AdminUser>, String>((ref, search) {
+  return ref.watch(adminRepositoryProvider).fetchUsers(search: search);
+});

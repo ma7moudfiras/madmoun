@@ -9,6 +9,7 @@ import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import '../info/info_page.dart';
 import 'data/marketplace_repository.dart';
 import 'widgets/listing_card.dart';
 
@@ -25,6 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool _loading = true;
   bool _loadingMore = false;
   bool _hasMore = false;
+  bool _filtersExpanded = false;
   Object? _error;
   Timer? _searchDebounce;
   final _searchController = TextEditingController();
@@ -34,7 +36,32 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    _reload();
+    // Restore the previous Home view instantly if we've been here before;
+    // the images are still in Flutter's ImageCache so there's no reload flash.
+    final snap = ref.read(homeSnapshotProvider);
+    if (snap.loaded) {
+      _items.addAll(snap.items);
+      _filters = snap.filters;
+      _hasMore = snap.hasMore;
+      _searchController.text = snap.search;
+      _minPrice.text = snap.minPrice;
+      _maxPrice.text = snap.maxPrice;
+      _loading = false;
+    } else {
+      _reload();
+    }
+  }
+
+  void _saveSnapshot() {
+    final snap = ref.read(homeSnapshotProvider);
+    snap
+      ..items = List.of(_items)
+      ..hasMore = _hasMore
+      ..loaded = true
+      ..filters = _filters
+      ..search = _searchController.text
+      ..minPrice = _minPrice.text
+      ..maxPrice = _maxPrice.text;
   }
 
   @override
@@ -63,6 +90,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         _hasMore = page.hasMore;
         _loading = false;
       });
+      _saveSnapshot();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -78,13 +106,14 @@ class _HomePageState extends ConsumerState<HomePage> {
     try {
       final page = await ref
           .read(marketplaceRepositoryProvider)
-          .fetchListings(filters: _filters, cursor: _items.last.id);
+          .fetchListings(filters: _filters, offset: _items.length);
       if (!mounted) return;
       setState(() {
         _items.addAll(page.items);
         _hasMore = page.hasMore;
         _loadingMore = false;
       });
+      _saveSnapshot();
     } catch (e) {
       if (!mounted) return;
       setState(() => _loadingMore = false);
@@ -132,13 +161,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ? 2
                 : 1;
 
+    // Derive the card height from its real width so the image never squeezes
+    // the content: card width = viewport - horizontal padding - inter-column
+    // gaps, image is 16:10, and the text block needs a fixed budget.
+    const horizontalPadding = 48.0;
+    const columnGap = 16.0;
+    final cardWidth =
+        (width - horizontalPadding - columnGap * (columns - 1)) / columns;
+    final cardExtent = cardWidth / (16 / 10) + 150;
+
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(child: _Hero(searchController: _searchController, onSearchChanged: _onSearchChanged)),
         SliverToBoxAdapter(child: _buildFilterBar(context)),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          sliver: _buildResults(columns),
+          sliver: _buildResults(columns, cardExtent),
         ),
         if (_hasMore && !_loading)
           SliverToBoxAdapter(
@@ -159,18 +197,22 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
+        const SliverPadding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
+          sliver: SliverToBoxAdapter(child: SiteFooter()),
+        ),
       ],
     );
   }
 
-  Widget _buildResults(int columns) {
+  Widget _buildResults(int columns, double cardExtent) {
     if (_loading) {
       return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columns,
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          mainAxisExtent: 320,
+          mainAxisExtent: cardExtent,
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) => const ListingCardSkeleton(),
@@ -203,7 +245,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         crossAxisCount: columns,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        mainAxisExtent: 320,
+        mainAxisExtent: cardExtent,
       ),
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -218,11 +260,96 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  int get _activeFilterCount {
+    var count = 0;
+    if (_filters.category != null) count++;
+    if (_filters.brand != null) count++;
+    if (_filters.city != null) count++;
+    if (_filters.currency != null) count++;
+    if (_filters.grade != null) count++;
+    if (_filters.minMinor != null || _filters.maxMinor != null) count++;
+    return count;
+  }
+
+  /// Compact by default: a single toggle row; the dropdowns only unfold on
+  /// demand so the grid stays above the fold.
   Widget _buildFilterBar(BuildContext context) {
-    final options = ref.watch(filterOptionsProvider).valueOrNull;
+    final active = _activeFilterCount;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Wrap(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              TextButton.icon(
+                onPressed: () =>
+                    setState(() => _filtersExpanded = !_filtersExpanded),
+                icon: Icon(
+                  _filtersExpanded
+                      ? Icons.expand_less_rounded
+                      : Icons.tune_rounded,
+                  size: 18,
+                ),
+                label: Text(
+                  active > 0
+                      ? '${t.home.filters} ($active)'
+                      : t.home.filters,
+                ),
+              ),
+              if (active > 0 || (_filters.query?.isNotEmpty ?? false))
+                TextButton.icon(
+                  onPressed: _clearFilters,
+                  icon: const Icon(Icons.filter_alt_off_rounded, size: 16),
+                  label: Text(t.home.clearFilters),
+                ),
+              const Spacer(),
+              _buildSort(context),
+            ],
+          ),
+          if (_filtersExpanded) ...[
+            const SizedBox(height: 4),
+            _buildFilterControls(context),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSort(BuildContext context) {
+    String label(ListingSort s) => switch (s) {
+          ListingSort.newest => t.home.sortNewest,
+          ListingSort.priceLowHigh => t.home.sortPriceLowHigh,
+          ListingSort.priceHighLow => t.home.sortPriceHighLow,
+        };
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.sort_rounded,
+            size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+        const SizedBox(width: 6),
+        DropdownButton<ListingSort>(
+          value: _filters.sort,
+          underline: const SizedBox.shrink(),
+          borderRadius: BorderRadius.circular(12),
+          isDense: true,
+          items: [
+            for (final s in ListingSort.values)
+              DropdownMenuItem(value: s, child: Text(label(s))),
+          ],
+          onChanged: (v) {
+            if (v == null || v == _filters.sort) return;
+            _filters = _filters.copyWith(sort: v);
+            _reload();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterControls(BuildContext context) {
+    final options = ref.watch(filterOptionsProvider).valueOrNull;
+    return Wrap(
         spacing: 12,
         runSpacing: 12,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -306,17 +433,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           IconButton(
             tooltip: t.common.search,
             onPressed: _applyPriceRange,
-            icon: const Icon(Icons.tune_rounded),
+            icon: const Icon(Icons.check_rounded),
           ),
-          if (!_filters.isEmpty)
-            TextButton.icon(
-              onPressed: _clearFilters,
-              icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
-              label: Text(t.home.clearFilters),
-            ),
-        ],
-      ),
-    );
+        ]);
   }
 
   Widget _dropdown<T>({

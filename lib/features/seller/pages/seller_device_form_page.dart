@@ -42,6 +42,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
   final Map<String, String> _notes = {};
 
   int? _deviceId;
+  DeviceStatus? _originalStatus;
   List<DevicePhoto> _photos = [];
   bool _loading = true;
   bool _saving = false;
@@ -73,6 +74,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
         final device =
             await ref.read(sellerRepositoryProvider).fetchDevice(_deviceId!);
         if (device != null && mounted) {
+          _originalStatus = device.status;
           _category = device.category;
           _currency = device.price.currency;
           _brand.text = device.brand;
@@ -201,9 +203,22 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
     try {
       final id = await _ensureDeviceSaved(templates, requireValid: true);
       if (id == null) return;
+      // Editing an already-listed device pulls it back into review so an
+      // admin re-approves the changes before it returns to the marketplace.
+      final resubmitted = _originalStatus == DeviceStatus.listed;
+      if (resubmitted) {
+        await ref
+            .read(sellerRepositoryProvider)
+            .setDeviceStatus(id, DeviceStatus.underInspection);
+      }
       ref.invalidate(sellerDevicesProvider);
       if (!mounted) return;
-      showAppSnackBar(context, t.seller.deviceForm.saved);
+      showAppSnackBar(
+        context,
+        resubmitted
+            ? t.seller.devices.resubmitted
+            : t.seller.deviceForm.saved,
+      );
       context.go('/seller');
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);

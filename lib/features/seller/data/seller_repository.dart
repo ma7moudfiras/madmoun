@@ -28,11 +28,13 @@ class SellerRepository {
     required String name,
     required String city,
     required String phoneE164,
+    String? address,
   }) async {
     await _client.from('shops').insert({
       'name': name,
       'city': city,
       'phone_e164': phoneE164,
+      'address': address,
     });
   }
 
@@ -41,17 +43,17 @@ class SellerRepository {
     required String name,
     required String city,
     required String phoneE164,
+    String? address,
   }) async {
     await _client.from('shops').update({
       'name': name,
       'city': city,
       'phone_e164': phoneE164,
+      'address': address,
     }).eq('id', id);
   }
 
-  Future<List<SellerDevice>> fetchMyDevices({int? cursor}) async {
-    final shopId = await _myShopId();
-    if (shopId == null) return const [];
+  Future<List<SellerDevice>> fetchMyDevices(int shopId, {int? cursor}) async {
     var query =
         _client.from('devices').select(_deviceColumns).eq('shop_id', shopId);
     if (cursor != null) query = query.lt('id', cursor);
@@ -70,11 +72,6 @@ class SellerRepository {
     return row == null
         ? null
         : SellerDevice.fromJson(Map<String, dynamic>.from(row));
-  }
-
-  Future<int?> _myShopId() async {
-    final result = await _client.rpc('my_shop_id');
-    return result == null ? null : (result as num).toInt();
   }
 
   Future<int> createDeviceDraft({
@@ -145,9 +142,12 @@ class SellerRepository {
   }
 
   Future<void> setDeviceStatus(int id, DeviceStatus status) async {
-    await _client
+    final rows = await _client
         .from('devices')
-        .update({'status': status.dbValue}).eq('id', id);
+        .update({'status': status.dbValue})
+        .eq('id', id)
+        .select('id');
+    _ensureUpdated(rows);
   }
 
   Future<void> deleteDraft(int id) async {
@@ -156,9 +156,21 @@ class SellerRepository {
 
   // ----- reservations on the seller's devices -----
 
-  Future<List<Reservation>> fetchIncomingReservations({int? cursor}) async {
-    var query = _client.from('reservations').select(
-        '*, devices!inner(title, public_id, shop_id, device_photos(storage_path, is_deleted, sort_order))');
+  /// Scoped to the caller's own shop: RLS also lets buyers/admins read
+  /// reservations, so without the filter this portal view would show rows
+  /// the seller has no authority over.
+  Future<List<Reservation>> fetchIncomingReservations(int shopId,
+      {int? cursor}) async {
+    // Opaque model: the shop must not learn the buyer's identity, so the
+    // buyer phone and free-text delivery note are deliberately not selected.
+    var query = _client
+        .from('reservations')
+        .select(
+            'id, public_id, device_id, buyer_id, delivery_city, price_minor, '
+            'currency, commission_percent, commission_minor, status, created_at, '
+            'updated_at, devices!inner(title, public_id, shop_id, '
+            'device_photos(storage_path, is_deleted, sort_order))')
+        .eq('devices.shop_id', shopId);
     if (cursor != null) query = query.lt('id', cursor);
     final rows = await query.order('id', ascending: false).limit(pageSize);
     return (rows as List<dynamic>)
@@ -167,17 +179,21 @@ class SellerRepository {
   }
 
   Future<void> setReservationStatus(int id, ReservationStatus status) async {
-    await _client
+    final rows = await _client
         .from('reservations')
-        .update({'status': status.dbValue}).eq('id', id);
+        .update({'status': status.dbValue})
+        .eq('id', id)
+        .select('id');
+    _ensureUpdated(rows);
   }
 
   // ----- warranty claims on the seller's devices -----
 
-  Future<List<WarrantyClaim>> fetchClaims() async {
+  Future<List<WarrantyClaim>> fetchClaims(int shopId) async {
     final rows = await _client
         .from('warranty_claims')
         .select('*, devices!inner(title, public_id, shop_id)')
+        .eq('devices.shop_id', shopId)
         .order('id', ascending: false)
         .limit(50);
     return (rows as List<dynamic>)
@@ -186,9 +202,20 @@ class SellerRepository {
   }
 
   Future<void> respondToClaim(int id, String response) async {
-    await _client
+    final rows = await _client
         .from('warranty_claims')
-        .update({'shop_response': response}).eq('id', id);
+        .update({'shop_response': response})
+        .eq('id', id)
+        .select('id');
+    _ensureUpdated(rows);
+  }
+
+  /// PostgREST reports success even when RLS matched zero rows; surface
+  /// that as a real error instead of a silent no-op.
+  void _ensureUpdated(dynamic rows) {
+    if (rows is List && rows.isEmpty) {
+      throw Exception('UPDATE_FORBIDDEN');
+    }
   }
 }
 

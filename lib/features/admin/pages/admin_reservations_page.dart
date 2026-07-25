@@ -2,12 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/domain.dart';
+import '../../../core/models.dart';
 import '../../../core/widgets/common.dart';
 import '../../../i18n/strings.g.dart';
 import '../data/admin_repository.dart';
+import '../data/order_dispatch.dart';
 
 class AdminReservationsPage extends ConsumerWidget {
   const AdminReservationsPage({super.key});
+
+  Future<void> _setStatus(BuildContext context, WidgetRef ref, int id,
+      ReservationStatus status, String successMessage) async {
+    try {
+      await ref.read(adminRepositoryProvider).setReservationStatus(id, status);
+      ref.invalidate(adminReservationsProvider);
+      if (context.mounted) showAppSnackBar(context, successMessage);
+    } catch (e) {
+      if (context.mounted) showErrorSnackBar(context, e);
+    }
+  }
+
+  Future<void> _dispatch(
+      BuildContext context, WidgetRef ref, Reservation r) async {
+    await openCourierWhatsApp(r);
+    if (!context.mounted) return;
+    await _setStatus(context, ref, r.id, ReservationStatus.outForDelivery,
+        t.admin.reservations.dispatched);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,8 +78,34 @@ class AdminReservationsPage extends ConsumerWidget {
                               Money(r.commissionMinor, r.price.currency)
                                   .format())),
                           DataCell(Text(r.deliveryCity)),
-                          DataCell(Text(r.buyerPhone)),
-                          DataCell(StatusChip.reservation(context, r.status)),
+                          DataCell(Text(r.buyerPhone ?? '—')),
+                          DataCell(Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              StatusChip.reservation(context, r.status),
+                              if (r.status == ReservationStatus.confirmed) ...[
+                                const SizedBox(width: 8),
+                                FilledButton.icon(
+                                  onPressed: () => _dispatch(context, ref, r),
+                                  icon: const Icon(Icons.chat_rounded, size: 16),
+                                  label: Text(t.admin.reservations.dispatch),
+                                ),
+                              ] else if (r.status ==
+                                  ReservationStatus.outForDelivery) ...[
+                                const SizedBox(width: 8),
+                                OutlinedButton(
+                                  onPressed: () => _setStatus(
+                                      context,
+                                      ref,
+                                      r.id,
+                                      ReservationStatus.delivered,
+                                      t.admin.reservations.markedDelivered),
+                                  child:
+                                      Text(t.admin.reservations.markDelivered),
+                                ),
+                              ],
+                            ],
+                          )),
                         ]),
                     ],
                   ),

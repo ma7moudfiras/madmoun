@@ -7,6 +7,7 @@ import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import 'data/device_share.dart';
 import 'data/marketplace_repository.dart';
 import 'widgets/listing_card.dart';
 
@@ -62,27 +63,41 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
       paths: listing.photoPaths,
       index: _photoIndex,
       onSelect: (i) => setState(() => _photoIndex = i),
+      brand: listing.brand,
+      category: listing.category,
     );
 
     final info = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (listing.grade != null) GradeBadge(listing.grade!),
-            Chip(
-              avatar: const Icon(Icons.category_rounded, size: 16),
-              label: Text(
-                  t.enums.category[listing.category.dbValue] ??
-                      listing.category.dbValue),
+            Expanded(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (listing.grade != null) GradeBadge(listing.grade!),
+                  Chip(
+                    avatar: const Icon(Icons.category_rounded, size: 16),
+                    label: Text(
+                        t.enums.category[listing.category.dbValue] ??
+                            listing.category.dbValue),
+                  ),
+                  Chip(
+                    avatar: const Icon(Icons.verified_user_rounded, size: 16),
+                    label: Text(t.common
+                        .warrantyDays(days: '${listing.warrantyDays}')),
+                  ),
+                ],
+              ),
             ),
-            Chip(
-              avatar: const Icon(Icons.verified_user_rounded, size: 16),
-              label: Text(
-                  t.common.warrantyDays(days: '${listing.warrantyDays}')),
+            IconButton(
+              tooltip: t.device.shareCta,
+              onPressed: () => shareDevice(context, listing),
+              icon: const Icon(Icons.share_rounded),
             ),
           ],
         ),
@@ -109,11 +124,11 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
         const SizedBox(height: 16),
         Row(
           children: [
-            Icon(Icons.storefront_rounded,
-                size: 20, color: theme.colorScheme.onSurfaceVariant),
+            Icon(Icons.verified_rounded,
+                size: 20, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
             Text(
-              '${t.device.shopLabel}: ${listing.shopName} — ${listing.shopCity}',
+              '${t.device.sellerGeneric} — ${listing.shopCity}',
               style: theme.textTheme.bodyLarge,
             ),
           ],
@@ -218,11 +233,15 @@ class _Gallery extends StatelessWidget {
     required this.paths,
     required this.index,
     required this.onSelect,
+    this.brand,
+    this.category,
   });
 
   final List<String> paths;
   final int index;
   final ValueChanged<int> onSelect;
+  final String? brand;
+  final DeviceCategory? category;
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +252,12 @@ class _Gallery extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           child: AspectRatio(
             aspectRatio: 4 / 3,
-            child: DevicePhotoImage(path: current, fit: BoxFit.contain),
+            child: DevicePhotoImage(
+              path: current,
+              fit: BoxFit.contain,
+              brand: brand,
+              category: category,
+            ),
           ),
         ),
         if (paths.length > 1) ...[
@@ -262,7 +286,11 @@ class _Gallery extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(9),
-                      child: DevicePhotoImage(path: paths[i]),
+                      child: DevicePhotoImage(
+                        path: paths[i],
+                        brand: brand,
+                        category: category,
+                      ),
                     ),
                   ),
                 );

@@ -7,9 +7,10 @@ import '../../../i18n/strings.g.dart';
 import '../data/seller_repository.dart';
 
 final sellerClaimsProvider =
-    FutureProvider.autoDispose<List<WarrantyClaim>>((ref) {
-  ref.watch(myShopProvider);
-  return ref.watch(sellerRepositoryProvider).fetchClaims();
+    FutureProvider<List<WarrantyClaim>>((ref) async {
+  final shop = await ref.watch(myShopProvider.future);
+  if (shop == null) return const [];
+  return ref.watch(sellerRepositoryProvider).fetchClaims(shop.id);
 });
 
 class SellerClaimsPage extends ConsumerWidget {

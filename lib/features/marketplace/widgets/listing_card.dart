@@ -1,53 +1,145 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/domain.dart';
 import '../../../core/models.dart';
 import '../../../core/supabase_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common.dart';
 import '../../../i18n/strings.g.dart';
 
-/// Photo from the device-photos bucket with placeholder + error fallback.
+/// Photo from the device-photos bucket. When there is no real photo (or it
+/// fails to load) a branded, device-aware placeholder is shown instead of a
+/// generic icon — it names the brand and draws the right device silhouette,
+/// so demo listings look intentional rather than blank.
 class DevicePhotoImage extends ConsumerWidget {
-  const DevicePhotoImage({super.key, this.path, this.fit = BoxFit.cover});
+  const DevicePhotoImage({
+    super.key,
+    this.path,
+    this.fit = BoxFit.cover,
+    this.decodeWidth = 700,
+    this.brand,
+    this.category,
+  });
 
   final String? path;
   final BoxFit fit;
 
+  /// Decode the bitmap at roughly display width to cut decode time + memory
+  /// (a big source of jank when many cards scroll). Null = full resolution.
+  final int? decodeWidth;
+
+  /// Context for the placeholder shown when there is no photo.
+  final String? brand;
+  final DeviceCategory? category;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (path == null) return const _PhotoFallback();
+    final placeholder = _DevicePlaceholder(brand: brand, category: category);
+    if (path == null) return placeholder;
     // Seed data may store absolute image URLs; stored uploads are bucket paths.
     final url = path!.startsWith('http')
         ? path!
         : ref.watch(photoUrlProvider)(path!);
-    return Image.network(
-      url,
-      fit: fit,
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-        return const Shimmer(
-            child: SkeletonBox(height: double.infinity, radius: 0));
-      },
-      errorBuilder: (context, error, stack) => const _PhotoFallback(),
+    // A persistent shimmer sits behind the image; the image cross-fades in
+    // over it once decoded. frameBuilder is used instead of loadingBuilder
+    // because on web (CanvasKit) download progress is not reported, which
+    // otherwise leaves a white flash until the image pops in.
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        const Shimmer(child: SkeletonBox(height: double.infinity, radius: 0)),
+        Image.network(
+          url,
+          fit: fit,
+          gaplessPlayback: true,
+          cacheWidth: decodeWidth,
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) return child;
+            return AnimatedOpacity(
+              opacity: frame == null ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              child: child,
+            );
+          },
+          errorBuilder: (context, error, stack) => placeholder,
+        ),
+      ],
     );
   }
 }
 
-class _PhotoFallback extends StatelessWidget {
-  const _PhotoFallback();
+/// Branded stand-in for a missing device photo: device silhouette in an accent
+/// circle over the on-brand gradient, with the brand wordmark beneath. Drawn
+/// entirely in-app (no network, no stretch) so it always renders cleanly.
+class _DevicePlaceholder extends StatelessWidget {
+  const _DevicePlaceholder({this.brand, this.category});
+
+  final String? brand;
+  final DeviceCategory? category;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      color: scheme.primaryContainer,
-      alignment: Alignment.center,
-      child: Icon(
-        Icons.devices_rounded,
-        size: 48,
-        color: scheme.onPrimaryContainer,
-      ),
+    final icon = category == DeviceCategory.laptop
+        ? Icons.laptop_mac_rounded
+        : Icons.smartphone_rounded;
+    // Only name the brand when we actually have one; on generic surfaces
+    // (orders, seller lists) the silhouette alone reads cleaner than a label.
+    final label = brand?.trim();
+    final hasLabel = label != null && label.isNotEmpty;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Scale with the card so thumbnails and full-width images both look
+        // balanced; keep a sensible floor/ceiling.
+        final side = constraints.biggest.shortestSide;
+        final compact = side < 120;
+        final circle = (side * 0.42).clamp(28.0, 96.0);
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [AppTheme.container, scheme.surface],
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: circle,
+                height: circle,
+                decoration: BoxDecoration(
+                  color: scheme.secondaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: Icon(icon,
+                    size: circle * 0.5, color: AppTheme.primary),
+              ),
+              if (hasLabel && !compact) ...[
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.primaryDark,
+                          letterSpacing: 0.3,
+                        ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -70,7 +162,11 @@ class ListingCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 16 / 10,
-              child: DevicePhotoImage(path: listing.coverPhotoPath),
+              child: DevicePhotoImage(
+                path: listing.coverPhotoPath,
+                brand: listing.brand,
+                category: listing.category,
+              ),
             ),
             Expanded(
               child: Padding(

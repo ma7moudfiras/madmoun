@@ -264,6 +264,9 @@ class StatusChip extends StatelessWidget {
       ReservationStatus.confirmed =>
         StatusChip._(label, theme.primaryContainer, theme.onPrimaryContainer,
             key: key),
+      ReservationStatus.outForDelivery => StatusChip._(
+          label, theme.secondaryContainer, theme.onSecondaryContainer,
+          key: key),
       ReservationStatus.delivered =>
         StatusChip._(label, colors.successTint, colors.success, key: key),
       ReservationStatus.cancelled => StatusChip._(

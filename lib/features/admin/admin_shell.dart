@@ -6,6 +6,7 @@ import '../../core/domain.dart';
 import '../../core/supabase_providers.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import '../notifications/notifications_page.dart';
 
 /// Admin chrome, role-gated in the UI (RLS enforces it at the DB regardless).
 class AdminShell extends ConsumerWidget {
@@ -21,12 +22,17 @@ class AdminShell extends ConsumerWidget {
 
     final destinations = <_Dest>[
       _Dest('/admin', Icons.dashboard_rounded, t.admin.navDashboard),
+      _Dest('/admin/ops', Icons.dashboard_customize_rounded, t.admin.navOps),
       _Dest('/admin/shops', Icons.storefront_rounded, t.admin.navShops),
       _Dest('/admin/review', Icons.fact_check_rounded, t.admin.navReview),
       _Dest('/admin/templates', Icons.checklist_rounded, t.admin.navTemplates),
       _Dest('/admin/claims', Icons.gavel_rounded, t.admin.navClaims),
       _Dest('/admin/reservations', Icons.receipt_long_rounded,
           t.admin.navReservations),
+      _Dest('/admin/ledger', Icons.account_balance_wallet_rounded,
+          t.admin.navLedger),
+      _Dest('/admin/reputation', Icons.shield_outlined, t.admin.navReputation),
+      _Dest('/admin/users', Icons.group_rounded, t.admin.navUsers),
     ];
 
     int selectedIndex() {
@@ -54,16 +60,24 @@ class AdminShell extends ConsumerWidget {
         ],
       ),
       actions: [
+        const NotificationBell(),
         TextButton.icon(
           onPressed: () => context.go('/'),
           icon: const Icon(Icons.storefront_outlined, size: 18),
           label: Text(t.common.marketplace),
         ),
         IconButton(
+          tooltip: t.common.accountSettings,
+          onPressed: () => context.go('/account'),
+          icon: const Icon(Icons.manage_accounts_rounded),
+        ),
+        IconButton(
           tooltip: t.common.signOut,
-          onPressed: () async {
-            await ref.read(supabaseClientProvider).auth.signOut();
-            if (context.mounted) context.go('/');
+          onPressed: () {
+            // Navigate home first so the auth-change redirect doesn't bounce
+            // an authed route to /login before we leave the dashboard.
+            context.go('/');
+            ref.read(supabaseClientProvider).auth.signOut();
           },
           icon: const Icon(Icons.logout_rounded),
         ),

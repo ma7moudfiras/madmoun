@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /$
+Allow: /d/
+Allow: /how-it-works
+Allow: /faq
+Allow: /terms
+Allow: /privacy
+Disallow: /account
+Disallow: /orders
+Disallow: /reserve
+Disallow: /seller
+Disallow: /admin
+Disallow: /notifications
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+
+Sitemap: https://madmoun-five.vercel.app/sitemap.xml

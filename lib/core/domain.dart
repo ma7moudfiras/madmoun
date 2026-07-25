@@ -343,6 +343,7 @@ enum ShopStatus {
 enum ReservationStatus {
   pending('pending'),
   confirmed('confirmed'),
+  outForDelivery('out_for_delivery'),
   delivered('delivered'),
   cancelled('cancelled');
 

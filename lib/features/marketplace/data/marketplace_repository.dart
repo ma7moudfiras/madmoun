@@ -4,11 +4,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/domain.dart';
 import '../../../core/models.dart';
 import '../../../core/supabase_providers.dart';
+import '../../../core/text_normalize.dart';
 
+// Madmoun is a managed, opaque intermediary: the buyer never sees the shop's
+// identity or contact — only the device, its inspection, and the delivery
+// city. The shop stays anonymous behind the platform.
 const listingColumns =
     'id, public_id, category, brand, model, title, description, price_minor, '
     'currency, grade, warranty_days, imei_last4, checklist, created_at, '
-    'shop_id, shop_name, shop_city';
+    'shop_id, shop_city';
+
+/// How the marketplace grid is ordered. [newest] is the default and matches
+/// the old id-descending behaviour.
+enum ListingSort { newest, priceLowHigh, priceHighLow }
 
 class ListingFilters {
   const ListingFilters({
@@ -20,6 +28,7 @@ class ListingFilters {
     this.minMinor,
     this.maxMinor,
     this.grade,
+    this.sort = ListingSort.newest,
   });
 
   final String? query;
@@ -30,7 +39,10 @@ class ListingFilters {
   final int? minMinor;
   final int? maxMinor;
   final Grade? grade;
+  final ListingSort sort;
 
+  /// Sort is not a "filter" — it never counts toward the active-filter badge
+  /// or the clear-filters affordance.
   bool get isEmpty =>
       (query == null || query!.isEmpty) &&
       category == null &&
@@ -50,6 +62,7 @@ class ListingFilters {
     int? Function()? minMinor,
     int? Function()? maxMinor,
     Grade? Function()? grade,
+    ListingSort? sort,
   }) {
     return ListingFilters(
       query: query != null ? query() : this.query,
@@ -60,6 +73,7 @@ class ListingFilters {
       minMinor: minMinor != null ? minMinor() : this.minMinor,
       maxMinor: maxMinor != null ? maxMinor() : this.maxMinor,
       grade: grade != null ? grade() : this.grade,
+      sort: sort ?? this.sort,
     );
   }
 }
@@ -83,7 +97,7 @@ class MarketplaceRepository {
 
   Future<ListingsPage> fetchListings({
     ListingFilters filters = const ListingFilters(),
-    int? cursor,
+    int offset = 0,
   }) async {
     var query = _client.from('public_listings').select(listingColumns);
 
@@ -110,16 +124,23 @@ class MarketplaceRepository {
     }
     final search = filters.query?.trim();
     if (search != null && search.isNotEmpty) {
-      final term = search.replaceAll('%', r'\%').replaceAll(',', ' ');
-      query = query.or(
-        'title.ilike.%$term%,brand.ilike.%$term%,model.ilike.%$term%',
-      );
+      // search_text is pre-normalized (diacritics/tatweel stripped, alef and
+      // ya/ta-marbuta variants unified) so a query for one spelling of a word
+      // — إيفون vs آيفون vs ايفون — matches all of them. Normalize the typed
+      // term the same way before comparing.
+      final term = normalizeArabic(search).replaceAll('%', r'\%');
+      query = query.ilike('search_text', '%$term%');
     }
-    if (cursor != null) {
-      query = query.lt('id', cursor);
-    }
-
-    final rows = await query.order('id', ascending: false).limit(pageSize);
+    // Offset pagination (the catalogue is small) so any sort order paginates
+    // correctly; every sort has `id` as a stable tiebreaker.
+    var ordered = switch (filters.sort) {
+      ListingSort.newest => query.order('id', ascending: false),
+      ListingSort.priceLowHigh =>
+        query.order('price_minor', ascending: true).order('id', ascending: false),
+      ListingSort.priceHighLow =>
+        query.order('price_minor', ascending: false).order('id', ascending: false),
+    };
+    final rows = await ordered.range(offset, offset + pageSize - 1);
     final listings = (rows as List<dynamic>)
         .map((r) => Listing.fromJson(Map<String, dynamic>.from(r as Map)))
         .toList();
@@ -195,6 +216,21 @@ class MarketplaceRepository {
 final marketplaceRepositoryProvider = Provider<MarketplaceRepository>(
   (ref) => MarketplaceRepository(ref.watch(supabaseClientProvider)),
 );
+
+/// In-memory snapshot of the last Home view. Restoring it on re-entry avoids
+/// the refetch + skeleton flash + image reload that made returning to Home
+/// flicker every time.
+class HomeSnapshot {
+  List<Listing> items = const [];
+  bool hasMore = false;
+  bool loaded = false;
+  ListingFilters filters = const ListingFilters();
+  String search = '';
+  String minPrice = '';
+  String maxPrice = '';
+}
+
+final homeSnapshotProvider = Provider<HomeSnapshot>((ref) => HomeSnapshot());
 
 final impactStatsProvider = FutureProvider<ImpactStats>(
   (ref) => ref.watch(marketplaceRepositoryProvider).fetchImpactStats(),

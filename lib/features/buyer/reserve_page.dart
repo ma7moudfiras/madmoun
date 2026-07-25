@@ -52,6 +52,7 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
   final _formKey = GlobalKey<FormState>();
   final _phone = TextEditingController();
   final _city = TextEditingController();
+  final _address = TextEditingController();
   final _note = TextEditingController();
   bool _busy = false;
   String? _reservationId;
@@ -60,6 +61,7 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
   void dispose() {
     _phone.dispose();
     _city.dispose();
+    _address.dispose();
     _note.dispose();
     super.dispose();
   }
@@ -73,6 +75,7 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
             deviceId: widget.listing.id,
             phoneE164: normalized,
             city: _city.text.trim(),
+            address: _address.text.trim(),
             note: _note.text.trim().isEmpty ? null : _note.text.trim(),
           );
       if (!mounted) return;
@@ -145,6 +148,18 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
                         helperText: t.reserve.cityHelp,
                       ),
                       validator: (v) => (v == null || v.trim().length < 2)
+                          ? t.common.requiredField
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _address,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        labelText: t.reserve.addressLabel,
+                        helperText: t.reserve.addressHelp,
+                      ),
+                      validator: (v) => (v == null || v.trim().length < 3)
                           ? t.common.requiredField
                           : null,
                     ),
