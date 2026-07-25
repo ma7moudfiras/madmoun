@@ -396,9 +396,6 @@ class Translations$home$ar {
 	/// ar: 'الماركة'
 	String get brandFilter => 'الماركة';
 
-	/// ar: 'المدينة'
-	String get cityFilter => 'المدينة';
-
 	/// ar: 'الحالة'
 	String get gradeFilter => 'الحالة';
 
@@ -1793,7 +1790,6 @@ extension on Translations {
 			'home.clearFilters' => 'مسح التصفية',
 			'home.categoryFilter' => 'الفئة',
 			'home.brandFilter' => 'الماركة',
-			'home.cityFilter' => 'المدينة',
 			'home.gradeFilter' => 'الحالة',
 			'home.minPrice' => 'السعر من',
 			'home.maxPrice' => 'السعر إلى',

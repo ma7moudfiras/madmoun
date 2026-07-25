@@ -7,12 +7,11 @@ import '../../../core/supabase_providers.dart';
 import '../../../core/text_normalize.dart';
 
 // Madmoun is a managed, opaque intermediary: the buyer never sees the shop's
-// identity or contact — only the device, its inspection, and the delivery
-// city. The shop stays anonymous behind the platform.
+// identity, contact, or location — only the device and its inspection.
 const listingColumns =
     'id, public_id, category, brand, model, title, description, price_minor, '
     'currency, grade, warranty_days, imei_last4, checklist, created_at, '
-    'shop_id, shop_city';
+    'shop_id';
 
 /// How the marketplace grid is ordered. [newest] is the default and matches
 /// the old id-descending behaviour.
@@ -23,7 +22,6 @@ class ListingFilters {
     this.query,
     this.category,
     this.brand,
-    this.city,
     this.minMinor,
     this.maxMinor,
     this.grade,
@@ -33,7 +31,6 @@ class ListingFilters {
   final String? query;
   final DeviceCategory? category;
   final String? brand;
-  final String? city;
   final int? minMinor;
   final int? maxMinor;
   final Grade? grade;
@@ -45,7 +42,6 @@ class ListingFilters {
       (query == null || query!.isEmpty) &&
       category == null &&
       brand == null &&
-      city == null &&
       minMinor == null &&
       maxMinor == null &&
       grade == null;
@@ -54,7 +50,6 @@ class ListingFilters {
     String? Function()? query,
     DeviceCategory? Function()? category,
     String? Function()? brand,
-    String? Function()? city,
     int? Function()? minMinor,
     int? Function()? maxMinor,
     Grade? Function()? grade,
@@ -64,7 +59,6 @@ class ListingFilters {
       query: query != null ? query() : this.query,
       category: category != null ? category() : this.category,
       brand: brand != null ? brand() : this.brand,
-      city: city != null ? city() : this.city,
       minMinor: minMinor != null ? minMinor() : this.minMinor,
       maxMinor: maxMinor != null ? maxMinor() : this.maxMinor,
       grade: grade != null ? grade() : this.grade,
@@ -101,9 +95,6 @@ class MarketplaceRepository {
     }
     if (filters.brand != null && filters.brand!.isNotEmpty) {
       query = query.eq('brand', filters.brand!);
-    }
-    if (filters.city != null && filters.city!.isNotEmpty) {
-      query = query.eq('shop_city', filters.city!);
     }
     if (filters.minMinor != null) {
       query = query.gte('price_minor', filters.minMinor!);
@@ -192,24 +183,16 @@ class MarketplaceRepository {
     return ImpactStats.fromJson(Map<String, dynamic>.from(rows.first as Map));
   }
 
-  /// Distinct brand/city values for the filter dropdowns, derived from the
+  /// Distinct brand values for the filter dropdown, derived from the
   /// currently listed devices.
-  Future<({List<String> brands, List<String> cities})> fetchFilterOptions() async {
-    final rows = await _client
-        .from('public_listings')
-        .select('brand, shop_city')
-        .limit(200);
+  Future<List<String>> fetchFilterOptions() async {
+    final rows =
+        await _client.from('public_listings').select('brand').limit(200);
     final brands = <String>{};
-    final cities = <String>{};
     for (final row in rows as List<dynamic>) {
-      final map = Map<String, dynamic>.from(row as Map);
-      brands.add(map['brand'] as String);
-      cities.add(map['shop_city'] as String);
+      brands.add(Map<String, dynamic>.from(row as Map)['brand'] as String);
     }
-    return (
-      brands: brands.toList()..sort(),
-      cities: cities.toList()..sort(),
-    );
+    return brands.toList()..sort();
   }
 }
 
@@ -236,8 +219,7 @@ final impactStatsProvider = FutureProvider<ImpactStats>(
   (ref) => ref.watch(marketplaceRepositoryProvider).fetchImpactStats(),
 );
 
-final filterOptionsProvider =
-    FutureProvider<({List<String> brands, List<String> cities})>(
+final filterOptionsProvider = FutureProvider<List<String>>(
   (ref) => ref.watch(marketplaceRepositoryProvider).fetchFilterOptions(),
 );
 

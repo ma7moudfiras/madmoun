@@ -130,7 +130,7 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
                 size: 20, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
             Text(
-              '${t.device.sellerGeneric} — ${listing.shopCity}',
+              t.device.sellerGeneric,
               style: theme.textTheme.bodyLarge,
             ),
           ],

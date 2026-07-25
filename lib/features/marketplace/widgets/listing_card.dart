@@ -177,23 +177,7 @@ class ListingCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        if (listing.grade != null)
-                          GradeBadge(listing.grade!),
-                        const Spacer(),
-                        Icon(Icons.location_on_rounded,
-                            size: 14,
-                            color: theme.colorScheme.onSurfaceVariant),
-                        const SizedBox(width: 2),
-                        Text(
-                          listing.shopCity,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
+                    if (listing.grade != null) GradeBadge(listing.grade!),
                     const SizedBox(height: 8),
                     Text(
                       listing.title,

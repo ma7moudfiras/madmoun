@@ -265,7 +265,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     var count = 0;
     if (_filters.category != null) count++;
     if (_filters.brand != null) count++;
-    if (_filters.city != null) count++;
     if (_filters.grade != null) count++;
     if (_filters.minMinor != null || _filters.maxMinor != null) count++;
     return count;
@@ -375,7 +374,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildFilterControls(BuildContext context) {
-    final options = ref.watch(filterOptionsProvider).valueOrNull;
+    final brands = ref.watch(filterOptionsProvider).valueOrNull;
     return Wrap(
         spacing: 12,
         runSpacing: 12,
@@ -391,25 +390,14 @@ class _HomePageState extends ConsumerState<HomePage> {
               _reload();
             },
           ),
-          if (options != null && options.brands.isNotEmpty)
+          if (brands != null && brands.isNotEmpty)
             _dropdown<String>(
               label: t.home.brandFilter,
               value: _filters.brand,
-              items: options.brands,
+              items: brands,
               display: (b) => b,
               onChanged: (v) {
                 _filters = _filters.copyWith(brand: () => v);
-                _reload();
-              },
-            ),
-          if (options != null && options.cities.isNotEmpty)
-            _dropdown<String>(
-              label: t.home.cityFilter,
-              value: _filters.city,
-              items: options.cities,
-              display: (c) => c,
-              onChanged: (v) {
-                _filters = _filters.copyWith(city: () => v);
                 _reload();
               },
             ),
