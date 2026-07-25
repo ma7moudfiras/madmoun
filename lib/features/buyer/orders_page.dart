@@ -35,8 +35,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
       _error = null;
     });
     try {
-      final items =
-          await ref.read(buyerRepositoryProvider).fetchMyReservations();
+      final items = await ref
+          .read(buyerRepositoryProvider)
+          .fetchMyReservations();
       if (!mounted) return;
       setState(() {
         _items
@@ -111,7 +112,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
     );
     if (description == null || !mounted) return;
     try {
-      await ref.read(buyerRepositoryProvider).openClaim(
+      await ref
+          .read(buyerRepositoryProvider)
+          .openClaim(
             deviceId: reservation.deviceId,
             reservationId: reservation.id,
             description: description,
@@ -164,8 +167,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
             children: [
               Text(
                 t.orders.title,
-                style: theme.textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 16),
               for (final reservation in _items) ...[
@@ -174,8 +178,8 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                   onOpenClaim: () => _openClaim(reservation),
                   onConfirmReceipt:
                       reservation.status == ReservationStatus.outForDelivery
-                          ? () => _confirmReceipt(reservation)
-                          : null,
+                      ? () => _confirmReceipt(reservation)
+                      : null,
                 ),
                 const SizedBox(height: 12),
               ],
@@ -190,8 +194,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                 const SizedBox(height: 24),
                 Text(
                   t.orders.claimsTitle,
-                  style: theme.textTheme.titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 for (final claim in claims) ...[
@@ -235,8 +240,7 @@ class _ReservationCard extends StatelessWidget {
                   child: SizedBox(
                     width: 72,
                     height: 72,
-                    child:
-                        DevicePhotoImage(path: reservation.deviceCoverPath),
+                    child: DevicePhotoImage(path: reservation.deviceCoverPath),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -248,20 +252,23 @@ class _ReservationCard extends StatelessWidget {
                         reservation.deviceTitle ??
                             reservation.devicePublicId ??
                             '—',
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${t.orders.reservationLabel}: ${reservation.publicId}',
                         style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant),
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         reservation.price.format(),
-                        style: theme.textTheme.titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
@@ -317,8 +324,9 @@ class _ClaimCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     claim.deviceTitle ?? claim.devicePublicId ?? '—',
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 StatusChip.claim(context, claim.status),
@@ -330,16 +338,18 @@ class _ClaimCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 t.orders.shopResponse(note: claim.shopResponse!),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
             if (claim.resolutionNote != null) ...[
               const SizedBox(height: 4),
               Text(
                 t.orders.claimResolution(note: claim.resolutionNote!),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ],
@@ -375,6 +385,7 @@ class _ClaimDialogState extends State<_ClaimDialog> {
         child: SizedBox(
           width: 400,
           child: TextFormField(
+            textDirection: TextDirection.rtl,
             controller: _controller,
             autofocus: true,
             maxLines: 4,

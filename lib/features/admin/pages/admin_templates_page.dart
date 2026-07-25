@@ -33,10 +33,9 @@ class AdminTemplatesPage extends ConsumerWidget {
               for (final category in DeviceCategory.values) ...[
                 Text(
                   t.enums.category[category.dbValue] ?? category.dbValue,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 8),
                 Card(
@@ -89,16 +88,22 @@ class _TemplateRow extends StatelessWidget {
     final theme = Theme.of(context);
     return ListTile(
       title: Text(template.labelAr),
-      subtitle: Text(template.key,
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+      subtitle: Text(
+        template.key,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
       leading: CircleAvatar(
         radius: 14,
         backgroundColor: theme.colorScheme.primaryContainer,
-        child: Text('${template.sortOrder}',
-            style: TextStyle(
-                fontSize: 12,
-                color: theme.colorScheme.onPrimaryContainer)),
+        child: Text(
+          '${template.sortOrder}',
+          style: TextStyle(
+            fontSize: 12,
+            color: theme.colorScheme.onPrimaryContainer,
+          ),
+        ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -110,13 +115,12 @@ class _TemplateRow extends StatelessWidget {
                 color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text(t.admin.templates.disabledBadge,
-                  style: theme.textTheme.bodySmall),
+              child: Text(
+                t.admin.templates.disabledBadge,
+                style: theme.textTheme.bodySmall,
+              ),
             ),
-          IconButton(
-            onPressed: onEdit,
-            icon: const Icon(Icons.edit_rounded),
-          ),
+          IconButton(onPressed: onEdit, icon: const Icon(Icons.edit_rounded)),
         ],
       ),
     );
@@ -134,12 +138,15 @@ class _TemplateDialog extends ConsumerStatefulWidget {
 
 class _TemplateDialogState extends ConsumerState<_TemplateDialog> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _key =
-      TextEditingController(text: widget.template?.key ?? '');
-  late final TextEditingController _label =
-      TextEditingController(text: widget.template?.labelAr ?? '');
+  late final TextEditingController _key = TextEditingController(
+    text: widget.template?.key ?? '',
+  );
+  late final TextEditingController _label = TextEditingController(
+    text: widget.template?.labelAr ?? '',
+  );
   late final TextEditingController _sort = TextEditingController(
-      text: (widget.template?.sortOrder ?? 0).toString());
+    text: (widget.template?.sortOrder ?? 0).toString(),
+  );
   late DeviceCategory _category =
       widget.template?.category ?? DeviceCategory.mobile;
   late bool _active = widget.template?.isActive ?? true;
@@ -157,7 +164,9 @@ class _TemplateDialogState extends ConsumerState<_TemplateDialog> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
     try {
-      await ref.read(adminRepositoryProvider).upsertTemplate(
+      await ref
+          .read(adminRepositoryProvider)
+          .upsertTemplate(
             id: widget.template?.id,
             category: _category,
             key: _key.text.trim(),
@@ -190,18 +199,20 @@ class _TemplateDialogState extends ConsumerState<_TemplateDialog> {
                 DropdownButtonFormField<DeviceCategory>(
                   value: _category,
                   decoration: InputDecoration(
-                      labelText: t.seller.deviceForm.categoryLabel),
+                    labelText: t.seller.deviceForm.categoryLabel,
+                  ),
                   items: [
                     for (final c in DeviceCategory.values)
                       DropdownMenuItem(
-                          value: c,
-                          child: Text(
-                              t.enums.category[c.dbValue] ?? c.dbValue)),
+                        value: c,
+                        child: Text(t.enums.category[c.dbValue] ?? c.dbValue),
+                      ),
                   ],
                   onChanged: (v) => setState(() => _category = v ?? _category),
                 ),
               if (isNew) const SizedBox(height: 12),
               TextFormField(
+                textDirection: TextDirection.rtl,
                 controller: _key,
                 enabled: isNew,
                 decoration: InputDecoration(
@@ -210,24 +221,28 @@ class _TemplateDialogState extends ConsumerState<_TemplateDialog> {
                 ),
                 validator: (v) =>
                     RegExp(r'^[a-z][a-z0-9_]*$').hasMatch((v ?? '').trim())
-                        ? null
-                        : t.admin.templates.invalidKey,
+                    ? null
+                    : t.admin.templates.invalidKey,
               ),
               const SizedBox(height: 12),
               TextFormField(
+                textDirection: TextDirection.rtl,
                 controller: _label,
                 decoration: InputDecoration(
-                    labelText: t.admin.templates.labelArLabel),
+                  labelText: t.admin.templates.labelArLabel,
+                ),
                 validator: (v) => (v == null || v.trim().isEmpty)
                     ? t.common.requiredField
                     : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
+                textDirection: TextDirection.rtl,
                 controller: _sort,
                 keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: t.admin.templates.sortLabel),
+                decoration: InputDecoration(
+                  labelText: t.admin.templates.sortLabel,
+                ),
               ),
               const SizedBox(height: 8),
               SwitchListTile(
@@ -251,7 +266,8 @@ class _TemplateDialogState extends ConsumerState<_TemplateDialog> {
               ? const SizedBox(
                   width: 18,
                   height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2))
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
               : Text(t.common.save),
         ),
       ],

@@ -157,10 +157,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     final columns = width >= 1200
         ? 4
         : width >= 900
-            ? 3
-            : width >= 600
-                ? 2
-                : 1;
+        ? 3
+        : width >= 600
+        ? 2
+        : 1;
 
     // Derive the card height from its real width so the image never squeezes
     // the content: card width = viewport - horizontal padding - inter-column
@@ -173,7 +173,12 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(child: _Hero(searchController: _searchController, onSearchChanged: _onSearchChanged)),
+        SliverToBoxAdapter(
+          child: _Hero(
+            searchController: _searchController,
+            onSearchChanged: _onSearchChanged,
+          ),
+        ),
         SliverToBoxAdapter(child: _buildFilterBar(context)),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -190,7 +195,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ? const SizedBox(
                           width: 16,
                           height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2))
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
                       : const Icon(Icons.expand_more_rounded),
                   label: Text(t.common.showMore),
                 ),
@@ -248,16 +254,13 @@ class _HomePageState extends ConsumerState<HomePage> {
         crossAxisSpacing: 16,
         mainAxisExtent: cardExtent,
       ),
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final listing = _items[index];
-          return ListingCard(
-            listing: listing,
-            onTap: () => context.go('/d/${listing.publicId}'),
-          );
-        },
-        childCount: _items.length,
-      ),
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final listing = _items[index];
+        return ListingCard(
+          listing: listing,
+          onTap: () => context.go('/d/${listing.publicId}'),
+        );
+      }, childCount: _items.length),
     );
   }
 
@@ -291,9 +294,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   size: 18,
                 ),
                 label: Text(
-                  active > 0
-                      ? '${t.home.filters} ($active)'
-                      : t.home.filters,
+                  active > 0 ? '${t.home.filters} ($active)' : t.home.filters,
                 ),
               ),
               if (active > 0 || (_filters.query?.isNotEmpty ?? false))
@@ -339,10 +340,10 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Widget _buildSort(BuildContext context) {
     String label(ListingSort s) => switch (s) {
-          ListingSort.newest => t.home.sortNewest,
-          ListingSort.priceLowHigh => t.home.sortPriceLowHigh,
-          ListingSort.priceHighLow => t.home.sortPriceHighLow,
-        };
+      ListingSort.newest => t.home.sortNewest,
+      ListingSort.priceLowHigh => t.home.sortPriceLowHigh,
+      ListingSort.priceHighLow => t.home.sortPriceHighLow,
+    };
     final color = Theme.of(context).colorScheme.onSurfaceVariant;
     // A plain DropdownButton sizes its closed state to the widest item in
     // the whole list, not the selected one — with "الأحدث" selected next to
@@ -376,71 +377,74 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _buildFilterControls(BuildContext context) {
     final brands = ref.watch(filterOptionsProvider).valueOrNull;
     return Wrap(
-        spacing: 12,
-        runSpacing: 12,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          _dropdown<DeviceCategory>(
-            label: t.home.categoryFilter,
-            value: _filters.category,
-            items: DeviceCategory.values,
-            display: (c) => t.enums.category[c.dbValue] ?? c.dbValue,
+      spacing: 12,
+      runSpacing: 12,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        _dropdown<DeviceCategory>(
+          label: t.home.categoryFilter,
+          value: _filters.category,
+          items: DeviceCategory.values,
+          display: (c) => t.enums.category[c.dbValue] ?? c.dbValue,
+          onChanged: (v) {
+            _filters = _filters.copyWith(category: () => v);
+            _reload();
+          },
+        ),
+        if (brands != null && brands.isNotEmpty)
+          _dropdown<String>(
+            label: t.home.brandFilter,
+            value: _filters.brand,
+            items: brands,
+            display: (b) => b,
             onChanged: (v) {
-              _filters = _filters.copyWith(category: () => v);
+              _filters = _filters.copyWith(brand: () => v);
               _reload();
             },
           ),
-          if (brands != null && brands.isNotEmpty)
-            _dropdown<String>(
-              label: t.home.brandFilter,
-              value: _filters.brand,
-              items: brands,
-              display: (b) => b,
-              onChanged: (v) {
-                _filters = _filters.copyWith(brand: () => v);
-                _reload();
-              },
+        _dropdown<Grade>(
+          label: t.home.gradeFilter,
+          value: _filters.grade,
+          items: Grade.values,
+          display: (g) => t.enums.grade[g.dbValue] ?? g.dbValue,
+          onChanged: (v) {
+            _filters = _filters.copyWith(grade: () => v);
+            _reload();
+          },
+        ),
+        SizedBox(
+          width: 110,
+          child: TextField(
+            textDirection: TextDirection.rtl,
+            controller: _minPrice,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: t.home.minPrice,
+              isDense: true,
             ),
-          _dropdown<Grade>(
-            label: t.home.gradeFilter,
-            value: _filters.grade,
-            items: Grade.values,
-            display: (g) => t.enums.grade[g.dbValue] ?? g.dbValue,
-            onChanged: (v) {
-              _filters = _filters.copyWith(grade: () => v);
-              _reload();
-            },
+            onSubmitted: (_) => _applyPriceRange(),
           ),
-          SizedBox(
-            width: 110,
-            child: TextField(
-              controller: _minPrice,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: t.home.minPrice,
-                isDense: true,
-              ),
-              onSubmitted: (_) => _applyPriceRange(),
+        ),
+        SizedBox(
+          width: 110,
+          child: TextField(
+            textDirection: TextDirection.rtl,
+            controller: _maxPrice,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: t.home.maxPrice,
+              isDense: true,
             ),
+            onSubmitted: (_) => _applyPriceRange(),
           ),
-          SizedBox(
-            width: 110,
-            child: TextField(
-              controller: _maxPrice,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: t.home.maxPrice,
-                isDense: true,
-              ),
-              onSubmitted: (_) => _applyPriceRange(),
-            ),
-          ),
-          IconButton(
-            tooltip: t.common.search,
-            onPressed: _applyPriceRange,
-            icon: const Icon(Icons.check_rounded),
-          ),
-        ]);
+        ),
+        IconButton(
+          tooltip: t.common.search,
+          onPressed: _applyPriceRange,
+          icon: const Icon(Icons.check_rounded),
+        ),
+      ],
+    );
   }
 
   Widget _dropdown<T>({
@@ -521,8 +525,9 @@ class _Hero extends ConsumerWidget {
                     children: [
                       _ImpactChip(
                         icon: Icons.recycling_rounded,
-                        label: t.home
-                            .impactDevices(count: '${stats.devicesSaved}'),
+                        label: t.home.impactDevices(
+                          count: '${stats.devicesSaved}',
+                        ),
                       ),
                       _ImpactChip(
                         icon: Icons.eco_rounded,
@@ -544,6 +549,7 @@ class _Hero extends ConsumerWidget {
                 ),
                 const SizedBox(height: 24),
                 TextField(
+                  textDirection: TextDirection.rtl,
                   controller: searchController,
                   onChanged: onSearchChanged,
                   textInputAction: TextInputAction.search,

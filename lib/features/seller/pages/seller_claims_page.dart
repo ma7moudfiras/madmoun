@@ -6,8 +6,7 @@ import '../../../core/widgets/common.dart';
 import '../../../i18n/strings.g.dart';
 import '../data/seller_repository.dart';
 
-final sellerClaimsProvider =
-    FutureProvider<List<WarrantyClaim>>((ref) async {
+final sellerClaimsProvider = FutureProvider<List<WarrantyClaim>>((ref) async {
   final shop = await ref.watch(myShopProvider.future);
   if (shop == null) return const [];
   return ref.watch(sellerRepositoryProvider).fetchClaims(shop.id);
@@ -54,8 +53,9 @@ class _ClaimCard extends ConsumerStatefulWidget {
 }
 
 class _ClaimCardState extends ConsumerState<_ClaimCard> {
-  late final TextEditingController _response =
-      TextEditingController(text: widget.claim.shopResponse ?? '');
+  late final TextEditingController _response = TextEditingController(
+    text: widget.claim.shopResponse ?? '',
+  );
   bool _busy = false;
 
   @override
@@ -95,8 +95,9 @@ class _ClaimCardState extends ConsumerState<_ClaimCard> {
                 Expanded(
                   child: Text(
                     claim.deviceTitle ?? claim.devicePublicId ?? '—',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 StatusChip.claim(context, claim.status),
@@ -120,6 +121,7 @@ class _ClaimCardState extends ConsumerState<_ClaimCard> {
             ],
             const SizedBox(height: 12),
             TextField(
+              textDirection: TextDirection.rtl,
               controller: _response,
               maxLines: 2,
               decoration: InputDecoration(
@@ -136,7 +138,8 @@ class _ClaimCardState extends ConsumerState<_ClaimCard> {
                     ? const SizedBox(
                         width: 16,
                         height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2))
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : const Icon(Icons.reply_rounded, size: 18),
                 label: Text(t.seller.claims.respondSubmit),
               ),

@@ -12,11 +12,8 @@ Future<String?> promptReason(
 }) {
   return showDialog<String>(
     context: context,
-    builder: (context) => _ReasonDialog(
-      title: title,
-      hint: hint,
-      confirmLabel: confirmLabel,
-    ),
+    builder: (context) =>
+        _ReasonDialog(title: title, hint: hint, confirmLabel: confirmLabel),
   );
 }
 
@@ -54,6 +51,7 @@ class _ReasonDialogState extends State<_ReasonDialog> {
         child: SizedBox(
           width: 400,
           child: TextFormField(
+            textDirection: TextDirection.rtl,
             controller: _controller,
             autofocus: true,
             maxLines: 3,

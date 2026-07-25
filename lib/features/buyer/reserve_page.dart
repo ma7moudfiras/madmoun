@@ -71,7 +71,9 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
     final normalized = normalizePhone(_phone.text)!;
     setState(() => _busy = true);
     try {
-      final id = await ref.read(buyerRepositoryProvider).reserveDevice(
+      final id = await ref
+          .read(buyerRepositoryProvider)
+          .reserveDevice(
             deviceId: widget.listing.id,
             phoneE164: normalized,
             city: _city.text.trim(),
@@ -109,23 +111,27 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
                   children: [
                     Text(
                       t.reserve.title,
-                      style: theme.textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w700),
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       t.reserve.deviceSummary(title: widget.listing.title),
                       style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant),
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       widget.listing.price.format(),
-                      style: theme.textTheme.titleLarge
-                          ?.copyWith(fontWeight: FontWeight.w800),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const Divider(height: 32),
                     TextFormField(
+                      textDirection: TextDirection.rtl,
                       controller: _phone,
                       autofocus: true,
                       keyboardType: TextInputType.phone,
@@ -141,6 +147,7 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
+                      textDirection: TextDirection.rtl,
                       controller: _city,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
@@ -153,6 +160,7 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
+                      textDirection: TextDirection.rtl,
                       controller: _address,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
@@ -165,6 +173,7 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
+                      textDirection: TextDirection.rtl,
                       controller: _note,
                       maxLines: 3,
                       textInputAction: TextInputAction.newline,
@@ -181,8 +190,8 @@ class _ReserveFormState extends ConsumerState<_ReserveForm> {
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child:
-                                  CircularProgressIndicator(strokeWidth: 2))
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
                           : const Icon(Icons.check_circle_rounded),
                       label: Text(t.reserve.submit),
                     ),
@@ -222,13 +231,17 @@ class _SuccessView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(Icons.check_circle_rounded,
-                      size: 64, color: colors.success),
+                  Icon(
+                    Icons.check_circle_rounded,
+                    size: 64,
+                    color: colors.success,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     t.reserve.successTitle,
-                    style: theme.textTheme.headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
@@ -240,8 +253,9 @@ class _SuccessView extends StatelessWidget {
                   const Divider(height: 32),
                   Text(
                     t.reserve.whatNextTitle,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   for (final (i, step) in steps.indexed)
@@ -252,22 +266,23 @@ class _SuccessView extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 12,
-                            backgroundColor:
-                                theme.colorScheme.primaryContainer,
+                            backgroundColor: theme.colorScheme.primaryContainer,
                             child: Text(
                               '${i + 1}',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                color:
-                                    theme.colorScheme.onPrimaryContainer,
+                                color: theme.colorScheme.onPrimaryContainer,
                               ),
                             ),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                              child: Text(step,
-                                  style: theme.textTheme.bodyMedium)),
+                            child: Text(
+                              step,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ),
                         ],
                       ),
                     ),

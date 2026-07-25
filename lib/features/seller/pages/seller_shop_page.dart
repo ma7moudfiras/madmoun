@@ -68,8 +68,9 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
     try {
       final repo = ref.read(sellerRepositoryProvider);
       final existing = widget.shop;
-      final address =
-          _address.text.trim().isEmpty ? null : _address.text.trim();
+      final address = _address.text.trim().isEmpty
+          ? null
+          : _address.text.trim();
       if (existing == null) {
         await repo.createShop(
           name: _name.text.trim(),
@@ -127,35 +128,42 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
                         children: [
                           Text(
                             t.seller.onboarding.title,
-                            style: theme.textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.w700),
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             t.seller.onboarding.intro,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant),
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
+                            textDirection: TextDirection.rtl,
                             controller: _name,
                             decoration: InputDecoration(
-                                labelText: t.seller.onboarding.shopNameLabel),
+                              labelText: t.seller.onboarding.shopNameLabel,
+                            ),
                             validator: (v) => (v == null || v.trim().length < 2)
                                 ? t.common.requiredField
                                 : null,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
+                            textDirection: TextDirection.rtl,
                             controller: _city,
                             decoration: InputDecoration(
-                                labelText: t.common.cityLabel),
+                              labelText: t.common.cityLabel,
+                            ),
                             validator: (v) => (v == null || v.trim().length < 2)
                                 ? t.common.requiredField
                                 : null,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
+                            textDirection: TextDirection.rtl,
                             controller: _phone,
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
@@ -168,6 +176,7 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
+                            textDirection: TextDirection.rtl,
                             controller: _address,
                             decoration: InputDecoration(
                               labelText: t.seller.onboarding.addressLabel,
@@ -182,10 +191,14 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
                                     width: 18,
                                     height: 18,
                                     child: CircularProgressIndicator(
-                                        strokeWidth: 2))
-                                : Text(shop == null
-                                    ? t.seller.onboarding.submit
-                                    : t.common.save),
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text(
+                                    shop == null
+                                        ? t.seller.onboarding.submit
+                                        : t.common.save,
+                                  ),
                           ),
                           if (_editing)
                             TextButton(
@@ -224,24 +237,23 @@ class _StatusBanner extends StatelessWidget {
     final theme = Theme.of(context);
     final (title, body, icon, color) = switch (shop.status) {
       ShopStatus.pending => (
-          t.seller.onboarding.pendingTitle,
-          t.seller.onboarding.pendingBody,
-          Icons.hourglass_top_rounded,
-          context.appColors.warning,
-        ),
+        t.seller.onboarding.pendingTitle,
+        t.seller.onboarding.pendingBody,
+        Icons.hourglass_top_rounded,
+        context.appColors.warning,
+      ),
       ShopStatus.approved => (
-          t.seller.onboarding.approvedTitle,
-          shop.name,
-          Icons.verified_rounded,
-          context.appColors.success,
-        ),
+        t.seller.onboarding.approvedTitle,
+        shop.name,
+        Icons.verified_rounded,
+        context.appColors.success,
+      ),
       ShopStatus.rejected => (
-          t.seller.onboarding.rejectedTitle,
-          t.seller.onboarding
-              .rejectedReason(reason: shop.rejectionReason ?? '—'),
-          Icons.cancel_rounded,
-          theme.colorScheme.error,
-        ),
+        t.seller.onboarding.rejectedTitle,
+        t.seller.onboarding.rejectedReason(reason: shop.rejectionReason ?? '—'),
+        Icons.cancel_rounded,
+        theme.colorScheme.error,
+      ),
     };
 
     return Card(
@@ -260,8 +272,9 @@ class _StatusBanner extends StatelessWidget {
                       Expanded(
                         child: Text(
                           title,
-                          style: theme.textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w700),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       StatusChip.shop(context, shop.status),

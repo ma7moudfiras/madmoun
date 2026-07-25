@@ -28,10 +28,9 @@ class AccountPage extends ConsumerWidget {
               children: [
                 Text(
                   t.account.title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 _ProfileCard(profile: data),
@@ -65,14 +64,20 @@ class _SectionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(title,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700)),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             if (subtitle != null) ...[
               const SizedBox(height: 4),
-              Text(subtitle!,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              Text(
+                subtitle!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
             ],
             const SizedBox(height: 16),
             child,
@@ -94,10 +99,12 @@ class _ProfileCard extends ConsumerStatefulWidget {
 
 class _ProfileCardState extends ConsumerState<_ProfileCard> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _name =
-      TextEditingController(text: widget.profile?.fullName ?? '');
-  late final TextEditingController _phone =
-      TextEditingController(text: widget.profile?.phoneE164 ?? '');
+  late final TextEditingController _name = TextEditingController(
+    text: widget.profile?.fullName ?? '',
+  );
+  late final TextEditingController _phone = TextEditingController(
+    text: widget.profile?.phoneE164 ?? '',
+  );
   bool _busy = false;
 
   @override
@@ -114,10 +121,9 @@ class _ProfileCardState extends ConsumerState<_ProfileCard> {
       final phone = _phone.text.trim().isEmpty
           ? null
           : normalizePhone(_phone.text);
-      await ref.read(accountRepositoryProvider).updateProfile(
-            fullName: _name.text.trim(),
-            phoneE164: phone,
-          );
+      await ref
+          .read(accountRepositoryProvider)
+          .updateProfile(fullName: _name.text.trim(), phoneE164: phone);
       ref.invalidate(profileProvider);
       if (mounted) showAppSnackBar(context, t.account.profileSaved);
     } catch (e) {
@@ -143,9 +149,11 @@ class _ProfileCardState extends ConsumerState<_ProfileCard> {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    Icon(Icons.badge_rounded,
-                        size: 18,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    Icon(
+                      Icons.badge_rounded,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       '${t.account.roleLabel}: ${_roleLabel(role)}',
@@ -155,6 +163,7 @@ class _ProfileCardState extends ConsumerState<_ProfileCard> {
                 ),
               ),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _name,
               decoration: InputDecoration(labelText: t.common.fullNameLabel),
               validator: (v) => (v == null || v.trim().length < 2)
@@ -163,13 +172,15 @@ class _ProfileCardState extends ConsumerState<_ProfileCard> {
             ),
             const SizedBox(height: 12),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _phone,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: '${t.common.phoneLabel} (${t.common.optional})',
                 hintText: t.common.phoneHint,
               ),
-              validator: (v) => (v != null &&
+              validator: (v) =>
+                  (v != null &&
                       v.trim().isNotEmpty &&
                       normalizePhone(v) == null)
                   ? t.common.invalidPhone
@@ -184,7 +195,8 @@ class _ProfileCardState extends ConsumerState<_ProfileCard> {
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2))
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : Text(t.account.saveProfile),
               ),
             ),
@@ -195,10 +207,10 @@ class _ProfileCardState extends ConsumerState<_ProfileCard> {
   }
 
   String _roleLabel(UserRole role) => switch (role) {
-        UserRole.admin => t.common.adminPanel,
-        UserRole.seller => t.common.sellerPortal,
-        UserRole.buyer => t.common.myOrders,
-      };
+    UserRole.admin => t.common.adminPanel,
+    UserRole.seller => t.common.sellerPortal,
+    UserRole.buyer => t.common.myOrders,
+  };
 }
 
 class _EmailCard extends ConsumerStatefulWidget {
@@ -225,10 +237,9 @@ class _EmailCardState extends ConsumerState<_EmailCard> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
     try {
-      await ref.read(accountRepositoryProvider).changeEmail(
-            _email.text.trim(),
-            redirectTo: Uri.base.origin,
-          );
+      await ref
+          .read(accountRepositoryProvider)
+          .changeEmail(_email.text.trim(), redirectTo: Uri.base.origin);
       if (mounted) {
         _email.clear();
         showAppSnackBar(context, t.account.emailChangeSent);
@@ -251,10 +262,10 @@ class _EmailCardState extends ConsumerState<_EmailCard> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _email,
               keyboardType: TextInputType.emailAddress,
-              decoration:
-                  InputDecoration(labelText: t.account.newEmailLabel),
+              decoration: InputDecoration(labelText: t.account.newEmailLabel),
               validator: (v) =>
                   (v == null || !v.contains('@')) ? t.auth.invalidEmail : null,
             ),
@@ -267,7 +278,8 @@ class _EmailCardState extends ConsumerState<_EmailCard> {
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2))
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : Text(t.account.changeEmail),
               ),
             ),
@@ -326,15 +338,18 @@ class _PasswordCardState extends ConsumerState<_PasswordCard> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _password,
               obscureText: _obscure,
               decoration: InputDecoration(
                 labelText: t.account.newPasswordLabel,
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => _obscure = !_obscure),
-                  icon: Icon(_obscure
-                      ? Icons.visibility_rounded
-                      : Icons.visibility_off_rounded),
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_rounded
+                        : Icons.visibility_off_rounded,
+                  ),
                 ),
               ),
               validator: (v) =>
@@ -342,10 +357,12 @@ class _PasswordCardState extends ConsumerState<_PasswordCard> {
             ),
             const SizedBox(height: 12),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _confirm,
               obscureText: _obscure,
-              decoration:
-                  InputDecoration(labelText: t.account.confirmPasswordLabel),
+              decoration: InputDecoration(
+                labelText: t.account.confirmPasswordLabel,
+              ),
               validator: (v) =>
                   v != _password.text ? t.account.passwordMismatch : null,
             ),
@@ -358,7 +375,8 @@ class _PasswordCardState extends ConsumerState<_PasswordCard> {
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2))
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : Text(t.account.changePassword),
               ),
             ),

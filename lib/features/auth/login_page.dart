@@ -53,9 +53,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Future<void> _googleSignIn() async {
     try {
-      await ref.read(supabaseClientProvider).auth.signInWithOAuth(
-            OAuthProvider.google,
-          );
+      await ref
+          .read(supabaseClientProvider)
+          .auth
+          .signInWithOAuth(OAuthProvider.google);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     }
@@ -76,18 +77,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _email,
               autofocus: true,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.email],
               decoration: InputDecoration(labelText: t.common.emailLabel),
-              validator: (v) => (v == null || !v.contains('@'))
-                  ? t.auth.invalidEmail
-                  : null,
+              validator: (v) =>
+                  (v == null || !v.contains('@')) ? t.auth.invalidEmail : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _password,
               obscureText: _obscure,
               textInputAction: TextInputAction.done,
@@ -97,9 +99,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 labelText: t.common.passwordLabel,
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => _obscure = !_obscure),
-                  icon: Icon(_obscure
-                      ? Icons.visibility_rounded
-                      : Icons.visibility_off_rounded),
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_rounded
+                        : Icons.visibility_off_rounded,
+                  ),
                 ),
               ),
               validator: (v) =>
