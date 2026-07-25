@@ -458,11 +458,23 @@ class _HomePageState extends ConsumerState<HomePage> {
       width: 160,
       child: DropdownButtonFormField<T?>(
         value: value,
+        // Without isExpanded, a long selected label (e.g. "جيد جدًا") isn't
+        // actually constrained to this box's width — it just overflows past
+        // the edge instead of being clipped/ellipsized.
+        isExpanded: true,
         decoration: InputDecoration(labelText: label, isDense: true),
         items: [
-          DropdownMenuItem<T?>(value: null, child: Text(t.common.all)),
+          DropdownMenuItem<T?>(
+            value: null,
+            child: Text(t.common.all,
+                overflow: TextOverflow.ellipsis, maxLines: 1),
+          ),
           for (final item in items)
-            DropdownMenuItem<T?>(value: item, child: Text(display(item))),
+            DropdownMenuItem<T?>(
+              value: item,
+              child: Text(display(item),
+                  overflow: TextOverflow.ellipsis, maxLines: 1),
+            ),
         ],
         onChanged: onChanged,
       ),
