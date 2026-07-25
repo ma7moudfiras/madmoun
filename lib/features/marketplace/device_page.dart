@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/currency_display.dart';
 import '../../core/domain.dart';
 import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
@@ -115,7 +116,8 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
         ),
         const SizedBox(height: 16),
         Text(
-          listing.price.format(),
+          formatForDisplay(listing.price, ref.watch(displayCurrencyProvider),
+              ref.watch(exchangeRateProvider).valueOrNull),
           style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w800,
             color: AppTheme.primary,

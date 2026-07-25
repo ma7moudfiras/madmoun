@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/currency_display.dart';
 import '../../core/domain.dart';
 import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
@@ -265,7 +266,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (_filters.category != null) count++;
     if (_filters.brand != null) count++;
     if (_filters.city != null) count++;
-    if (_filters.currency != null) count++;
     if (_filters.grade != null) count++;
     if (_filters.minMinor != null || _filters.maxMinor != null) count++;
     return count;
@@ -304,6 +304,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   label: Text(t.home.clearFilters),
                 ),
               const Spacer(),
+              _buildCurrencyToggle(context),
+              const SizedBox(width: 12),
               _buildSort(context),
             ],
           ),
@@ -313,6 +315,26 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ],
       ),
+    );
+  }
+
+  /// Display-only currency toggle: ILS is the real, charged currency
+  /// everywhere; USD here just converts the shown price live for buyers who
+  /// think in dollars — it never changes what's actually owed at checkout.
+  Widget _buildCurrencyToggle(BuildContext context) {
+    final display = ref.watch(displayCurrencyProvider);
+    return SegmentedButton<Currency>(
+      showSelectedIcon: false,
+      style: const ButtonStyle(
+        visualDensity: VisualDensity(horizontal: -2, vertical: -2),
+      ),
+      segments: [
+        for (final c in Currency.values)
+          ButtonSegment(value: c, label: Text(c.symbol)),
+      ],
+      selected: {display},
+      onSelectionChanged: (s) =>
+          ref.read(displayCurrencyProvider.notifier).state = s.first,
     );
   }
 
@@ -386,16 +408,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 _reload();
               },
             ),
-          _dropdown<Currency>(
-            label: t.home.currencyFilter,
-            value: _filters.currency,
-            items: Currency.values,
-            display: (c) => t.enums.currency[c.dbValue] ?? c.dbValue,
-            onChanged: (v) {
-              _filters = _filters.copyWith(currency: () => v);
-              _reload();
-            },
-          ),
           _dropdown<Grade>(
             label: t.home.gradeFilter,
             value: _filters.grade,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/currency_display.dart';
 import '../../../core/domain.dart';
 import '../../../core/models.dart';
 import '../../../core/supabase_providers.dart';
@@ -144,15 +145,17 @@ class _DevicePlaceholder extends StatelessWidget {
   }
 }
 
-class ListingCard extends StatelessWidget {
+class ListingCard extends ConsumerWidget {
   const ListingCard({super.key, required this.listing, required this.onTap});
 
   final Listing listing;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final displayCurrency = ref.watch(displayCurrencyProvider);
+    final rate = ref.watch(exchangeRateProvider).valueOrNull;
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -203,7 +206,7 @@ class ListingCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          listing.price.format(),
+                          formatForDisplay(listing.price, displayCurrency, rate),
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: AppTheme.primary,

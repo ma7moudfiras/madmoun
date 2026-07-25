@@ -37,7 +37,6 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
   final _warranty = TextEditingController(text: '90');
 
   DeviceCategory _category = DeviceCategory.mobile;
-  Currency _currency = Currency.ils;
   final Map<String, ChecklistResult> _results = {};
   final Map<String, String> _notes = {};
 
@@ -76,7 +75,6 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
         if (device != null && mounted) {
           _originalStatus = device.status;
           _category = device.category;
-          _currency = device.price.currency;
           _brand.text = device.brand;
           _model.text = device.model;
           _title.text = device.title;
@@ -169,7 +167,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
             ? null
             : _description.text.trim(),
         priceMinor: priceMinor,
-        currency: _currency,
+        currency: Currency.ils,
         grade: grade,
         warrantyDays: int.tryParse(_warranty.text.trim()) ?? 90,
         imei: imei.isEmpty ? null : imei,
@@ -188,7 +186,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
             ? null
             : _description.text.trim(),
         priceMinor: priceMinor,
-        currency: _currency,
+        currency: Currency.ils,
         grade: grade,
         warrantyDays: int.tryParse(_warranty.text.trim()) ?? 90,
         imei: imei.isEmpty ? null : imei,
@@ -385,28 +383,20 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _price,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText: t.seller.deviceForm.priceLabel,
-                                hintText: t.seller.deviceForm.priceHint,
-                              ),
-                              validator: (v) {
-                                final n = int.tryParse((v ?? '').trim());
-                                return (n == null || n <= 0)
-                                    ? t.seller.deviceForm.invalidPrice
-                                    : null;
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(child: _currencySelector()),
-                        ],
+                      TextFormField(
+                        controller: _price,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: t.seller.deviceForm.priceLabel,
+                          hintText: t.seller.deviceForm.priceHint,
+                          suffixText: Currency.ils.symbol,
+                        ),
+                        validator: (v) {
+                          final n = int.tryParse((v ?? '').trim());
+                          return (n == null || n <= 0)
+                              ? t.seller.deviceForm.invalidPrice
+                              : null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       Row(
@@ -505,20 +495,6 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                 _results.clear();
                 _notes.clear();
               }),
-    );
-  }
-
-  Widget _currencySelector() {
-    return DropdownButtonFormField<Currency>(
-      value: _currency,
-      decoration:
-          InputDecoration(labelText: t.seller.deviceForm.currencyLabel),
-      items: [
-        for (final c in Currency.values)
-          DropdownMenuItem(
-              value: c, child: Text(t.enums.currency[c.dbValue] ?? c.dbValue)),
-      ],
-      onChanged: (v) => setState(() => _currency = v ?? _currency),
     );
   }
 

@@ -24,7 +24,6 @@ class ListingFilters {
     this.category,
     this.brand,
     this.city,
-    this.currency,
     this.minMinor,
     this.maxMinor,
     this.grade,
@@ -35,7 +34,6 @@ class ListingFilters {
   final DeviceCategory? category;
   final String? brand;
   final String? city;
-  final Currency? currency;
   final int? minMinor;
   final int? maxMinor;
   final Grade? grade;
@@ -48,7 +46,6 @@ class ListingFilters {
       category == null &&
       brand == null &&
       city == null &&
-      currency == null &&
       minMinor == null &&
       maxMinor == null &&
       grade == null;
@@ -58,7 +55,6 @@ class ListingFilters {
     DeviceCategory? Function()? category,
     String? Function()? brand,
     String? Function()? city,
-    Currency? Function()? currency,
     int? Function()? minMinor,
     int? Function()? maxMinor,
     Grade? Function()? grade,
@@ -69,7 +65,6 @@ class ListingFilters {
       category: category != null ? category() : this.category,
       brand: brand != null ? brand() : this.brand,
       city: city != null ? city() : this.city,
-      currency: currency != null ? currency() : this.currency,
       minMinor: minMinor != null ? minMinor() : this.minMinor,
       maxMinor: maxMinor != null ? maxMinor() : this.maxMinor,
       grade: grade != null ? grade() : this.grade,
@@ -109,9 +104,6 @@ class MarketplaceRepository {
     }
     if (filters.city != null && filters.city!.isNotEmpty) {
       query = query.eq('shop_city', filters.city!);
-    }
-    if (filters.currency != null) {
-      query = query.eq('currency', filters.currency!.dbValue);
     }
     if (filters.minMinor != null) {
       query = query.gte('price_minor', filters.minMinor!);

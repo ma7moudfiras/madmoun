@@ -399,9 +399,6 @@ class Translations$home$ar {
 	/// ar: 'المدينة'
 	String get cityFilter => 'المدينة';
 
-	/// ar: 'العملة'
-	String get currencyFilter => 'العملة';
-
 	/// ar: 'الحالة'
 	String get gradeFilter => 'الحالة';
 
@@ -1048,9 +1045,6 @@ class Translations$seller$deviceForm$ar {
 
 	/// ar: '1200'
 	String get priceHint => '1200';
-
-	/// ar: 'العملة'
-	String get currencyLabel => 'العملة';
 
 	/// ar: 'مدة الضمان (أيام)'
 	String get warrantyLabel => 'مدة الضمان (أيام)';
@@ -1800,7 +1794,6 @@ extension on Translations {
 			'home.categoryFilter' => 'الفئة',
 			'home.brandFilter' => 'الماركة',
 			'home.cityFilter' => 'المدينة',
-			'home.currencyFilter' => 'العملة',
 			'home.gradeFilter' => 'الحالة',
 			'home.minPrice' => 'السعر من',
 			'home.maxPrice' => 'السعر إلى',
@@ -1927,7 +1920,6 @@ extension on Translations {
 			'seller.deviceForm.descriptionHint' => 'تفاصيل الجهاز وما تم تجديده أو استبداله…',
 			'seller.deviceForm.priceLabel' => 'السعر',
 			'seller.deviceForm.priceHint' => '1200',
-			'seller.deviceForm.currencyLabel' => 'العملة',
 			'seller.deviceForm.warrantyLabel' => 'مدة الضمان (أيام)',
 			'seller.deviceForm.imeiLabel' => 'IMEI',
 			'seller.deviceForm.imeiHint' => 'سيظهر للمشتري آخر 4 أرقام فقط',
