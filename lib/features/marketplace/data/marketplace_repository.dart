@@ -121,7 +121,15 @@ class MarketplaceRepository {
       // — إيفون vs آيفون vs ايفون — matches all of them. Normalize the typed
       // term the same way before comparing.
       final term = normalizeArabic(search).replaceAll('%', r'\%');
-      query = query.ilike('search_text', '%$term%');
+      // Titles/brands/models are stored in Latin script ("iPhone 13 Pro…"),
+      // so an Arabic query for the same device ("ايفون") needs its own
+      // brand/model words translated before it can match anything.
+      final translated = translateArabicSearchTerm(term)?.replaceAll('%', r'\%');
+      if (translated != null && translated != term) {
+        query = query.or('search_text.ilike.%$term%,search_text.ilike.%$translated%');
+      } else {
+        query = query.ilike('search_text', '%$term%');
+      }
     }
     // Offset pagination (the catalogue is small) so any sort order paginates
     // correctly; every sort has `id` as a stable tiebreaker.

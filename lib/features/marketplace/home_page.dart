@@ -344,28 +344,33 @@ class _HomePageState extends ConsumerState<HomePage> {
           ListingSort.priceLowHigh => t.home.sortPriceLowHigh,
           ListingSort.priceHighLow => t.home.sortPriceHighLow,
         };
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.sort_rounded,
-            size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
-        const SizedBox(width: 6),
-        DropdownButton<ListingSort>(
-          value: _filters.sort,
-          underline: const SizedBox.shrink(),
-          borderRadius: BorderRadius.circular(12),
-          isDense: true,
-          items: [
-            for (final s in ListingSort.values)
-              DropdownMenuItem(value: s, child: Text(label(s))),
-          ],
-          onChanged: (v) {
-            if (v == null || v == _filters.sort) return;
-            _filters = _filters.copyWith(sort: v);
-            _reload();
-          },
-        ),
+    final color = Theme.of(context).colorScheme.onSurfaceVariant;
+    // A plain DropdownButton sizes its closed state to the widest item in
+    // the whole list, not the selected one — with "الأحدث" selected next to
+    // a much longer "السعر: الأعلى أولاً" option, that left a dead gap
+    // between the label and the arrow. PopupMenuButton's trigger only ever
+    // takes the width of what's actually shown.
+    return PopupMenuButton<ListingSort>(
+      initialValue: _filters.sort,
+      tooltip: '',
+      onSelected: (v) {
+        if (v == _filters.sort) return;
+        _filters = _filters.copyWith(sort: v);
+        _reload();
+      },
+      itemBuilder: (context) => [
+        for (final s in ListingSort.values)
+          PopupMenuItem(value: s, child: Text(label(s))),
       ],
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.sort_rounded, size: 18, color: color),
+          const SizedBox(width: 6),
+          Text(label(_filters.sort)),
+          Icon(Icons.arrow_drop_down_rounded, size: 20, color: color),
+        ],
+      ),
     );
   }
 
