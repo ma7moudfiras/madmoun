@@ -7,6 +7,7 @@ import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
 import 'auth_destination.dart';
 import 'auth_form_card.dart';
+import 'oauth_buttons.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key, this.from});
@@ -129,6 +130,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     )
                   : Text(t.auth.submitRegister),
             ),
+            const OAuthButtons(),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () => context.go(loginUri),

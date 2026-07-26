@@ -673,6 +673,12 @@ class Translations$auth$ar {
 	/// ar: 'المتابعة بحساب Google'
 	String get googleSignIn => 'المتابعة بحساب Google';
 
+	/// ar: 'المتابعة بحساب Apple'
+	String get appleSignIn => 'المتابعة بحساب Apple';
+
+	/// ar: 'أو'
+	String get orDivider => 'أو';
+
 	/// ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.'
 	String get invalidCredentials => 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
 
@@ -1898,6 +1904,8 @@ extension on Translations {
 			'auth.toRegister' => 'ليس لديك حساب؟ أنشئ حسابًا',
 			'auth.toLogin' => 'لديك حساب؟ سجّل الدخول',
 			'auth.googleSignIn' => 'المتابعة بحساب Google',
+			'auth.appleSignIn' => 'المتابعة بحساب Apple',
+			'auth.orDivider' => 'أو',
 			'auth.invalidCredentials' => 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
 			'auth.emailInUse' => 'هذا البريد مسجّل مسبقًا. جرّب تسجيل الدخول.',
 			'auth.weakPassword' => 'كلمة المرور قصيرة — 6 أحرف على الأقل.',
