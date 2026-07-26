@@ -319,14 +319,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                 ],
               ),
-              Wrap(
-                spacing: 12,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  _buildCurrencyToggle(context),
-                  _buildSort(context),
-                ],
-              ),
+              _buildCurrencyToggle(context),
             ],
           ),
           if (_filtersExpanded) ...[
@@ -401,6 +394,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       runSpacing: 12,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
+        _buildSort(context),
         _dropdown<DeviceCategory>(
           label: t.home.categoryFilter,
           value: _filters.category,
