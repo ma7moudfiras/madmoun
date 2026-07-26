@@ -7,8 +7,8 @@ set -euo pipefail
 SUPABASE_URL="${SUPABASE_URL:-https://dutmsyjwrueyyrdeccol.supabase.co}"
 SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1dG1zeWp3cnVleXlyZGVjY29sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Nzk4NDAsImV4cCI6MjEwMDA1NTg0MH0.wk_Y_1ZXcOKCj_09PNNn5uqDFQ5_hzbFqjUdlhrlXXA}"
 # Off until the provider is actually configured in the Supabase dashboard —
-# set to "true" in Vercel's project env vars to flip a button on.
-ENABLE_GOOGLE_AUTH="${ENABLE_GOOGLE_AUTH:-false}"
+# set to "true" here (or via a Vercel project env var) once it's live.
+ENABLE_GOOGLE_AUTH="${ENABLE_GOOGLE_AUTH:-true}"
 ENABLE_APPLE_AUTH="${ENABLE_APPLE_AUTH:-false}"
 
 # --no-web-resources-cdn bundles CanvasKit locally so it is served from the
