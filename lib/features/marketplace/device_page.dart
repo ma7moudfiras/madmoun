@@ -8,6 +8,7 @@ import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import '../buyer/widgets/favorite_button.dart';
 import 'data/device_share.dart';
 import 'data/marketplace_repository.dart';
 import 'widgets/listing_card.dart';
@@ -95,6 +96,7 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
                 ],
               ),
             ),
+            FavoriteButton(deviceId: listing.id),
             IconButton(
               tooltip: t.device.shareCta,
               onPressed: () => shareDevice(context, listing),

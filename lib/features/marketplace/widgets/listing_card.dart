@@ -8,6 +8,7 @@ import '../../../core/supabase_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common.dart';
 import '../../../i18n/strings.g.dart';
+import '../../buyer/widgets/favorite_button.dart';
 
 /// Photo from the device-photos bucket. When there is no real photo (or it
 /// fails to load) a branded, device-aware placeholder is shown instead of a
@@ -163,13 +164,32 @@ class ListingCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 10,
-              child: DevicePhotoImage(
-                path: listing.coverPhotoPath,
-                brand: listing.brand,
-                category: listing.category,
-              ),
+            Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 10,
+                  child: DevicePhotoImage(
+                    path: listing.coverPhotoPath,
+                    brand: listing.brand,
+                    category: listing.category,
+                  ),
+                ),
+                PositionedDirectional(
+                  top: 4,
+                  end: 4,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface.withValues(alpha: 0.85),
+                      shape: BoxShape.circle,
+                    ),
+                    child: FavoriteButton(
+                      deviceId: listing.id,
+                      size: 18,
+                      compact: true,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Expanded(
               child: Padding(

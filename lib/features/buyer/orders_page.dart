@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/domain.dart';
 import '../../core/models.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
 import '../marketplace/widgets/listing_card.dart';
@@ -276,6 +277,8 @@ class _ReservationCard extends StatelessWidget {
                 StatusChip.reservation(context, reservation.status),
               ],
             ),
+            const SizedBox(height: 14),
+            _OrderProgressTracker(status: reservation.status),
             if (onConfirmReceipt != null) ...[
               const SizedBox(height: 12),
               Align(
@@ -301,6 +304,89 @@ class _ReservationCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// A compact dot-and-line progress bar complementing the text StatusChip —
+/// lets a buyer see at a glance how far along their order is without reading.
+/// Cancelled is a terminal side-state, not a step on this line.
+class _OrderProgressTracker extends StatelessWidget {
+  const _OrderProgressTracker({required this.status});
+
+  final ReservationStatus status;
+
+  static const _steps = [
+    ReservationStatus.pending,
+    ReservationStatus.confirmed,
+    ReservationStatus.outForDelivery,
+    ReservationStatus.delivered,
+  ];
+
+  static const _icons = {
+    ReservationStatus.pending: Icons.hourglass_top_rounded,
+    ReservationStatus.confirmed: Icons.storefront_rounded,
+    ReservationStatus.outForDelivery: Icons.local_shipping_rounded,
+    ReservationStatus.delivered: Icons.home_rounded,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = context.appColors;
+
+    if (status == ReservationStatus.cancelled) {
+      return Row(
+        children: [
+          Icon(Icons.cancel_rounded, size: 18, color: theme.colorScheme.error),
+          const SizedBox(width: 8),
+          Text(
+            t.enums.reservationStatus[status.dbValue] ?? status.dbValue,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      );
+    }
+
+    final currentIndex = _steps.indexOf(status);
+    return Row(
+      children: [
+        for (final (i, step) in _steps.indexed) ...[
+          if (i > 0)
+            Expanded(
+              child: Container(
+                height: 2,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                color: i <= currentIndex
+                    ? colors.success
+                    : theme.colorScheme.outlineVariant,
+              ),
+            ),
+          Tooltip(
+            message: t.enums.reservationStatus[step.dbValue] ?? step.dbValue,
+            child: Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: i <= currentIndex
+                    ? colors.success
+                    : theme.colorScheme.surfaceContainerHighest,
+              ),
+              child: Icon(
+                _icons[step],
+                size: 15,
+                color: i <= currentIndex
+                    ? Colors.white
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

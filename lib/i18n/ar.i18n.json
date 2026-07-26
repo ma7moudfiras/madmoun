@@ -19,6 +19,7 @@
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",
     "myOrders": "طلباتي",
+    "favorites": "المفضلة",
     "sellerPortal": "بوابة البائع",
     "adminPanel": "لوحة الإدارة",
     "marketplace": "السوق",
@@ -162,7 +163,9 @@
     "shareCopyLink": "نسخ الرابط",
     "shareCopied": "تم نسخ الرابط",
     "shareMore": "خيارات أخرى",
-    "shareWhatsappText": "شوف هالجهاز على مضمون: {title} — {price}\n{link}"
+    "shareWhatsappText": "شوف هالجهاز على مضمون: {title} — {price}\n{link}",
+    "favorite": "أضف إلى المفضلة",
+    "unfavorite": "أزل من المفضلة"
   },
   "reserve": {
     "title": "حجز الجهاز",
@@ -201,6 +204,12 @@
     "confirmReceiptAction": "تأكيد الاستلام",
     "confirmReceiptBody": "بتأكيدك تُقرّ باستلام الجهاز والتأكد منه، ويبدأ سريان الكفالة من الآن.",
     "receiptConfirmed": "تم تأكيد الاستلام وبدأت الكفالة."
+  },
+  "favorites": {
+    "title": "المفضلة",
+    "emptyTitle": "لا توجد أجهزة مفضّلة بعد",
+    "emptyBody": "اضغط على أيقونة القلب في أي جهاز لحفظه هنا والعودة إليه لاحقًا.",
+    "browseCta": "تصفّح الأجهزة"
   },
   "auth": {
     "loginTitle": "تسجيل الدخول",
