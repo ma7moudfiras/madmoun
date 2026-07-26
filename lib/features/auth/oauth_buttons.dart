@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:web/web.dart' as web;
 
 import '../../core/supabase_providers.dart';
 import '../../core/widgets/common.dart';
@@ -50,13 +51,23 @@ class OAuthButtons extends ConsumerWidget {
     );
   }
 
+  // Not signInWithOAuth(): its web launcher goes through url_launcher's
+  // window.open, which many browsers silently swallow once the click handler
+  // has crossed an await (the PKCE challenge here) and lost the user-gesture
+  // that would let a new browsing context through. Building the URL and
+  // navigating the current tab directly (Location.assign) is a same-document
+  // redirect, not a popup, so it isn't subject to that block.
   Future<void> _signIn(
     BuildContext context,
     WidgetRef ref,
     OAuthProvider provider,
   ) async {
     try {
-      await ref.read(supabaseClientProvider).auth.signInWithOAuth(provider);
+      final response = await ref
+          .read(supabaseClientProvider)
+          .auth
+          .getOAuthSignInUrl(provider: provider);
+      web.window.location.assign(response.url);
     } catch (e) {
       if (context.mounted) showErrorSnackBar(context, e);
     }
