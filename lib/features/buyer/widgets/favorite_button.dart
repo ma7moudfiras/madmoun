@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/domain.dart';
 import '../../../core/supabase_providers.dart';
 import '../../../i18n/strings.g.dart';
 import '../data/favorites_repository.dart';
@@ -26,6 +27,12 @@ class FavoriteButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Admins manage the platform, not a wishlist — same rule the nav links
+    // already follow (public_shell.dart), enforced here too since this
+    // button is reachable from any listing regardless of the signed-in role.
+    if (ref.watch(userRoleProvider) == UserRole.admin) {
+      return const SizedBox.shrink();
+    }
     final signedIn = ref.watch(isSignedInProvider);
     final favoriteIds = ref.watch(favoriteIdsProvider).valueOrNull ?? const {};
     final isFavorite = favoriteIds.contains(deviceId);
