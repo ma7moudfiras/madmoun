@@ -48,6 +48,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$device$ar device = Translations$device$ar.internal(_root);
 	late final Translations$reserve$ar reserve = Translations$reserve$ar.internal(_root);
 	late final Translations$orders$ar orders = Translations$orders$ar.internal(_root);
+	late final Translations$favorites$ar favorites = Translations$favorites$ar.internal(_root);
 	late final Translations$auth$ar auth = Translations$auth$ar.internal(_root);
 	late final Translations$seller$ar seller = Translations$seller$ar.internal(_root);
 	late final Translations$admin$ar admin = Translations$admin$ar.internal(_root);
@@ -140,6 +141,9 @@ class Translations$common$ar {
 
 	/// ar: 'طلباتي'
 	String get myOrders => 'طلباتي';
+
+	/// ar: 'المفضلة'
+	String get favorites => 'المفضلة';
 
 	/// ar: 'بوابة البائع'
 	String get sellerPortal => 'بوابة البائع';
@@ -396,12 +400,6 @@ class Translations$home$ar {
 	/// ar: 'الماركة'
 	String get brandFilter => 'الماركة';
 
-	/// ar: 'المدينة'
-	String get cityFilter => 'المدينة';
-
-	/// ar: 'العملة'
-	String get currencyFilter => 'العملة';
-
 	/// ar: 'الحالة'
 	String get gradeFilter => 'الحالة';
 
@@ -497,6 +495,12 @@ class Translations$device$ar {
 
 	/// ar: 'شوف هالجهاز على مضمون: {title} — {price} {link}'
 	String shareWhatsappText({required Object title, required Object price, required Object link}) => 'شوف هالجهاز على مضمون: ${title} — ${price}\n${link}';
+
+	/// ar: 'أضف إلى المفضلة'
+	String get favorite => 'أضف إلى المفضلة';
+
+	/// ar: 'أزل من المفضلة'
+	String get unfavorite => 'أزل من المفضلة';
 }
 
 // Path: reserve
@@ -619,6 +623,27 @@ class Translations$orders$ar {
 	String get receiptConfirmed => 'تم تأكيد الاستلام وبدأت الكفالة.';
 }
 
+// Path: favorites
+class Translations$favorites$ar {
+	Translations$favorites$ar.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// ar: 'المفضلة'
+	String get title => 'المفضلة';
+
+	/// ar: 'لا توجد أجهزة مفضّلة بعد'
+	String get emptyTitle => 'لا توجد أجهزة مفضّلة بعد';
+
+	/// ar: 'اضغط على أيقونة القلب في أي جهاز لحفظه هنا والعودة إليه لاحقًا.'
+	String get emptyBody => 'اضغط على أيقونة القلب في أي جهاز لحفظه هنا والعودة إليه لاحقًا.';
+
+	/// ar: 'تصفّح الأجهزة'
+	String get browseCta => 'تصفّح الأجهزة';
+}
+
 // Path: auth
 class Translations$auth$ar {
 	Translations$auth$ar.internal(this._root);
@@ -647,6 +672,12 @@ class Translations$auth$ar {
 
 	/// ar: 'المتابعة بحساب Google'
 	String get googleSignIn => 'المتابعة بحساب Google';
+
+	/// ar: 'المتابعة بحساب Apple'
+	String get appleSignIn => 'المتابعة بحساب Apple';
+
+	/// ar: 'أو'
+	String get orDivider => 'أو';
 
 	/// ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.'
 	String get invalidCredentials => 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
@@ -1048,9 +1079,6 @@ class Translations$seller$deviceForm$ar {
 
 	/// ar: '1200'
 	String get priceHint => '1200';
-
-	/// ar: 'العملة'
-	String get currencyLabel => 'العملة';
 
 	/// ar: 'مدة الضمان (أيام)'
 	String get warrantyLabel => 'مدة الضمان (أيام)';
@@ -1710,6 +1738,7 @@ extension on Translations {
 			'common.login' => 'تسجيل الدخول',
 			'common.register' => 'إنشاء حساب',
 			'common.myOrders' => 'طلباتي',
+			'common.favorites' => 'المفضلة',
 			'common.sellerPortal' => 'بوابة البائع',
 			'common.adminPanel' => 'لوحة الإدارة',
 			'common.marketplace' => 'السوق',
@@ -1799,8 +1828,6 @@ extension on Translations {
 			'home.clearFilters' => 'مسح التصفية',
 			'home.categoryFilter' => 'الفئة',
 			'home.brandFilter' => 'الماركة',
-			'home.cityFilter' => 'المدينة',
-			'home.currencyFilter' => 'العملة',
 			'home.gradeFilter' => 'الحالة',
 			'home.minPrice' => 'السعر من',
 			'home.maxPrice' => 'السعر إلى',
@@ -1830,6 +1857,8 @@ extension on Translations {
 			'device.shareCopied' => 'تم نسخ الرابط',
 			'device.shareMore' => 'خيارات أخرى',
 			'device.shareWhatsappText' => ({required Object title, required Object price, required Object link}) => 'شوف هالجهاز على مضمون: ${title} — ${price}\n${link}',
+			'device.favorite' => 'أضف إلى المفضلة',
+			'device.unfavorite' => 'أزل من المفضلة',
 			'reserve.title' => 'حجز الجهاز',
 			'reserve.deviceSummary' => ({required Object title}) => 'أنت تحجز: ${title}',
 			'reserve.phoneHelp' => 'سنستخدم هذا الرقم للتواصل معك لتنسيق التسليم.',
@@ -1864,6 +1893,10 @@ extension on Translations {
 			'orders.confirmReceiptAction' => 'تأكيد الاستلام',
 			'orders.confirmReceiptBody' => 'بتأكيدك تُقرّ باستلام الجهاز والتأكد منه، ويبدأ سريان الكفالة من الآن.',
 			'orders.receiptConfirmed' => 'تم تأكيد الاستلام وبدأت الكفالة.',
+			'favorites.title' => 'المفضلة',
+			'favorites.emptyTitle' => 'لا توجد أجهزة مفضّلة بعد',
+			'favorites.emptyBody' => 'اضغط على أيقونة القلب في أي جهاز لحفظه هنا والعودة إليه لاحقًا.',
+			'favorites.browseCta' => 'تصفّح الأجهزة',
 			'auth.loginTitle' => 'تسجيل الدخول',
 			'auth.registerTitle' => 'حساب جديد',
 			'auth.submitLogin' => 'دخول',
@@ -1871,6 +1904,8 @@ extension on Translations {
 			'auth.toRegister' => 'ليس لديك حساب؟ أنشئ حسابًا',
 			'auth.toLogin' => 'لديك حساب؟ سجّل الدخول',
 			'auth.googleSignIn' => 'المتابعة بحساب Google',
+			'auth.appleSignIn' => 'المتابعة بحساب Apple',
+			'auth.orDivider' => 'أو',
 			'auth.invalidCredentials' => 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
 			'auth.emailInUse' => 'هذا البريد مسجّل مسبقًا. جرّب تسجيل الدخول.',
 			'auth.weakPassword' => 'كلمة المرور قصيرة — 6 أحرف على الأقل.',
@@ -1927,7 +1962,6 @@ extension on Translations {
 			'seller.deviceForm.descriptionHint' => 'تفاصيل الجهاز وما تم تجديده أو استبداله…',
 			'seller.deviceForm.priceLabel' => 'السعر',
 			'seller.deviceForm.priceHint' => '1200',
-			'seller.deviceForm.currencyLabel' => 'العملة',
 			'seller.deviceForm.warrantyLabel' => 'مدة الضمان (أيام)',
 			'seller.deviceForm.imeiLabel' => 'IMEI',
 			'seller.deviceForm.imeiHint' => 'سيظهر للمشتري آخر 4 أرقام فقط',

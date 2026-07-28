@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/currency_display.dart';
 import '../../../core/domain.dart';
 import '../../../core/models.dart';
 import '../../../core/supabase_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common.dart';
 import '../../../i18n/strings.g.dart';
+import '../../buyer/widgets/favorite_button.dart';
 
 /// Photo from the device-photos bucket. When there is no real photo (or it
 /// fails to load) a branded, device-aware placeholder is shown instead of a
@@ -144,15 +146,17 @@ class _DevicePlaceholder extends StatelessWidget {
   }
 }
 
-class ListingCard extends StatelessWidget {
+class ListingCard extends ConsumerWidget {
   const ListingCard({super.key, required this.listing, required this.onTap});
 
   final Listing listing;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final displayCurrency = ref.watch(displayCurrencyProvider);
+    final rate = ref.watch(exchangeRateProvider).valueOrNull;
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -160,13 +164,32 @@ class ListingCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 10,
-              child: DevicePhotoImage(
-                path: listing.coverPhotoPath,
-                brand: listing.brand,
-                category: listing.category,
-              ),
+            Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 10,
+                  child: DevicePhotoImage(
+                    path: listing.coverPhotoPath,
+                    brand: listing.brand,
+                    category: listing.category,
+                  ),
+                ),
+                PositionedDirectional(
+                  top: 4,
+                  end: 4,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface.withValues(alpha: 0.85),
+                      shape: BoxShape.circle,
+                    ),
+                    child: FavoriteButton(
+                      deviceId: listing.id,
+                      size: 18,
+                      compact: true,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Expanded(
               child: Padding(
@@ -174,23 +197,7 @@ class ListingCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        if (listing.grade != null)
-                          GradeBadge(listing.grade!),
-                        const Spacer(),
-                        Icon(Icons.location_on_rounded,
-                            size: 14,
-                            color: theme.colorScheme.onSurfaceVariant),
-                        const SizedBox(width: 2),
-                        Text(
-                          listing.shopCity,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
+                    if (listing.grade != null) GradeBadge(listing.grade!),
                     const SizedBox(height: 8),
                     Text(
                       listing.title,
@@ -203,7 +210,7 @@ class ListingCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          listing.price.format(),
+                          formatForDisplay(listing.price, displayCurrency, rate),
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: AppTheme.primary,

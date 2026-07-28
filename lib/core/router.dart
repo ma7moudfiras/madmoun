@@ -19,6 +19,7 @@ import '../features/admin/pages/admin_users_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/register_page.dart';
 import '../features/auth/reset_password_page.dart';
+import '../features/buyer/favorites_page.dart';
 import '../features/buyer/orders_page.dart';
 import '../features/buyer/reserve_page.dart';
 import '../features/info/info_page.dart';
@@ -36,7 +37,14 @@ import '../features/shell/public_shell.dart';
 import 'supabase_providers.dart';
 
 /// Routes that require a signed-in user of any role.
-const _authedPrefixes = ['/orders', '/reserve', '/seller', '/admin', '/account'];
+const _authedPrefixes = [
+  '/orders',
+  '/favorites',
+  '/reserve',
+  '/seller',
+  '/admin',
+  '/account',
+];
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Subscribe to auth changes directly: the redirect below must re-run the
@@ -103,6 +111,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/orders',
             builder: (context, state) => const OrdersPage(),
+          ),
+          GoRoute(
+            path: '/favorites',
+            builder: (context, state) => const FavoritesPage(),
           ),
           GoRoute(
             path: '/login',

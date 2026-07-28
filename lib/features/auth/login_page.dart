@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/supabase_providers.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
 import 'auth_destination.dart';
 import 'auth_form_card.dart';
+import 'oauth_buttons.dart';
 import 'reset_password_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -51,16 +51,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     }
   }
 
-  Future<void> _googleSignIn() async {
-    try {
-      await ref.read(supabaseClientProvider).auth.signInWithOAuth(
-            OAuthProvider.google,
-          );
-    } catch (e) {
-      if (mounted) showErrorSnackBar(context, e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final from = widget.from;
@@ -76,18 +66,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _email,
               autofocus: true,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.email],
               decoration: InputDecoration(labelText: t.common.emailLabel),
-              validator: (v) => (v == null || !v.contains('@'))
-                  ? t.auth.invalidEmail
-                  : null,
+              validator: (v) =>
+                  (v == null || !v.contains('@')) ? t.auth.invalidEmail : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _password,
               obscureText: _obscure,
               textInputAction: TextInputAction.done,
@@ -97,9 +88,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 labelText: t.common.passwordLabel,
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => _obscure = !_obscure),
-                  icon: Icon(_obscure
-                      ? Icons.visibility_rounded
-                      : Icons.visibility_off_rounded),
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_rounded
+                        : Icons.visibility_off_rounded,
+                  ),
                 ),
               ),
               validator: (v) =>
@@ -116,14 +109,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     )
                   : Text(t.auth.submitLogin),
             ),
-            if (Env.googleAuthEnabled) ...[
-              const SizedBox(height: 12),
-              OutlinedButton.icon(
-                onPressed: _googleSignIn,
-                icon: const Icon(Icons.account_circle_rounded),
-                label: Text(t.auth.googleSignIn),
-              ),
-            ],
+            const OAuthButtons(),
             const SizedBox(height: 8),
             TextButton(
               onPressed: () => showForgotPasswordDialog(context, ref),

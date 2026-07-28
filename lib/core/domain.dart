@@ -211,7 +211,7 @@ Grade gradeOf(Iterable<ChecklistResult> results) {
 /// (spaces, dashes, dots, parentheses) and Arabic-Indic digits are accepted.
 /// Returns `null` when the input cannot be a valid number.
 String? normalizePhone(String input) {
-  var raw = _toWesternDigits(input.trim());
+  var raw = toWesternDigits(input.trim());
   raw = raw.replaceAll(RegExp(r'[\s\-\.\(\)]'), '');
   if (raw.isEmpty) return null;
 
@@ -244,7 +244,9 @@ String? normalizePhone(String input) {
   return '+$digits';
 }
 
-String _toWesternDigits(String input) {
+/// Converts Arabic-Indic (٠١٢٣...) and Eastern Arabic-Indic (۰۱۲۳...) digits
+/// to plain ASCII digits. Shared by phone normalization and search.
+String toWesternDigits(String input) {
   const arabicIndic = '٠١٢٣٤٥٦٧٨٩';
   const easternArabicIndic = '۰۱۲۳۴۵۶۷۸۹';
   final buffer = StringBuffer();

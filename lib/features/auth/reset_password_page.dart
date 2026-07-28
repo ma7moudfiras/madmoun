@@ -58,9 +58,11 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
         title: t.reset.newTitle,
         child: Column(
           children: [
-            Text(t.common.networkError,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              t.common.networkError,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: 16),
             FilledButton(
               onPressed: () => context.go('/login'),
@@ -77,11 +79,14 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(t.reset.newBody,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              t.reset.newBody,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: 20),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _password,
               obscureText: _obscure,
               autofocus: true,
@@ -89,9 +94,11 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                 labelText: t.account.newPasswordLabel,
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => _obscure = !_obscure),
-                  icon: Icon(_obscure
-                      ? Icons.visibility_rounded
-                      : Icons.visibility_off_rounded),
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_rounded
+                        : Icons.visibility_off_rounded,
+                  ),
                 ),
               ),
               validator: (v) =>
@@ -99,10 +106,12 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
             ),
             const SizedBox(height: 12),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: _confirm,
               obscureText: _obscure,
-              decoration:
-                  InputDecoration(labelText: t.account.confirmPasswordLabel),
+              decoration: InputDecoration(
+                labelText: t.account.confirmPasswordLabel,
+              ),
               onFieldSubmitted: (_) => _submit(),
               validator: (v) =>
                   v != _password.text ? t.account.passwordMismatch : null,
@@ -114,7 +123,8 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2))
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : Text(t.account.changePassword),
             ),
           ],
@@ -125,7 +135,10 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
 }
 
 /// "Forgot password" dialog: collects an email and triggers the reset email.
-Future<void> showForgotPasswordDialog(BuildContext context, WidgetRef ref) async {
+Future<void> showForgotPasswordDialog(
+  BuildContext context,
+  WidgetRef ref,
+) async {
   final controller = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final email = await showDialog<String>(
@@ -137,10 +150,10 @@ Future<void> showForgotPasswordDialog(BuildContext context, WidgetRef ref) async
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(t.reset.body,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(t.reset.body, style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 16),
             TextFormField(
+              textDirection: TextDirection.rtl,
               controller: controller,
               autofocus: true,
               keyboardType: TextInputType.emailAddress,
@@ -172,7 +185,10 @@ Future<void> showForgotPasswordDialog(BuildContext context, WidgetRef ref) async
   try {
     await ref
         .read(accountRepositoryProvider)
-        .sendPasswordReset(email, redirectTo: '${Uri.base.origin}/reset-password');
+        .sendPasswordReset(
+          email,
+          redirectTo: '${Uri.base.origin}/reset-password',
+        );
     if (context.mounted) showAppSnackBar(context, t.reset.sent);
   } catch (e) {
     // Do not reveal whether the email exists; show the same neutral message.

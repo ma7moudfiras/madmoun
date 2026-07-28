@@ -45,8 +45,9 @@ class _ClaimCard extends ConsumerStatefulWidget {
 }
 
 class _ClaimCardState extends ConsumerState<_ClaimCard> {
-  late final TextEditingController _note =
-      TextEditingController(text: widget.claim.resolutionNote ?? '');
+  late final TextEditingController _note = TextEditingController(
+    text: widget.claim.resolutionNote ?? '',
+  );
   bool _busy = false;
 
   @override
@@ -58,7 +59,9 @@ class _ClaimCardState extends ConsumerState<_ClaimCard> {
   Future<void> _update(ClaimStatus status) async {
     setState(() => _busy = true);
     try {
-      await ref.read(adminRepositoryProvider).updateClaim(
+      await ref
+          .read(adminRepositoryProvider)
+          .updateClaim(
             widget.claim.id,
             status,
             note: _note.text.trim().isEmpty ? null : _note.text.trim(),
@@ -88,8 +91,9 @@ class _ClaimCardState extends ConsumerState<_ClaimCard> {
                 Expanded(
                   child: Text(
                     claim.deviceTitle ?? claim.devicePublicId ?? '—',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 StatusChip.claim(context, claim.status),
@@ -101,12 +105,14 @@ class _ClaimCardState extends ConsumerState<_ClaimCard> {
               const SizedBox(height: 8),
               Text(
                 t.orders.shopResponse(note: claim.shopResponse!),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
             const SizedBox(height: 12),
             TextField(
+              textDirection: TextDirection.rtl,
               controller: _note,
               maxLines: 2,
               decoration: InputDecoration(
@@ -121,7 +127,9 @@ class _ClaimCardState extends ConsumerState<_ClaimCard> {
               children: [
                 if (claim.status == ClaimStatus.open)
                   OutlinedButton.icon(
-                    onPressed: _busy ? null : () => _update(ClaimStatus.inReview),
+                    onPressed: _busy
+                        ? null
+                        : () => _update(ClaimStatus.inReview),
                     icon: const Icon(Icons.search_rounded, size: 18),
                     label: Text(t.admin.claims.setInReview),
                   ),

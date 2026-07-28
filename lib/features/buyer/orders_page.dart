@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/domain.dart';
 import '../../core/models.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
 import '../marketplace/widgets/listing_card.dart';
@@ -35,8 +36,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
       _error = null;
     });
     try {
-      final items =
-          await ref.read(buyerRepositoryProvider).fetchMyReservations();
+      final items = await ref
+          .read(buyerRepositoryProvider)
+          .fetchMyReservations();
       if (!mounted) return;
       setState(() {
         _items
@@ -111,7 +113,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
     );
     if (description == null || !mounted) return;
     try {
-      await ref.read(buyerRepositoryProvider).openClaim(
+      await ref
+          .read(buyerRepositoryProvider)
+          .openClaim(
             deviceId: reservation.deviceId,
             reservationId: reservation.id,
             description: description,
@@ -164,8 +168,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
             children: [
               Text(
                 t.orders.title,
-                style: theme.textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 16),
               for (final reservation in _items) ...[
@@ -174,8 +179,8 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                   onOpenClaim: () => _openClaim(reservation),
                   onConfirmReceipt:
                       reservation.status == ReservationStatus.outForDelivery
-                          ? () => _confirmReceipt(reservation)
-                          : null,
+                      ? () => _confirmReceipt(reservation)
+                      : null,
                 ),
                 const SizedBox(height: 12),
               ],
@@ -190,8 +195,9 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                 const SizedBox(height: 24),
                 Text(
                   t.orders.claimsTitle,
-                  style: theme.textTheme.titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 for (final claim in claims) ...[
@@ -235,8 +241,7 @@ class _ReservationCard extends StatelessWidget {
                   child: SizedBox(
                     width: 72,
                     height: 72,
-                    child:
-                        DevicePhotoImage(path: reservation.deviceCoverPath),
+                    child: DevicePhotoImage(path: reservation.deviceCoverPath),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -248,20 +253,23 @@ class _ReservationCard extends StatelessWidget {
                         reservation.deviceTitle ??
                             reservation.devicePublicId ??
                             '—',
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${t.orders.reservationLabel}: ${reservation.publicId}',
                         style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant),
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         reservation.price.format(),
-                        style: theme.textTheme.titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
@@ -269,6 +277,8 @@ class _ReservationCard extends StatelessWidget {
                 StatusChip.reservation(context, reservation.status),
               ],
             ),
+            const SizedBox(height: 14),
+            _OrderProgressTracker(status: reservation.status),
             if (onConfirmReceipt != null) ...[
               const SizedBox(height: 12),
               Align(
@@ -298,6 +308,89 @@ class _ReservationCard extends StatelessWidget {
   }
 }
 
+/// A compact dot-and-line progress bar complementing the text StatusChip —
+/// lets a buyer see at a glance how far along their order is without reading.
+/// Cancelled is a terminal side-state, not a step on this line.
+class _OrderProgressTracker extends StatelessWidget {
+  const _OrderProgressTracker({required this.status});
+
+  final ReservationStatus status;
+
+  static const _steps = [
+    ReservationStatus.pending,
+    ReservationStatus.confirmed,
+    ReservationStatus.outForDelivery,
+    ReservationStatus.delivered,
+  ];
+
+  static const _icons = {
+    ReservationStatus.pending: Icons.hourglass_top_rounded,
+    ReservationStatus.confirmed: Icons.storefront_rounded,
+    ReservationStatus.outForDelivery: Icons.local_shipping_rounded,
+    ReservationStatus.delivered: Icons.home_rounded,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = context.appColors;
+
+    if (status == ReservationStatus.cancelled) {
+      return Row(
+        children: [
+          Icon(Icons.cancel_rounded, size: 18, color: theme.colorScheme.error),
+          const SizedBox(width: 8),
+          Text(
+            t.enums.reservationStatus[status.dbValue] ?? status.dbValue,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      );
+    }
+
+    final currentIndex = _steps.indexOf(status);
+    return Row(
+      children: [
+        for (final (i, step) in _steps.indexed) ...[
+          if (i > 0)
+            Expanded(
+              child: Container(
+                height: 2,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                color: i <= currentIndex
+                    ? colors.success
+                    : theme.colorScheme.outlineVariant,
+              ),
+            ),
+          Tooltip(
+            message: t.enums.reservationStatus[step.dbValue] ?? step.dbValue,
+            child: Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: i <= currentIndex
+                    ? colors.success
+                    : theme.colorScheme.surfaceContainerHighest,
+              ),
+              child: Icon(
+                _icons[step],
+                size: 15,
+                color: i <= currentIndex
+                    ? Colors.white
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 class _ClaimCard extends StatelessWidget {
   const _ClaimCard({required this.claim});
 
@@ -317,8 +410,9 @@ class _ClaimCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     claim.deviceTitle ?? claim.devicePublicId ?? '—',
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 StatusChip.claim(context, claim.status),
@@ -330,16 +424,18 @@ class _ClaimCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 t.orders.shopResponse(note: claim.shopResponse!),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
             if (claim.resolutionNote != null) ...[
               const SizedBox(height: 4),
               Text(
                 t.orders.claimResolution(note: claim.resolutionNote!),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ],
@@ -375,6 +471,7 @@ class _ClaimDialogState extends State<_ClaimDialog> {
         child: SizedBox(
           width: 400,
           child: TextFormField(
+            textDirection: TextDirection.rtl,
             controller: _controller,
             autofocus: true,
             maxLines: 4,

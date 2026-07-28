@@ -37,9 +37,9 @@ Currency is per-listing ILS (₪) or USD ($) — no conversion anywhere.
 lib/
   core/            domain, theme, models, router, errors, shared widgets
   features/
-    auth/          email/password (+ optional Google) login & register
+    auth/          email/password (+ optional Google/Apple) login & register
     marketplace/   public home, device page, listing repository
-    buyer/         reserve flow, طلباتي (orders), warranty claims
+    buyer/         reserve flow, طلباتي (orders), المفضلة (favorites), warranty claims
     seller/        shop onboarding, devices, photos, reservations, claims
     admin/         dashboard, shops queue, device review, templates, claims
     shell/         public chrome, not-found
@@ -138,9 +138,22 @@ confirmation applies. Existing/seed accounts stay confirmed.
 ## Manual steps
 
 - **Google OAuth** ships behind the `ENABLE_GOOGLE_AUTH` compile-time flag. To
-  enable it: configure a Google OAuth client in the Supabase dashboard
-  (Authentication → Providers → Google), then build with
-  `--dart-define=ENABLE_GOOGLE_AUTH=true`. Email/password auth works out of the
-  box without it.
+  enable it: create an OAuth client in the
+  [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+  (type "Web application"), add Supabase's callback URL as an authorized
+  redirect URI — `https://<project-ref>.supabase.co/auth/v1/callback` — then
+  paste the client ID/secret into the Supabase dashboard
+  (Authentication → Providers → Google). Finally set the Vercel project env
+  var `ENABLE_GOOGLE_AUTH=true` and redeploy (`scripts/vercel_build.sh` wires
+  it through as a `--dart-define`).
+- **Apple OAuth** ships behind `ENABLE_APPLE_AUTH` the same way. Apple's setup
+  needs a paid Apple Developer account: create a Services ID in the
+  [Apple Developer portal](https://developer.apple.com/account/resources/identifiers/list/serviceId)
+  with "Sign in with Apple" enabled, register Supabase's callback URL as a
+  return URL, generate a private key for it, then enter the Services ID,
+  Team ID, Key ID, and private key into the Supabase dashboard
+  (Authentication → Providers → Apple). Set `ENABLE_APPLE_AUTH=true` in
+  Vercel and redeploy. Email/password auth works out of the box without
+  either provider.
 - Supabase Auth **Site URL** + **Redirect URLs** are set to the deployed origin;
   email confirmation uses the built-in service (custom SMTP optional later).

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/currency_display.dart';
 import '../../core/domain.dart';
 import '../../core/models.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/common.dart';
 import '../../i18n/strings.g.dart';
+import '../buyer/widgets/favorite_button.dart';
 import 'data/device_share.dart';
 import 'data/marketplace_repository.dart';
 import 'widgets/listing_card.dart';
@@ -94,6 +96,7 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
                 ],
               ),
             ),
+            FavoriteButton(deviceId: listing.id),
             IconButton(
               tooltip: t.device.shareCta,
               onPressed: () => shareDevice(context, listing),
@@ -115,7 +118,8 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
         ),
         const SizedBox(height: 16),
         Text(
-          listing.price.format(),
+          formatForDisplay(listing.price, ref.watch(displayCurrencyProvider),
+              ref.watch(exchangeRateProvider).valueOrNull),
           style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w800,
             color: AppTheme.primary,
@@ -128,7 +132,7 @@ class _DeviceDetailsState extends ConsumerState<_DeviceDetails> {
                 size: 20, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
             Text(
-              '${t.device.sellerGeneric} — ${listing.shopCity}',
+              t.device.sellerGeneric,
               style: theme.textTheme.bodyLarge,
             ),
           ],

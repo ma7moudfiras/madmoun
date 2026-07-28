@@ -30,8 +30,10 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
 
   void _onSearch(String value) {
     _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 400),
-        () => setState(() => _search = value.trim()));
+    _debounce = Timer(
+      const Duration(milliseconds: 400),
+      () => setState(() => _search = value.trim()),
+    );
   }
 
   @override
@@ -46,20 +48,20 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
         children: [
           Text(
             t.admin.users.title,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 16),
           stats.when(
             data: (s) => _StatsRow(stats: s),
-            loading: () => const Shimmer(
-                child: SkeletonBox(height: 80, radius: 16)),
+            loading: () =>
+                const Shimmer(child: SkeletonBox(height: 80, radius: 16)),
             error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 20),
           TextField(
+            textDirection: TextDirection.rtl,
             controller: _controller,
             onChanged: _onSearch,
             decoration: InputDecoration(
@@ -114,10 +116,12 @@ class _StatsRow extends StatelessWidget {
       (t.admin.users.total, '${stats.total}', Icons.group_rounded),
       (t.admin.users.buyers, '${stats.buyers}', Icons.person_rounded),
       (t.admin.users.sellers, '${stats.sellers}', Icons.storefront_rounded),
-      (t.admin.users.admins, '${stats.admins}',
-          Icons.admin_panel_settings_rounded),
-      (t.admin.users.newLast7d, '${stats.newLast7d}',
-          Icons.fiber_new_rounded),
+      (
+        t.admin.users.admins,
+        '${stats.admins}',
+        Icons.admin_panel_settings_rounded,
+      ),
+      (t.admin.users.newLast7d, '${stats.newLast7d}', Icons.fiber_new_rounded),
     ];
     return Wrap(
       spacing: 12,
@@ -151,14 +155,20 @@ class _StatTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(tile.$2,
-                    style: theme.textTheme.titleLarge
-                        ?.copyWith(fontWeight: FontWeight.w800)),
-                Text(tile.$1,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
+                Text(
+                  tile.$2,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  tile.$1,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),
@@ -175,20 +185,26 @@ class _UserRow extends ConsumerWidget {
   final String search;
 
   String _roleLabel(UserRole role) => switch (role) {
-        UserRole.buyer => t.admin.users.roleBuyer,
-        UserRole.seller => t.admin.users.roleSeller,
-        UserRole.admin => t.admin.users.roleAdmin,
-      };
+    UserRole.buyer => t.admin.users.roleBuyer,
+    UserRole.seller => t.admin.users.roleSeller,
+    UserRole.admin => t.admin.users.roleAdmin,
+  };
 
   Future<void> _changeRole(
-      BuildContext context, WidgetRef ref, UserRole role) async {
+    BuildContext context,
+    WidgetRef ref,
+    UserRole role,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(t.admin.users.changeRole),
-        content: Text(t.admin.users.roleChangeConfirm(
+        content: Text(
+          t.admin.users.roleChangeConfirm(
             name: user.fullName ?? user.email ?? '—',
-            role: _roleLabel(role))),
+            role: _roleLabel(role),
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -225,13 +241,12 @@ class _UserRow extends ConsumerWidget {
             radius: 20,
             backgroundColor: theme.colorScheme.primaryContainer,
             child: Text(
-              (user.fullName ?? user.email ?? '?')
-                  .characters
-                  .first
+              (user.fullName ?? user.email ?? '?').characters.first
                   .toUpperCase(),
               style: TextStyle(
-                  color: theme.colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.w700),
+                color: theme.colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -239,19 +254,28 @@ class _UserRow extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.fullName ?? '—',
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                Text(user.email ?? '—',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                Text('${t.admin.users.joinedLabel}: $joined',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant)),
+                Text(
+                  user.fullName ?? '—',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  user.email ?? '—',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  '${t.admin.users.joinedLabel}: $joined',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),

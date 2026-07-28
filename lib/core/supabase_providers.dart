@@ -21,6 +21,10 @@ abstract final class Env {
   /// Google OAuth ships only when the OAuth client is configured upstream.
   static const bool googleAuthEnabled =
       bool.fromEnvironment('ENABLE_GOOGLE_AUTH');
+
+  /// Apple OAuth ships only when the Services ID is configured upstream.
+  static const bool appleAuthEnabled =
+      bool.fromEnvironment('ENABLE_APPLE_AUTH');
 }
 
 /// The only place in the app that touches [Supabase.instance].

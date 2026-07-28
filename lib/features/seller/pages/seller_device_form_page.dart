@@ -37,7 +37,6 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
   final _warranty = TextEditingController(text: '90');
 
   DeviceCategory _category = DeviceCategory.mobile;
-  Currency _currency = Currency.ils;
   final Map<String, ChecklistResult> _results = {};
   final Map<String, String> _notes = {};
 
@@ -71,18 +70,17 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
   Future<void> _load() async {
     try {
       if (_deviceId != null) {
-        final device =
-            await ref.read(sellerRepositoryProvider).fetchDevice(_deviceId!);
+        final device = await ref
+            .read(sellerRepositoryProvider)
+            .fetchDevice(_deviceId!);
         if (device != null && mounted) {
           _originalStatus = device.status;
           _category = device.category;
-          _currency = device.price.currency;
           _brand.text = device.brand;
           _model.text = device.model;
           _title.text = device.title;
           _description.text = device.description ?? '';
-          _price.text =
-              (device.price.minor ~/ Money.minorPerMajor).toString();
+          _price.text = (device.price.minor ~/ Money.minorPerMajor).toString();
           _warranty.text = device.warrantyDays.toString();
           for (final entry in device.checklist) {
             _results[entry.key] = entry.result;
@@ -102,16 +100,14 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
     }
   }
 
-  List<ChecklistTemplate> _templatesFor(List<ChecklistTemplate> all) => all
-      .where((t) => t.category == _category && t.isActive)
-      .toList()
-    ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+  List<ChecklistTemplate> _templatesFor(List<ChecklistTemplate> all) =>
+      all.where((t) => t.category == _category && t.isActive).toList()
+        ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
   Grade? _previewGrade(List<ChecklistTemplate> templates) {
     final active = _templatesFor(templates);
     if (active.isEmpty) return null;
-    final answered =
-        active.where((t) => _results.containsKey(t.key)).toList();
+    final answered = active.where((t) => _results.containsKey(t.key)).toList();
     if (answered.length < active.length) return null;
     return gradeOf(answered.map((t) => _results[t.key]!));
   }
@@ -145,8 +141,11 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
     final priceMinor = _priceMinor();
     if (priceMinor == null) {
       if (requireValid) {
-        showAppSnackBar(context, t.seller.deviceForm.invalidPrice,
-            isError: true);
+        showAppSnackBar(
+          context,
+          t.seller.deviceForm.invalidPrice,
+          isError: true,
+        );
       }
       return null;
     }
@@ -169,7 +168,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
             ? null
             : _description.text.trim(),
         priceMinor: priceMinor,
-        currency: _currency,
+        currency: Currency.ils,
         grade: grade,
         warrantyDays: int.tryParse(_warranty.text.trim()) ?? 90,
         imei: imei.isEmpty ? null : imei,
@@ -188,7 +187,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
             ? null
             : _description.text.trim(),
         priceMinor: priceMinor,
-        currency: _currency,
+        currency: Currency.ils,
         grade: grade,
         warrantyDays: int.tryParse(_warranty.text.trim()) ?? 90,
         imei: imei.isEmpty ? null : imei,
@@ -215,9 +214,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
       if (!mounted) return;
       showAppSnackBar(
         context,
-        resubmitted
-            ? t.seller.devices.resubmitted
-            : t.seller.deviceForm.saved,
+        resubmitted ? t.seller.devices.resubmitted : t.seller.deviceForm.saved,
       );
       context.go('/seller');
     } catch (e) {
@@ -243,8 +240,11 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
       final id = await _ensureDeviceSaved(templates, requireValid: false);
       if (id == null) {
         if (mounted) {
-          showAppSnackBar(context, t.seller.deviceForm.invalidPrice,
-              isError: true);
+          showAppSnackBar(
+            context,
+            t.seller.deviceForm.invalidPrice,
+            isError: true,
+          );
         }
         return;
       }
@@ -264,8 +264,11 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
       ref.invalidate(sellerDevicesProvider);
     } catch (e) {
       if (mounted) {
-        showAppSnackBar(context, t.seller.deviceForm.uploadFailed,
-            isError: true);
+        showAppSnackBar(
+          context,
+          t.seller.deviceForm.uploadFailed,
+          isError: true,
+        );
       }
     } finally {
       if (mounted) setState(() => _uploading = false);
@@ -333,8 +336,9 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                         _deviceId == null
                             ? t.seller.deviceForm.newTitle
                             : t.seller.deviceForm.editTitle,
-                        style: theme.textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       const SizedBox(height: 20),
                       _categorySelector(),
@@ -343,6 +347,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                         children: [
                           Expanded(
                             child: TextFormField(
+                              textDirection: TextDirection.rtl,
                               controller: _brand,
                               decoration: InputDecoration(
                                 labelText: t.seller.deviceForm.brandLabel,
@@ -354,6 +359,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: TextFormField(
+                              textDirection: TextDirection.rtl,
                               controller: _model,
                               decoration: InputDecoration(
                                 labelText: t.seller.deviceForm.modelLabel,
@@ -366,6 +372,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
+                        textDirection: TextDirection.rtl,
                         controller: _title,
                         decoration: InputDecoration(
                           labelText: t.seller.deviceForm.titleLabel,
@@ -377,6 +384,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
+                        textDirection: TextDirection.rtl,
                         controller: _description,
                         maxLines: 3,
                         decoration: InputDecoration(
@@ -385,34 +393,28 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _price,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText: t.seller.deviceForm.priceLabel,
-                                hintText: t.seller.deviceForm.priceHint,
-                              ),
-                              validator: (v) {
-                                final n = int.tryParse((v ?? '').trim());
-                                return (n == null || n <= 0)
-                                    ? t.seller.deviceForm.invalidPrice
-                                    : null;
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(child: _currencySelector()),
-                        ],
+                      TextFormField(
+                        textDirection: TextDirection.rtl,
+                        controller: _price,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: t.seller.deviceForm.priceLabel,
+                          hintText: t.seller.deviceForm.priceHint,
+                          suffixText: Currency.ils.symbol,
+                        ),
+                        validator: (v) {
+                          final n = int.tryParse((v ?? '').trim());
+                          return (n == null || n <= 0)
+                              ? t.seller.deviceForm.invalidPrice
+                              : null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
                           Expanded(
                             child: TextFormField(
+                              textDirection: TextDirection.rtl,
                               controller: _warranty,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
@@ -429,6 +431,7 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: TextFormField(
+                              textDirection: TextDirection.rtl,
                               controller: _imei,
                               decoration: InputDecoration(
                                 labelText: _category == DeviceCategory.mobile
@@ -458,14 +461,17 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                       _checklistSection(templates, grade),
                       const SizedBox(height: 24),
                       FilledButton.icon(
-                        onPressed:
-                            _saving ? null : () => _saveDraft(allTemplates),
+                        onPressed: _saving
+                            ? null
+                            : () => _saveDraft(allTemplates),
                         icon: _saving
                             ? const SizedBox(
                                 width: 18,
                                 height: 18,
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 2))
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
                             : const Icon(Icons.save_rounded),
                         label: Text(t.seller.deviceForm.saveDraft),
                       ),
@@ -492,33 +498,21 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
           ButtonSegment(
             value: c,
             label: Text(t.enums.category[c.dbValue] ?? c.dbValue),
-            icon: Icon(c == DeviceCategory.mobile
-                ? Icons.smartphone_rounded
-                : Icons.laptop_mac_rounded),
+            icon: Icon(
+              c == DeviceCategory.mobile
+                  ? Icons.smartphone_rounded
+                  : Icons.laptop_mac_rounded,
+            ),
           ),
       ],
       selected: {_category},
       onSelectionChanged: _deviceId != null
           ? null // category is fixed once a draft exists (checklist is tied to it)
           : (value) => setState(() {
-                _category = value.first;
-                _results.clear();
-                _notes.clear();
-              }),
-    );
-  }
-
-  Widget _currencySelector() {
-    return DropdownButtonFormField<Currency>(
-      value: _currency,
-      decoration:
-          InputDecoration(labelText: t.seller.deviceForm.currencyLabel),
-      items: [
-        for (final c in Currency.values)
-          DropdownMenuItem(
-              value: c, child: Text(t.enums.currency[c.dbValue] ?? c.dbValue)),
-      ],
-      onChanged: (v) => setState(() => _currency = v ?? _currency),
+              _category = value.first;
+              _results.clear();
+              _notes.clear();
+            }),
     );
   }
 
@@ -529,14 +523,16 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
       children: [
         Text(
           t.seller.deviceForm.photosTitle,
-          style:
-              theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           t.seller.deviceForm.photosHint,
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 12),
         if (_photos.isNotEmpty)
@@ -554,27 +550,36 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                   ? const SizedBox(
                       width: 16,
                       height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2))
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : const Icon(Icons.add_photo_alternate_rounded, size: 18),
-              label: Text(_uploading
-                  ? t.seller.deviceForm.uploading
-                  : t.seller.deviceForm.addPhotos),
+              label: Text(
+                _uploading
+                    ? t.seller.deviceForm.uploading
+                    : t.seller.deviceForm.addPhotos,
+              ),
             ),
             const SizedBox(width: 12),
             if (count < 4)
               Text(
                 t.seller.devices.needsPhotos(count: '${4 - count}'),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: context.appColors.warning),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: context.appColors.warning,
+                ),
               )
             else
               Row(
                 children: [
-                  Icon(Icons.check_circle_rounded,
-                      size: 16, color: context.appColors.success),
+                  Icon(
+                    Icons.check_circle_rounded,
+                    size: 16,
+                    color: context.appColors.success,
+                  ),
                   const SizedBox(width: 4),
-                  Text(t.seller.devices.photosCount(count: '$count'),
-                      style: theme.textTheme.bodySmall),
+                  Text(
+                    t.seller.devices.photosCount(count: '$count'),
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
               ),
           ],
@@ -593,21 +598,25 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
             Expanded(
               child: Text(
                 t.seller.deviceForm.checklistTitle,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             if (grade != null)
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   t.seller.deviceForm.gradePreview(
-                      grade: t.enums.grade[grade.dbValue] ?? grade.dbValue),
+                    grade: t.enums.grade[grade.dbValue] ?? grade.dbValue,
+                  ),
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: theme.colorScheme.onPrimaryContainer,
@@ -629,8 +638,9 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                     children: [
                       Text(
                         template.labelAr,
-                        style: theme.textTheme.titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Wrap(
@@ -638,19 +648,22 @@ class _SellerDeviceFormPageState extends ConsumerState<SellerDeviceFormPage> {
                         children: [
                           for (final result in ChecklistResult.values)
                             ChoiceChip(
-                              label: Text(t.enums
-                                      .checklistResult[result.dbValue] ??
-                                  result.dbValue),
+                              label: Text(
+                                t.enums.checklistResult[result.dbValue] ??
+                                    result.dbValue,
+                              ),
                               avatar: ChecklistResultIcon(result, size: 16),
                               selected: _results[template.key] == result,
                               onSelected: (_) => setState(
-                                  () => _results[template.key] = result),
+                                () => _results[template.key] = result,
+                              ),
                             ),
                         ],
                       ),
                       if (_results[template.key] != null) ...[
                         const SizedBox(height: 8),
                         TextFormField(
+                          textDirection: TextDirection.rtl,
                           initialValue: _notes[template.key],
                           decoration: InputDecoration(
                             hintText: t.seller.deviceForm.checklistNoteHint,
@@ -719,7 +732,9 @@ class ReorderableWrap extends StatelessWidget {
                       top: 4,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(6),

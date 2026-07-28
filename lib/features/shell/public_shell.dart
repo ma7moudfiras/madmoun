@@ -45,11 +45,16 @@ class PublicShell extends ConsumerWidget {
               child: Text(t.common.marketplace),
             ),
             // Admins only manage the platform: no orders, no seller portal.
-            if (signedIn && role != UserRole.admin)
+            if (signedIn && role != UserRole.admin) ...[
               TextButton(
                 onPressed: () => context.go('/orders'),
                 child: Text(t.common.myOrders),
               ),
+              TextButton(
+                onPressed: () => context.go('/favorites'),
+                child: Text(t.common.favorites),
+              ),
+            ],
             if (role != UserRole.admin)
               TextButton(
                 onPressed: () => context.go('/seller'),
@@ -111,6 +116,8 @@ class _AccountMenu extends ConsumerWidget {
             context.go('/account');
           case 'orders':
             context.go('/orders');
+          case 'favorites':
+            context.go('/favorites');
           case 'seller':
             context.go('/seller');
           case 'admin':
@@ -124,6 +131,11 @@ class _AccountMenu extends ConsumerWidget {
         if (showCompactNav) ...[
           if (role != UserRole.admin)
             PopupMenuItem(value: 'orders', child: Text(t.common.myOrders)),
+          if (role != UserRole.admin)
+            PopupMenuItem(
+              value: 'favorites',
+              child: Text(t.common.favorites),
+            ),
           if (role != UserRole.admin)
             PopupMenuItem(value: 'seller', child: Text(t.common.sellerPortal)),
           if (role == UserRole.admin)
